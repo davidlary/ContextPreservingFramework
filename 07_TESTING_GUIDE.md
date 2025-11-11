@@ -512,6 +512,268 @@ Next steps:
 
 ---
 
+## Project-Type-Specific Validation Criteria
+
+**Purpose**: Define what "passing" means for different project types
+**When to use**: After each work unit (module/section/scene/page) completion
+**Critical**: Validation must pass before marking unit complete and committing
+
+---
+
+### Coding Projects
+
+| Test Type | Frequency | Pass Criteria | Automated Check |
+|-----------|-----------|---------------|-----------------|
+| Unit tests | Per module | 100% pass, 0 failures | `pytest tests/` or `npm test` or `cargo test` |
+| Linting | Per module | 0 errors (warnings OK) | `pylint file.py` or `eslint file.js` or `clippy` |
+| Type checking | Per module (typed languages) | 0 errors | `mypy file.py` or `tsc --noEmit` or `cargo check` |
+| Integration tests | Per milestone (3-5 modules) | All scenarios pass | `pytest tests/integration/` |
+| Code coverage | Per milestone | ≥80% line coverage | `pytest --cov=core tests/` |
+| State integrity | Every checkpoint | JSON validates against schema | `python scripts/validate_state.py` |
+
+**Example Validation Sequence (Per Module)**:
+```bash
+# 1. Run unit tests
+pytest tests/test_module_1_1.py
+# Expected: All tests pass
+
+# 2. Run linter
+pylint core/module_1_1.py
+# Expected: Score ≥8.0/10 (or 0 errors)
+
+# 3. Run type checker (if applicable)
+mypy core/module_1_1.py
+# Expected: Success: no issues found
+
+# 4. Validate state
+python scripts/validate_state.py
+# Expected: All state files valid
+
+# ALL PASS → Mark module complete, commit
+```
+
+---
+
+### Research Paper Projects
+
+| Test Type | Frequency | Pass Criteria | Automated Check |
+|-----------|-----------|---------------|-----------------|
+| Citation completeness | Per section | All [Author, Year] appear in references | `scripts/check_citations.sh` |
+| Word count | Per section | Within ±15% of target | `wc -w section.md` and compare to target |
+| Reference formatting | Per section | All match journal style (APA/MLA/etc.) | `scripts/validate_references.sh` (or manual check) |
+| Figure references | Per section | All "Figure N" exist in figures/ | `grep "Figure [0-9]" section.md` + verify files |
+| Table references | Per section | All "Table N" exist | `grep "Table [0-9]" section.md` + verify files |
+| Section coherence | Per section | Outline points addressed (manual) | 30-second review against outline |
+| State integrity | Every checkpoint | JSON validates | `python scripts/validate_state.py` |
+
+**Example Validation Sequence (Per Section)**:
+```bash
+# 1. Check word count
+wc -w sections/02_lit_review.md
+# Expected: 1000-1500 words (target ±15%)
+
+# 2. Check citations
+scripts/check_citations.sh sections/02_lit_review.md references/bibliography.bib
+# Expected: All citations found in bibliography
+
+# 3. Check figure references
+grep "Figure [0-9]" sections/02_lit_review.md
+figures/ ls
+# Expected: All referenced figures exist
+
+# 4. Manual coherence check
+# Review against outline: Did we cover all points?
+# Expected: Yes
+
+# 5. Validate state
+python scripts/validate_state.py
+# Expected: All state files valid
+
+# ALL PASS → Mark section complete, commit
+```
+
+---
+
+### Book Writing Projects
+
+| Test Type | Frequency | Pass Criteria | Automated Check |
+|-----------|-----------|---------------|-----------------|
+| Character consistency | Per scene/chapter | Names, traits match character_db.json | `scripts/check_characters.sh` |
+| Timeline consistency | Per scene/chapter | No temporal contradictions | `scripts/check_timeline.sh` (or manual spreadsheet) |
+| Word count | Per scene/chapter | Within ±20% of target | `wc -w chapter/scene.md` |
+| POV consistency | Per scene | No POV shifts within scene | Manual review (60 seconds) |
+| Plot points | Per chapter | All outline points addressed | `scripts/check_outline.sh` |
+| Dialogue tags | Per scene | Consistent attribution style | Manual review or grep for patterns |
+| State integrity | Every checkpoint | JSON validates | `python scripts/validate_state.py` |
+
+**Example Validation Sequence (Per Scene)**:
+```bash
+# 1. Check word count
+wc -w chapters/ch01/scene02.md
+# Expected: 1000-1500 words (target ±20%)
+
+# 2. Check character consistency
+scripts/check_characters.sh chapters/ch01/scene02.md data/character_db.json
+# Expected: All character mentions match database (names, traits)
+
+# 3. Check timeline
+scripts/check_timeline.sh chapters/ch01/scene02.md
+# Expected: No date/time contradictions
+
+# 4. Manual POV check
+# Read scene: Is it all one POV? No head-hopping?
+# Expected: Consistent POV throughout
+
+# 5. Check against outline
+scripts/check_outline.sh chapters/ch01/scene02.md docs/outline.md
+# Expected: All plot points for this scene addressed
+
+# 6. Validate state
+python scripts/validate_state.py
+# Expected: All state files valid
+
+# ALL PASS → Mark scene complete, commit
+```
+
+---
+
+### Documentation Projects
+
+| Test Type | Frequency | Pass Criteria | Automated Check |
+|-----------|-----------|---------------|-----------------|
+| Code examples | Per page | All code blocks runnable, 0 errors | `scripts/test_examples.sh page.md` |
+| Link validity | Per page | No broken links (internal & external) | `scripts/check_links.sh page.md` |
+| Image references | Per page | All images exist in images/ | `grep "!\[.*\]" page.md` + verify files |
+| API accuracy | Per page | API examples match latest version | `scripts/validate_api_calls.sh` (calls API) |
+| Spelling/grammar | Per page | 0 critical errors (minor OK) | `aspell check page.md` or Grammarly CLI |
+| Heading structure | Per page | Proper H1-H6 hierarchy | `scripts/check_headings.sh page.md` |
+| State integrity | Every checkpoint | JSON validates | `python scripts/validate_state.py` |
+
+**Example Validation Sequence (Per Page)**:
+```bash
+# 1. Test all code examples
+scripts/test_examples.sh docs/getting_started.md
+# Expected: All code blocks execute successfully
+
+# 2. Check links
+scripts/check_links.sh docs/getting_started.md
+# Expected: All links return 200 OK (or valid internal links)
+
+# 3. Check images
+grep "!\[.*\]" docs/getting_started.md | grep -o "images/[^)]*"
+ls images/
+# Expected: All referenced images exist
+
+# 4. Spell check
+aspell check docs/getting_started.md
+# Expected: No spelling errors (or manually reviewed)
+
+# 5. Check API examples
+scripts/validate_api_calls.sh docs/getting_started.md
+# Expected: All API calls return expected responses
+
+# 6. Validate state
+python scripts/validate_state.py
+# Expected: All state files valid
+
+# ALL PASS → Mark page complete, commit
+```
+
+---
+
+### Data Analysis Projects
+
+| Test Type | Frequency | Pass Criteria | Automated Check |
+|-----------|-----------|---------------|-----------------|
+| Notebook execution | Per analysis unit | All cells run without error | `jupyter nbconvert --execute notebook.ipynb` |
+| Data integrity | Per data load | No missing/corrupt values | `scripts/check_data_integrity.py` |
+| Reproducibility | Per analysis | Same inputs → same outputs | Re-run analysis, compare results |
+| Visualization validity | Per plot | No NaN/Inf in plotted data | Check data before plotting |
+| Results documentation | Per analysis | Findings saved to results/ | Verify output files created |
+| State integrity | Every checkpoint | JSON validates | `python scripts/validate_state.py` |
+
+**Example Validation Sequence (Per Analysis)**:
+```bash
+# 1. Execute notebook
+jupyter nbconvert --execute --to notebook --inplace notebooks/analysis_01.ipynb
+# Expected: All cells execute, no errors
+
+# 2. Check data integrity
+python scripts/check_data_integrity.py data/processed/dataset.csv
+# Expected: No missing values, no corrupt entries
+
+# 3. Verify reproducibility
+python scripts/compare_results.py results/analysis_01_run1.json results/analysis_01_run2.json
+# Expected: Results match (within numerical precision)
+
+# 4. Check visualizations
+python -c "import pandas as pd; df = pd.read_csv('results/analysis_01.csv'); print(df.isnull().sum())"
+# Expected: No NaNs in result data
+
+# 5. Validate state
+python scripts/validate_state.py
+# Expected: All state files valid
+
+# ALL PASS → Mark analysis complete, commit
+```
+
+---
+
+### How to Use These Validation Tables
+
+**Step 1**: Identify your project type
+- Coding, Research, Book, Documentation, or Data Analysis
+
+**Step 2**: After completing each work unit (module/section/scene/page/analysis):
+1. Run all "Automated Check" commands for your project type (in order)
+2. Perform any "manual" checks (typically <2 minutes total)
+3. Record results (all must PASS)
+
+**Step 3**: If ANY test FAILS:
+1. **Do NOT mark unit complete**
+2. **Do NOT commit** to git
+3. Fix the issue immediately
+4. Re-run ALL tests for that unit
+5. Maximum 3 fix attempts before escalating to issue file
+
+**Step 4**: When ALL tests PASS:
+1. Update state files (mark unit complete)
+2. Git commit with test results in message
+3. Continue to next unit OR checkpoint if context ≥30%
+
+---
+
+### Creating Validation Scripts
+
+**Note**: Many validation checks require scripts. If script doesn't exist:
+
+**Option 1**: Implement script following `06_SCRIPTS_GUIDE.md` pattern
+```bash
+# Example: scripts/check_citations.sh
+#!/bin/bash
+# Extract citations from markdown
+# Compare against bibliography
+# Report missing citations
+```
+
+**Option 2**: Manual validation (acceptable for small projects)
+```bash
+# Instead of: scripts/check_citations.sh section.md
+# Manually: grep '\[.*[0-9]\{4\}\]' section.md and verify each
+```
+
+**Option 3**: Use existing tools
+```bash
+# Link checking: use existing tool
+npm install -g broken-link-checker
+blc docs/page.md
+
+# Spell checking: use aspell
+aspell check page.md
+```
+
+---
+
 ## Next Steps After Validation
 
 **Framework is validated!** Now:
