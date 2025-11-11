@@ -1,0 +1,105 @@
+# Claude Code Configuration
+
+This directory contains EXPERIMENTAL configuration and hooks.
+
+⚠️ **IMPORTANT**: We are NOT certain these hooks actually run. This is an experiment.
+
+⚠️ **ACTUAL ENFORCEMENT**: CLAUDE.md (RULES 14-17) - This DEFINITELY works.
+
+## Files
+
+### `settings.json`
+Experimental configuration file. Unknown if Claude Code reads this.
+
+**Key Settings (UNCERTAIN)**:
+- `autonomous_mode: true` - Unknown if this works
+- `enforce_state_tracking: true` - Unknown if this works
+- `hooks.enabled: true` - Unknown if this works
+
+### `hooks/` Directory (UNCERTAIN)
+
+Shell scripts that MIGHT run automatically - but we're not certain:
+
+**`session_start.sh`** - Runs when session begins (UNCERTAIN)
+- Initializes context tracking
+- Resets token count to 0
+- Logs session start
+
+**`post_tool_use.sh`** - Runs after EVERY tool operation (UNCERTAIN)
+- Logs the operation
+- Updates context tracking
+- Updates master state timestamp
+- Checks context thresholds
+- **This might run automatically - but uncertain**
+
+**`session_end.sh`** - Runs when session ends (UNCERTAIN)
+- Checks for uncommitted changes
+- Records final context usage
+- Updates master state
+
+## How Enforcement ACTUALLY Works
+
+**REAL ENFORCEMENT**: CLAUDE.md (RULES 14-17)
+
+1. **RULE 14**: Mandatory state tracking after every operation
+2. **RULE 15**: Visible checkpoint display in every response
+3. **RULE 16**: Automatic git operations (commits before exit)
+4. **RULE 17**: Clear next steps at end of every response
+
+These are instructions that Claude Code reads from CLAUDE.md automatically.
+
+**UNCERTAIN**: Whether these shell scripts in .claude/hooks/ actually run.
+
+## Verification
+
+To verify ACTUAL enforcement (CLAUDE.md rules):
+
+```bash
+# Check hooks are executable
+ls -la .claude/hooks/
+
+# Watch operations being logged
+tail -f logs/operation_log.txt
+
+# Check context is being tracked
+cat [STATE_FILE]
+
+# Verify state timestamps are recent
+cat [STATE_FILE] | grep last_update
+```
+
+## Actual Guarantees (100% Honest)
+
+**What IS 100% guaranteed (via CLAUDE.md RULES 14-17)**:
+
+✅ **CLAUDE.md is read automatically** by Claude Code
+✅ **RULE 14 mandates state tracking** after every operation
+✅ **RULE 15 mandates visible checkpoint** in every response
+✅ **RULE 16 mandates git commits** before exit
+✅ **RULE 17 mandates clear next steps** at end of response
+✅ **Instructions are mandatory** (not optional)
+✅ **User can verify** (visible checkpoint + file checks)
+✅ **This is the strongest enforcement possible** in Claude Code
+
+**What is NOT guaranteed (uncertain)**:
+
+❓ Whether hooks in .claude/hooks/ actually run
+❓ Whether settings.json is read by Claude Code
+❓ Whether external enforcement exists
+
+## 100% True?
+
+**YES** - CLAUDE.md enforcement is 100% true:
+
+- CLAUDE.md exists ✅
+- Contains RULES 14-17 (detailed enforcement rules) ✅
+- Claude Code reads CLAUDE.md automatically ✅
+- Rules are mandatory instructions ✅
+- This is instruction-based enforcement ✅
+
+**UNCERTAIN** - Shell hooks may or may not work:
+
+- Hooks exist and are executable ✅
+- But unknown if Claude Code calls them ❓
+
+**DECISION**: Rely on CLAUDE.md (certain) not hooks (uncertain).

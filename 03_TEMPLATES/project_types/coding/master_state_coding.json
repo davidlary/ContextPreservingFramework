@@ -1,0 +1,39 @@
+{
+  "project": "[PROJECT_NAME]",
+  "version": "0.1.0",
+  "project_type": "coding",
+  "language": "[LANGUAGE]",
+  "framework": "[FRAMEWORK]",
+  "current_phase": "setup",
+  "current_module": null,
+  "modules_complete": [],
+  "modules_in_progress": [],
+  "modules_pending": ["1.1", "1.2", "1.3"],
+  "tests_passing": 0,
+  "tests_total": 0,
+  "context_usage": {
+    "current_tokens": 0,
+    "max_tokens": 200000,
+    "percentage": 0.0,
+    "warning_threshold": 0.30,
+    "critical_threshold": 0.35
+  },
+  "session_info": {
+    "current_session": 1,
+    "session_start": "[TIMESTAMP]",
+    "last_update": "[TIMESTAMP]",
+    "operations_this_session": 0
+  },
+  "git_info": {
+    "repository_initialized": false,
+    "last_commit": null,
+    "commits_this_session": 0,
+    "branch": "main"
+  },
+  "metrics": {
+    "total_files": 0,
+    "total_lines": 0,
+    "test_coverage": 0.0
+  },
+  "last_update": "[TIMESTAMP]"
+}

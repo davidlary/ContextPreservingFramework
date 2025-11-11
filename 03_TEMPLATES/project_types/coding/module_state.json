@@ -1,0 +1,36 @@
+{
+  "module_id": "[MODULE_ID]",
+  "module_name": "[MODULE_NAME]",
+  "status": "pending",
+  "phase": "[PHASE]",
+  "start_time": null,
+  "end_time": null,
+  "duration_minutes": 0,
+  "files": {
+    "created": [],
+    "modified": [],
+    "deleted": []
+  },
+  "tests": {
+    "total": 0,
+    "passing": 0,
+    "failing": 0,
+    "skipped": 0
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": []
+  },
+  "context_at_start": 0.0,
+  "context_at_end": 0.0,
+  "git_commits": [],
+  "issues": [],
+  "validation": {
+    "code_complete": false,
+    "tests_passing": false,
+    "documented": false,
+    "reviewed": false
+  },
+  "notes": "",
+  "last_update": "[TIMESTAMP]"
+}

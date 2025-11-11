@@ -1,0 +1,77 @@
+# Session [SESSION_ID] - [PHASE_NAME]
+
+**Generated**: [TIMESTAMP]
+**Git Commit**: [COMMIT_HASH]
+**Context**: [X]%
+**Status**: [IN_PROGRESS/COMPLETED/BLOCKED]
+
+## Goal
+
+[Brief description of what this session is accomplishing]
+
+## Completed
+
+- [✅ Task 1]
+- [✅ Task 2]
+- [✅ Task 3]
+
+## In Progress
+
+- [🔄 Current task being worked on]
+
+## Next Steps
+
+1. [Next action to take]
+2. [Following action]
+3. [Subsequent action]
+
+## Context Needed
+
+[List of files/docs Claude needs to read to continue]
+
+- [File 1]: [Why needed]
+- [File 2]: [Why needed]
+
+## Recovery Prompt
+
+Paste this EXACTLY when resuming:
+
+```
+Resume [PROJECT_NAME] - Session [SESSION_ID]
+
+Location: [WORKING_DIRECTORY]
+Git commit: [COMMIT_HASH]
+Context: Completed [X] of [Y] tasks
+
+Status:
+✅ Completed: [brief list]
+🔄 In progress: [current task]
+⏳ Next: [next tasks]
+
+Instructions:
+1. Read [STATE_FILE] to verify state
+2. [Specific next action]
+3. Continue with [task description]
+
+Goal: [Specific goal for this session]
+
+Autonomous mode: [ACTIVE/INACTIVE]
+Context target: Keep below 35%
+```
+
+## Files Modified This Session
+
+- [file1.ext]: [Description of changes]
+- [file2.ext]: [Description of changes]
+
+## Important Notes
+
+[Any critical information needed for resumption]
+
+## Session Metrics
+
+- Duration: [X] minutes
+- Context used: [X]%
+- Files modified: [N]
+- Commits: [N]
+- Tests: [passing/total]

@@ -1,0 +1,36 @@
+{
+  "section_id": "[SECTION_ID]",
+  "section_name": "[SECTION_NAME]",
+  "status": "pending",
+  "phase": "[PHASE]",
+  "start_time": null,
+  "end_time": null,
+  "duration_minutes": 0,
+  "content": {
+    "word_count": 0,
+    "target_word_count": 1000,
+    "paragraph_count": 0,
+    "subsections": []
+  },
+  "references": {
+    "cited": [],
+    "to_cite": [],
+    "total": 0
+  },
+  "quality": {
+    "draft_complete": false,
+    "reviewed": false,
+    "citations_valid": false,
+    "readability_score": 0.0
+  },
+  "dependencies": {
+    "sections": [],
+    "sources": []
+  },
+  "context_at_start": 0.0,
+  "context_at_end": 0.0,
+  "git_commits": [],
+  "issues": [],
+  "notes": "",
+  "last_update": "[TIMESTAMP]"
+}

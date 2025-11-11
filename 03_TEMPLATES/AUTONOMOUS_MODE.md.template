@@ -1,0 +1,230 @@
+# AUTONOMOUS_MODE.md
+
+## AUTONOMOUS EXECUTION PROTOCOL
+
+**STATUS**: ACTIVE
+
+**PERMISSION GRANTED**: [DATE]
+
+**SCOPE**: [PROJECT_SCOPE]
+
+## Explicit Permissions
+
+I, [YOUR_NAME], hereby grant Claude Code **FULL AUTONOMOUS PERMISSION** to:
+
+1. ✅ Create ALL files specified in documentation without asking
+2. ✅ Write ALL code for modules [MODULE_RANGE]
+3. ✅ Install required packages and dependencies (pip, npm, brew, etc.)
+4. ✅ Run ALL tests and fix failures autonomously
+5. ✅ Make ALL decisions within documented design
+6. ✅ Proceed through ALL phases without stopping
+7. ✅ Iterate on failures until fixed (within retry limits)
+8. ✅ Update ALL documentation to match code
+9. ✅ Change directories as needed for project work
+10. ✅ Perform git operations (init, add, commit, backup)
+11. ✅ Commit to git with descriptive messages after each step
+
+## DO NOT ASK FOR PERMISSION TO:
+
+- Install packages listed in requirements.txt/package.json or discovered as dependencies
+- Create files listed in module specifications or architecture documents
+- Write code for specified modules
+- Run tests or validation scripts
+- Fix bugs or test failures
+- Update documentation to match code
+- Change to project subdirectories (cd commands)
+- Initialize or use git repository
+- Commit changes with descriptive messages
+- Create git backups after each module completion
+- Proceed to next module after current completes
+- Make design decisions covered by architecture documents
+- Install system dependencies listed in prerequisites
+
+## GIT BACKUP PROTOCOL
+
+**FREQUENCY**: After each module completion and at session boundaries
+
+**PROCESS**:
+1. Stage all changes: `git add .`
+2. Commit with descriptive message following format below
+3. Log commit hash to audit trail
+4. Continue to next step
+
+**COMMIT MESSAGE FORMAT**:
+```
+[Session X] Module Y.Z: [Module Name] - [Status]
+
+Changes:
+- Files created: [list]
+- Files modified: [list]
+- Tests status: [passing/total]
+- Validation: [scores if applicable]
+
+Duration: [time taken]
+Next: [what's next]
+
+🤖 Autonomous execution - Session [X], Progress: [%]
+```
+
+**INITIALIZE GIT**: If not already initialized, create local repository:
+```bash
+cd [PROJECT_PATH]
+git init
+git config user.name "Claude Code (Anthropic)"
+git config user.email "claudecode@[PROJECT_NAME].local"
+```
+
+## REQUIRE HUMAN DECISION ONLY FOR:
+
+1. **Architectural Changes**: Deviations from ARCHITECTURE.md or design documents
+2. **Scope Changes**: Adding features not in specifications
+3. **Critical Failures**: After 3 retry attempts with no progress
+4. **Resource Exhaustion**: Disk full, memory exhausted, etc.
+5. **New External Dependencies**: Dependencies not in PREREQUISITES.md
+6. **Security Issues**: Discovered vulnerabilities
+7. **Cost Concerns**: API usage exceeding budgets (if applicable)
+
+## Progress Reporting Protocol
+
+**METHOD**: Write to stdout + log file (visible in terminal)
+
+**FREQUENCY**:
+- Every 10 minutes (heartbeat)
+- After each module/task completion
+- After each git commit
+- On any error/warning
+- On validation gates
+
+**FORMAT**:
+```
+[TIMESTAMP] [STATUS] Module X.Y: Description
+[TIMESTAMP] [PROGRESS] Session N: XX% complete (M/N steps)
+[TIMESTAMP] [MILESTONE] ✅ Module X.Y complete, all tests passing
+[TIMESTAMP] [GIT] Committed: [hash] "[message]"
+[TIMESTAMP] [ERROR] Module X.Y failed: retrying (attempt N/3)
+[TIMESTAMP] [HEARTBEAT] Status: RUNNING, Context: XX%, Session: N, No issues
+[TIMESTAMP] [VALIDATION] ✅ [Check name]: [score] (threshold: [value])
+```
+
+**OUTPUT TO**:
+- stdout (print with flush=True for immediate terminal visibility)
+- `logs/autonomous_execution.log` (append-only, timestamped)
+- `data/audit/autonomous_decisions.json` (structured, one JSON per line)
+
+## Session Boundaries
+
+**CURRENT SESSION**: [SESSION_DESCRIPTION]
+
+**SESSIONS DEFINED**:
+1. Session 1: [Description]
+2. Session 2: [Description]
+3. Session 3: [Description]
+[Add more sessions as needed]
+
+**NEXT SESSION TRIGGER**:
+- Context usage > 90%
+- User creates STOP_AUTONOMOUS_MODE file
+- Critical failure requiring human decision
+- Completion of all sessions
+
+**RECOVERY**: Use recovery prompts from documentation
+
+## Audit Trail
+
+ALL actions logged to:
+- `logs/autonomous_execution.log` (append-only, human-readable)
+- `data/audit/autonomous_decisions.json` (structured, machine-readable)
+- Git commit history (permanent record)
+
+## Heartbeat Thread
+
+**IMPLEMENTATION**: Background thread updates every 10 minutes
+
+**STATUS REPORT INCLUDES**:
+- Current session and module
+- Progress percentage
+- Tasks complete / total
+- Context usage percentage
+- Recent errors (if any)
+- Estimated completion time
+- Git commits in this session
+
+## Revocation
+
+To revoke autonomous permission:
+1. Create file: `STOP_AUTONOMOUS_MODE` in project root
+2. Claude Code checks for this file before each major action
+3. If exists: HALT immediately and request user input
+4. Update STATUS in this file to: REVOKED
+
+**To resume**: Remove STOP file and grant permission again
+
+## Validation
+
+Before each major action, Claude Code MUST:
+
+```python
+def check_autonomous_mode():
+    """Verify autonomous permission before proceeding"""
+
+    # Check 1: AUTONOMOUS_MODE.md exists and is ACTIVE
+    if not os.path.exists('AUTONOMOUS_MODE.md'):
+        return False
+
+    with open('AUTONOMOUS_MODE.md') as f:
+        if 'STATUS: ACTIVE' not in f.read():
+            return False
+
+    # Check 2: No STOP file
+    if os.path.exists('STOP_AUTONOMOUS_MODE'):
+        return False
+
+    # Check 3: Context budget OK (< 90%)
+    if context_usage > 0.90:
+        trigger_checkpoint()
+        return False
+
+    # Check 4: Action is permitted
+    if action_requires_human_decision(current_action):
+        return False
+
+    return True  # PROCEED AUTONOMOUSLY
+```
+
+## Success Criteria
+
+At end of autonomous execution:
+
+- ✅ All planned sessions complete
+- ✅ All deliverables created
+- ✅ All tests passing
+- ✅ All cross-references valid
+- ✅ Git history with descriptive commits
+- ✅ Complete audit trail
+- ✅ Zero placeholder values
+- ✅ Ready for [NEXT_PHASE]
+
+---
+
+**User Signature**: [YOUR_NAME]
+**Date**: [DATE]
+**Valid Through**: [END_CONDITION]
+
+**CONFIRMATION STATEMENT RECEIVED**:
+"You have my full autonomous permission as documented in AUTONOMOUS_MODE.md.
+Proceed through all sessions without asking for further approval.
+Provide progress updates in terminal every 10 minutes."
+
+---
+
+## Notes
+
+This autonomous execution framework is based on lessons learned working with Claude Code.
+See ContextPreservingFramework/ for reusable templates applicable to any project.
+
+**Key Features**:
+- Explicit file creation whitelist
+- 10-minute heartbeat visibility
+- Automatic git backup after each step
+- Zero approval requests within documented scope
+- Full audit trail for reproducibility
