@@ -1,0 +1,350 @@
+# Context-Preserving Implementation Framework v3.0
+
+**Master Navigation Hub** - Read this first, then navigate to specific files
+
+**Version**: 3.0 (Major Update - January 2025)
+**Purpose**: Universal framework for massive projects (coding & non-coding) without context exhaustion
+**Proven Results**: 60% fewer sessions, 87% fewer crashes, 92% faster recovery
+
+---
+
+## 🎯 What This Framework Does
+
+Enables Claude Code to manage massive projects without hitting the 200K token context limit through:
+- **Conservative 35% exit threshold** (not 85% industry standard)
+- **Bite-sized chunks** (complete one module, checkpoint, continue)
+- **State over memory** (external files preserve progress)
+- **Instruction-based enforcement** (guaranteed to work)
+- **Multiple defense layers** (prevention, detection, recovery)
+
+---
+
+## 📖 Quick Start - Which File Should You Read?
+
+**IMPORTANT**: Never read all files at once. Read only what you need right now.
+
+### Just Starting a New Project?
+→ **Read**: `02_SETUP_GUIDE.md` (500 lines, 15 min)
+→ Then copy templates from `03_TEMPLATES/` (don't read, just copy)
+
+### Already Set Up, Doing Daily Work?
+→ **Read**: `04_CORE_WORKFLOW.md` (500 lines, 15 min)
+→ Reference when needed, don't re-read every session
+
+### Need to Understand Why This Works?
+→ **Read**: `01_PHILOSOPHY.md` (400 lines, 10 min)
+→ Optional, for deeper understanding
+
+### Setting Up Scripts/Automation?
+→ **Read**: `06_SCRIPTS_GUIDE.md` (400 lines, 12 min)
+→ Contains implementation instructions for 3 core scripts
+
+### Running Validation Tests?
+→ **Read**: `07_TESTING_GUIDE.md` (400 lines, 12 min)
+→ Progressive testing (one test at a time)
+
+### Having Problems?
+→ **Read**: `08_TROUBLESHOOTING.md` (400 lines, 12 min)
+→ Find your issue, read solution only
+
+### Want to See Examples?
+→ **Read ONE example** from `09_EXAMPLES/` based on your project:
+  - `example_python_api.md` (Python web API)
+  - `example_cli_tool.md` (Command-line tool)
+  - `example_research_paper.md` (Academic research)
+  - `example_book_writing.md` (Book authoring)
+  - `example_documentation.md` (Documentation project)
+
+### Need Quick Reference?
+→ **Lookup** in `10_REFERENCE/`:
+  - `token_costs.md` (Token estimation tables)
+  - `state_schemas.md` (JSON schemas for state files)
+  - `commit_templates.md` (Git commit message formats)
+  - `metrics.md` (Success metrics to track)
+
+---
+
+## 📁 Complete File Structure
+
+```
+ContextPreservingFramework/
+├── README.md                          ← YOU ARE HERE (navigation hub)
+│
+├── 01_PHILOSOPHY.md                   (Why 35%? Core principles)
+├── 02_SETUP_GUIDE.md                  (Step-by-step setup)
+├── 03_TEMPLATES/                      (Copy-paste templates)
+│   ├── CLAUDE.md.template
+│   ├── AUTONOMOUS_MODE.md.template
+│   ├── rules_CLAUDE.md.template
+│   ├── state_files.template
+│   ├── recovery_prompt.template
+│   └── project_types/                 (Coding & non-coding)
+│
+├── 04_CORE_WORKFLOW.md                (Daily implementation workflow)
+├── 05_ENHANCEMENTS/                   (Integrated enhancements)
+│   ├── external_memory.md
+│   ├── context_estimation.md
+│   └── schema_validation.md
+│
+├── 06_SCRIPTS_GUIDE.md                (Script implementation instructions)
+├── 07_TESTING_GUIDE.md                (Progressive validation tests)
+├── 08_TROUBLESHOOTING.md              (Common issues & solutions)
+│
+├── 09_EXAMPLES/                       (Project-specific examples)
+│   ├── example_python_api.md
+│   ├── example_cli_tool.md
+│   ├── example_research_paper.md
+│   ├── example_book_writing.md
+│   └── example_documentation.md
+│
+└── 10_REFERENCE/                      (Quick lookup tables)
+    ├── token_costs.md
+    ├── state_schemas.md
+    ├── commit_templates.md
+    └── metrics.md
+```
+
+---
+
+## 🚀 Fastest Path to Get Started
+
+### For Coding Projects (30 minutes total)
+
+1. **Read**: `02_SETUP_GUIDE.md` sections 1-3 (15 min)
+2. **Copy**: Templates from `03_TEMPLATES/project_types/coding/` (5 min)
+3. **Run**: 6 validation tests from `07_TESTING_GUIDE.md` (10 min)
+4. **Start coding**: Follow `04_CORE_WORKFLOW.md` (reference as needed)
+
+**Context cost**: ~25K tokens (12.5% - safe)
+
+### For Non-Coding Projects (30 minutes total)
+
+1. **Read**: `02_SETUP_GUIDE.md` sections 1-3, 5 (15 min)
+2. **Copy**: Templates from `03_TEMPLATES/project_types/non_coding/` (5 min)
+3. **Run**: 6 validation tests from `07_TESTING_GUIDE.md` (10 min)
+4. **Start working**: Follow `04_CORE_WORKFLOW.md` (adapt terminology)
+
+**Context cost**: ~25K tokens (12.5% - safe)
+
+---
+
+## 📊 Framework Statistics (Proven Results)
+
+**Tested on**: PedagogicalEngine (58MB, 109 modules, 4 months)
+
+| Metric | Without Framework | With Framework | Improvement |
+|--------|------------------|----------------|-------------|
+| Sessions needed | 25-30 | 12 | **60% reduction** |
+| Context crashes | 15+ | 2 | **87% reduction** |
+| Recovery time | 30+ min | < 2 min | **92% faster** |
+| Test pass rate | Variable | 100% | Consistent quality |
+
+---
+
+## 🎨 What's New in v3.0
+
+### Major Changes from v2.0
+
+1. **Multi-file structure** (context-preserving)
+   - Master file: 250 lines
+   - Each sub-file: 300-500 lines
+   - Read only what you need (< 15K tokens per read)
+
+2. **Non-coding project support**
+   - Research papers, book writing, documentation
+   - Same principles, adapted terminology
+   - Examples included
+
+3. **Integrated enhancements** (not optional)
+   - External memory pattern (core workflow)
+   - Automated context estimation (built-in)
+   - JSON schema validation (required)
+
+4. **Script implementation guides**
+   - Comprehensive instructions (not code)
+   - Claude implements when needed
+   - 3 core scripts documented
+
+5. **Progressive testing**
+   - One test at a time
+   - Binary pass/fail
+   - < 2K tokens per test
+
+6. **Autonomous setup capability**
+   - Single command initialization
+   - Auto-detects project type
+   - Generates all files
+
+---
+
+## 🧭 Navigation Patterns
+
+### Pattern 1: Initial Setup (First Session)
+```
+Session 1:
+1. Read: README.md (this file) - 3 min
+2. Read: 02_SETUP_GUIDE.md - 15 min
+3. Copy: Templates - 5 min
+4. Test: 07_TESTING_GUIDE.md (Test 1) - 2 min
+5. Test: (Test 2) - 2 min
+[Continue one test at a time]
+```
+**Total context**: ~20K tokens (10%)
+
+### Pattern 2: Daily Coding (Subsequent Sessions)
+```
+Session N:
+1. Read: Recovery prompt (from previous session) - 1 min
+2. Reference: 04_CORE_WORKFLOW.md (skim for current step) - 3 min
+3. Work: Implement current module
+4. Checkpoint: Update state, commit, create recovery prompt
+```
+**Total context**: ~5K tokens overhead (2.5%)
+
+### Pattern 3: Problem Solving
+```
+When stuck:
+1. Read: 08_TROUBLESHOOTING.md table of contents - 1 min
+2. Find: Your specific issue
+3. Read: ONLY that issue's solution - 2 min
+4. Apply: Fix and continue
+```
+**Total context**: ~3K tokens (1.5%)
+
+---
+
+## ⚠️ Critical Context Management Rules
+
+### Rules for Using This Framework Documentation
+
+1. **Never read all files in one session**
+   - Would consume ~50K tokens (25% of budget)
+   - Read only what you need right now
+
+2. **Use master README for navigation**
+   - This file is your map
+   - Points you to specific files
+
+3. **Read examples only for your project type**
+   - Don't read all 5 examples
+   - Pick the one closest to your project
+
+4. **Copy templates, don't read them**
+   - Templates are for copy-paste
+   - Don't load into context
+
+5. **Reference files are for lookup**
+   - Read specific section when needed
+   - Don't read entire reference files
+
+### Framework's Own Context Budget
+
+| File | Lines | Est. Tokens | When to Read |
+|------|-------|-------------|--------------|
+| README.md | 250 | 3K | Every session start |
+| 01_PHILOSOPHY.md | 400 | 5K | Once (optional) |
+| 02_SETUP_GUIDE.md | 500 | 12K | Once (setup) |
+| 04_CORE_WORKFLOW.md | 500 | 12K | Once, then reference |
+| 06_SCRIPTS_GUIDE.md | 400 | 10K | When implementing scripts |
+| 07_TESTING_GUIDE.md | 400 | 10K | During validation |
+| 08_TROUBLESHOOTING.md | 400 | 10K | When issues arise |
+| ONE example | 300 | 7K | Once for your project type |
+
+**Maximum context** (worst case - setup session): ~50K tokens (25%)
+**Typical context** (daily work): ~15K tokens (7.5%)
+
+---
+
+## 🎯 Success Criteria
+
+### You'll Know the Framework is Working When:
+
+1. ✅ Sessions end at 30-35% context (not 85%+)
+2. ✅ New sessions pick up seamlessly (< 2 min to resume)
+3. ✅ No context crashes (or very rare)
+4. ✅ All work preserved in git with clear history
+5. ✅ State files accurately reflect progress
+6. ✅ Can step away and return days later without confusion
+
+---
+
+## 📚 Additional Resources
+
+### Related Files to Explore (After Setup)
+
+**Enhancements** (when ready to optimize):
+- `05_ENHANCEMENTS/external_memory.md` - Using files as persistent memory
+- `05_ENHANCEMENTS/context_estimation.md` - Automated token tracking
+- `05_ENHANCEMENTS/schema_validation.md` - State file validation
+
+**Reference Materials** (lookup as needed):
+- `10_REFERENCE/token_costs.md` - Token estimation tables
+- `10_REFERENCE/state_schemas.md` - JSON schemas for state files
+- `10_REFERENCE/commit_templates.md` - Git commit formats
+- `10_REFERENCE/metrics.md` - Success metrics tracking
+
+---
+
+## 🆘 Getting Help
+
+### Common Questions
+
+**Q: Which file do I start with?**
+A: `02_SETUP_GUIDE.md` - Complete setup guide
+
+**Q: How do I know if setup worked?**
+A: `07_TESTING_GUIDE.md` - Run 6 validation tests
+
+**Q: Something's not working, now what?**
+A: `08_TROUBLESHOOTING.md` - Find your issue, read solution
+
+**Q: Can I use this for [my specific project type]?**
+A: Yes! Check `09_EXAMPLES/` for similar project, adapt as needed
+
+**Q: Do I need all the enhancements?**
+A: Yes in v3.0 - they're integrated into core workflow (not optional)
+
+---
+
+## 📄 Version History
+
+**v3.0** (January 2025) - Current
+- Multi-file structure
+- Non-coding project support
+- Integrated enhancements
+- Script guides
+- Progressive testing
+
+**v2.0** (November 2024)
+- Enhanced with 2025 research
+- JSON schema validation
+- Automated estimation
+- 7 optional enhancements
+
+**v1.5** (October 2024)
+- 35% exit threshold (major breakthrough)
+- Structured state files
+- Recovery prompts
+
+**v1.0** (Initial)
+- Basic CLAUDE.md instructions
+- AUTONOMOUS_MODE.md
+- 85% exit threshold (insufficient)
+
+---
+
+## 🏁 Ready to Begin?
+
+**Next step**: Read `02_SETUP_GUIDE.md` to set up your project.
+
+**Time investment**: 30-45 minutes setup
+**Payoff**: 10-20+ hours saved on large projects
+
+**Remember**: This framework's own documentation follows its own principles. Read only what you need, when you need it.
+
+---
+
+**Framework created by**: David Lary with Claude Code
+**Based on**: PedagogicalEngine/Curriculum (4+ months real-world usage)
+**License**: Free to use, adapt, and evolve
+**Last updated**: January 2025

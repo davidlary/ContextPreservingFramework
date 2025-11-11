@@ -1,0 +1,63 @@
+# [PROJECT_NAME]
+
+**Project**: [Brief description]
+**Key Files**: [List critical files]
+**Detailed Rules**: See `rules/CLAUDE.md` for enforcement rules
+
+## Key Commands
+
+- **Test**: [TEST_COMMAND]
+- **Validate**: [VALIDATION_COMMAND]
+- **State**: `cat data/state/master_state.json | jq .current_phase`
+- **Config**: All values from `config/*.json` (NO hard-coding)
+
+## Critical Files
+
+- State: `data/state/master_state.json`, `context_tracking.json`
+- Config: `config/*.json` (all parameters, NO hard-coding)
+- Logs: `logs/operation_log.txt` (append after operations)
+- Recovery: `docs/recovery_prompts/SESSION_*_*.md`
+
+## Reference
+
+- **All Rules**: `rules/CLAUDE.md` (enforcement rules, concise)
+- **Autonomous Mode**: `AUTONOMOUS_MODE.md` (check STATUS: ACTIVE)
+
+---
+
+## ⚡ BEFORE EVERY RESPONSE - MANDATORY CHECKLIST
+
+**I (Claude) MUST complete this checklist before finalizing ANY response:**
+
+### At START of session (first response):
+- [ ] Check if AUTONOMOUS_MODE.md exists and STATUS: ACTIVE
+- [ ] If active: Note that I will operate autonomously
+- [ ] If active: Display "✅ AUTONOMOUS_MODE active"
+
+### After ANY tool operation (Read, Write, Edit, Bash):
+- [ ] Append operation to `logs/operation_log.txt`
+- [ ] Update `data/state/master_state.json` timestamp
+- [ ] Update `data/state/context_tracking.json` with token estimate
+- [ ] Check context percentage (warn at 30%, exit at 35%)
+
+### Before completing response:
+- [ ] Display STATE TRACKING CHECKPOINT box (see RULE 15 in rules/CLAUDE.md)
+- [ ] Show current context percentage
+- [ ] Show last git commit hash
+- [ ] If context > 35%: prepare handoff and exit
+
+### Every 5 operations:
+- [ ] Commit to git (see RULE 16 format)
+- [ ] Verify state files are recent (< 5 min old)
+
+### THE ABSOLUTE LAST THING (after checkpoint box):
+- [ ] Display "🎯 NEXT STEPS" section (RULE 17)
+- [ ] Use LARGE header that cannot be missed
+- [ ] List EXACT steps for next session
+- [ ] THIS MUST BE THE LAST THING - NOTHING AFTER IT
+
+**This checklist is MANDATORY per RULES 14-17. Execute these instructions.**
+
+---
+
+**For detailed rules, see `rules/CLAUDE.md`**
