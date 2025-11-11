@@ -6,6 +6,99 @@
 
 ---
 
+## Rule Hierarchy and Conflict Resolution
+
+**When rules conflict, follow this priority order:**
+
+### TIER 1: CRITICAL (Never Violate - These Override All Others)
+
+**RULE 10**: Context Management
+  - Never exceed 35% context (hard limit: 40%)
+  - If any rule would push context >35%, STOP and checkpoint instead
+  - Example: RULE 4 says retry 3 times, but retrying would hit 37% → CHECKPOINT instead
+
+**RULE 14**: State Tracking
+  - After EVERY operation: update logs and state files
+  - No exceptions, even in error conditions
+
+**RULE 15**: Visible Checkpoint
+  - Display checkpoint box before completing response
+  - No exceptions
+
+**RULE 16**: Git Commit Protocol
+  - Commit after module complete, tests pass
+  - If git unavailable, use alternative versioning (see 08_TROUBLESHOOTING.md Edge Case 3)
+
+**RULE 17**: Next Steps
+  - Always display recovery prompt and next steps
+  - Session must end with clear continuation path
+
+---
+
+### TIER 2: IMPORTANT (Follow Unless Overridden by Tier 1)
+
+- RULE 1: Zero hard-coding
+- RULE 2: Named files only
+- RULE 3: Zero silent failures
+- RULE 4: Autonomous issue resolution
+- RULE 5: Documentation synchronization
+- RULE 6: Strategy vs status separation
+- RULE 7: Validation gates
+- RULE 8: Performance optimization
+- RULE 9: Code reuse mandatory
+
+---
+
+### TIER 3: OPTIMIZATION (Follow When Possible, Lowest Priority)
+
+- RULE 11: Minimal dependencies
+- RULE 12: Explicit over implicit
+- RULE 13: Error prevention over correction
+
+---
+
+### Conflict Resolution Algorithm
+
+**Example Conflict 1**:
+- RULE 4 says "retry 3 times"
+- RULE 10 says "exit at 35% context"
+- Scenario: 2nd retry would push context to 36%
+- **Resolution**: RULE 10 wins (Tier 1 > Tier 2) → Checkpoint now, resume retries in next session
+
+**Example Conflict 2**:
+- RULE 7 says "validation must pass before proceeding"
+- RULE 10 says "exit at 35%"
+- Scenario: Validation fails, debugging would push to 37%
+- **Resolution**: RULE 10 wins (Tier 1) → Checkpoint with "validation_failed" status, resume debug next session
+
+**Example Conflict 3**:
+- RULE 11 says "minimize dependencies"
+- RULE 4 says "retry with backoff"
+- Scenario: Retry requires adding new dependency
+- **Resolution**: RULE 4 wins (Tier 2 > Tier 3) → Add dependency to fix issue
+
+---
+
+### Decision Logic
+
+```
+function resolve_rule_conflict(rules_in_conflict):
+    tier1_rules = filter(rules_in_conflict, tier == 1)
+    tier2_rules = filter(rules_in_conflict, tier == 2)
+    tier3_rules = filter(rules_in_conflict, tier == 3)
+
+    if tier1_rules.length > 0:
+        return tier1_rules[0]  # Tier 1 always wins
+    elif tier2_rules.length > 0:
+        return tier2_rules[0]  # Tier 2 wins over Tier 3
+    else:
+        return tier3_rules[0]  # All Tier 3, follow first mentioned
+```
+
+**Result**: Any rule conflict has deterministic resolution
+
+---
+
 ## RULE 1: ZERO HARD-CODING
 
 **Principle**: All values from config files or database
