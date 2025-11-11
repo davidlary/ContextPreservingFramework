@@ -36,13 +36,642 @@
 - Claude Code access
 - Terminal/command line
 
-### Project Readiness
+---
 
-**Before starting framework setup**:
+## Phase 0: Requirements Gathering (Do This BEFORE Framework Setup)
+
+**Purpose**: Define what you're building before setting up implementation framework
+**Duration**: 15-60 minutes (depending on project complexity)
+**Why critical**: Framework is for implementation; you need requirements first
+
+### Step 0.1: Problem Statement (5 minutes)
+
+**Answer these questions** (write answers in a temporary `REQUIREMENTS.md` or notebook):
+
+1. **What problem are you solving?**
+   - One sentence description
+   - Example: "Users need a way to track daily habits without complex apps"
+
+2. **Who is this for?**
+   - Target audience/users
+   - Example: "Busy professionals who want simple CLI-based tracking"
+
+3. **What currently exists?**
+   - Existing solutions (if any)
+   - Why they're insufficient
+   - What you'll do differently
+
+**Output**: Clear problem statement you can reference
+
+---
+
+### Step 0.2: Core Requirements (10-20 minutes)
+
+**List functional requirements** (what the system must do):
+
+**For coding projects**:
+```markdown
+## Functional Requirements
+
+1. [ ] User authentication (login/logout)
+2. [ ] Data storage (SQLite local database)
+3. [ ] Export to CSV
+4. [ ] CLI interface (no GUI)
+5. [ ] Cross-platform (Mac, Linux, Windows)
+```
+
+**For non-coding projects**:
+```markdown
+## Content Requirements
+
+1. [ ] Literature review (50+ papers)
+2. [ ] Methodology section
+3. [ ] Results with statistical analysis
+4. [ ] Discussion comparing to prior work
+5. [ ] 8,000-10,000 words
+6. [ ] IEEE citation format
+```
+
+**For infrastructure projects**:
+```markdown
+## Infrastructure Requirements
+
+1. [ ] Deploys to AWS (not Azure/GCP)
+2. [ ] Multi-region (us-east-1, us-west-2)
+3. [ ] Auto-scaling (2-10 instances)
+4. [ ] Cost target: <$500/month
+5. [ ] Terraform 1.5+ (not CloudFormation)
+```
+
+**For design projects**:
+```markdown
+## Design Requirements
+
+1. [ ] Support 100K concurrent users (system design)
+2. [ ] WCAG 2.1 AA compliance (UX design)
+3. [ ] RESTful + GraphQL (API design)
+4. [ ] 3NF normalization (database design)
+5. [ ] Deliverables: Diagrams + ADRs + Specifications
+```
+
+**Output**: Prioritized list of must-have features/content
+
+---
+
+### Step 0.3: Constraints and Dependencies (5-10 minutes)
+
+**Identify constraints** (limitations you must work within):
+
+**Technical constraints**:
+- [ ] Must use specific language/framework (e.g., "Must be Python 3.9+")
+- [ ] Must integrate with existing system (e.g., "Must work with legacy MySQL DB")
+- [ ] Performance requirements (e.g., "Response time <200ms")
+- [ ] Platform requirements (e.g., "Must run on Raspberry Pi")
+
+**Resource constraints**:
+- [ ] Time limit (e.g., "Deliver in 6 weeks")
+- [ ] Budget limit (e.g., "Zero cloud costs")
+- [ ] Team size (e.g., "Solo project")
+- [ ] Access constraints (e.g., "No access to production data")
+
+**External dependencies**:
+- [ ] Third-party APIs (e.g., "Requires Stripe API")
+- [ ] External services (e.g., "Depends on AWS S3")
+- [ ] Data sources (e.g., "Needs Census Bureau data")
+- [ ] Approval processes (e.g., "Needs security review")
+
+**Output**: List of constraints that will affect architecture/approach
+
+---
+
+### Step 0.4: Success Criteria (5 minutes)
+
+**Define "done"** - How will you know the project succeeded?
+
+**Quantitative criteria** (measurable):
+- [ ] All 15 functional requirements implemented
+- [ ] Test coverage ≥80%
+- [ ] Performance: API responds in <200ms (p95)
+- [ ] Documentation: 100% of public API documented
+
+**Qualitative criteria** (subjective but verifiable):
+- [ ] Code review passes (no major issues)
+- [ ] Security scan: No high/critical vulnerabilities
+- [ ] User testing: 4+ rating from 5 test users
+- [ ] Stakeholder approval obtained
+
+**Project-specific examples**:
+
+**Coding project**:
+- [ ] pytest: All tests pass
+- [ ] pylint: Score >8.0
+- [ ] Successfully deploys to staging
+- [ ] Load test: Handles 1000 req/sec
+
+**Research paper**:
+- [ ] Journal submission ready (formatted correctly)
+- [ ] 8,000-10,000 words
+- [ ] Peer review ready (all sections complete)
+- [ ] 50+ citations, all properly formatted
+
+**Infrastructure project**:
+- [ ] terraform plan: No errors
+- [ ] Cost estimate: <$500/month
+- [ ] Security scan: CIS benchmark level 1 pass
+- [ ] DR test: Recovery in <4 hours
+
+**Output**: Clear checklist of completion criteria
+
+---
+
+### Step 0.5: Risk Assessment (5-10 minutes)
+
+**Identify potential blockers** early:
+
+**Technical risks**:
+- [ ] **Risk**: Unfamiliar technology (e.g., first Rust project)
+  - **Mitigation**: Allocate learning time, start with simple modules
+- [ ] **Risk**: Complex integration (e.g., legacy system interface)
+  - **Mitigation**: Prototype integration early, document assumptions
+- [ ] **Risk**: Performance unknowns (e.g., can SQLite handle this load?)
+  - **Mitigation**: Early performance testing, have backup plan (PostgreSQL)
+
+**Resource risks**:
+- [ ] **Risk**: Tight deadline
+  - **Mitigation**: Prioritize MVP features, defer nice-to-haves
+- [ ] **Risk**: Limited access (e.g., can't test on Windows)
+  - **Mitigation**: Document testing limitations, recruit testers
+
+**Dependency risks**:
+- [ ] **Risk**: Third-party API changes
+  - **Mitigation**: Abstract API behind interface, monitor changelog
+- [ ] **Risk**: Approval delays
+  - **Mitigation**: Submit early, have backup plans
+
+**Output**: Risk register with mitigation strategies
+
+---
+
+### Step 0.6: Decomposition Planning (10-20 minutes)
+
+**Break project into modules/sections** (rough first pass):
+
+**For coding projects** (modules):
+```markdown
+## Module Breakdown (Rough Estimate)
+
+1. **Authentication** (2-3 sessions)
+   - User login
+   - Token management
+   - Password reset
+
+2. **Data Layer** (2-3 sessions)
+   - Database schema
+   - CRUD operations
+   - Migration system
+
+3. **API Layer** (3-4 sessions)
+   - RESTful endpoints
+   - Request validation
+   - Error handling
+
+4. **CLI Interface** (2-3 sessions)
+   - Command parsing
+   - User prompts
+   - Output formatting
+
+Total: ~10-15 sessions (rough estimate)
+```
+
+**For non-coding projects** (sections):
+```markdown
+## Section Breakdown (Rough Estimate)
+
+1. **Introduction** (1 session, 1,000 words)
+2. **Literature Review** (3-4 sessions, 2,500 words)
+3. **Methodology** (2 sessions, 1,500 words)
+4. **Results** (3 sessions, 2,000 words)
+5. **Discussion** (2 sessions, 1,500 words)
+6. **Conclusion** (1 session, 800 words)
+7. **References** (1 session, formatting)
+
+Total: ~12-15 sessions (rough estimate)
+```
+
+**For infrastructure projects** (resource groups):
+```markdown
+## Resource Group Breakdown
+
+1. **Networking** (1 session)
+   - VPC, subnets, security groups
+
+2. **Compute** (2 sessions)
+   - EC2 launch configs, auto-scaling groups
+
+3. **Storage** (1 session)
+   - S3 buckets, EBS volumes
+
+4. **Database** (1 session)
+   - RDS instance, parameter groups
+
+5. **CI/CD** (2 sessions)
+   - GitHub Actions workflows, deployment pipeline
+
+Total: ~7-9 sessions (rough estimate)
+```
+
+**Output**: High-level module/section list (will be refined during implementation)
+
+---
+
+### Step 0.7: Technology Selection (For Autonomous Implementation)
+
+**IMPORTANT**: If you want Claude to implement autonomously, make technology decisions NOW.
+
+**Decision checklist for coding projects**:
+- [ ] **Language**: Python / JavaScript / Rust / Go / Other: _____
+- [ ] **Framework**: (if applicable) Django / Flask / Express / Next.js / Other: _____
+- [ ] **Database**: SQLite / PostgreSQL / MongoDB / Other: _____
+- [ ] **Testing**: pytest / Jest / cargo test / Other: _____
+- [ ] **Deployment**: Docker / AWS / Heroku / None (local only)
+
+**Decision checklist for infrastructure projects**:
+- [ ] **IaC Tool**: Terraform / CloudFormation / Pulumi / Ansible
+- [ ] **Cloud Provider**: AWS / Azure / GCP / Multi-cloud
+- [ ] **Container Runtime**: Docker / Podman / containerd
+- [ ] **Orchestration**: Kubernetes / Docker Compose / ECS / None
+
+**Decision checklist for design projects**:
+- [ ] **Diagramming**: Mermaid / PlantUML / draw.io / Lucidchart
+- [ ] **Specification Format**: Markdown / YAML / JSON / PDF
+- [ ] **Version Control**: Git / Other / None
+
+**If you haven't decided**: Framework setup can proceed, but Claude will need to ask questions during implementation OR you'll need to provide explicit tech stack in prompts.
+
+**Output**: Technology decisions documented (reference during setup)
+
+---
+
+### Step 0.7A: Autonomous Technology Selection (Decision Trees for Claude)
+
+**Purpose**: Enable Claude to make technology choices autonomously based on requirements
+**When to use**: When user hasn't specified tech stack OR when user wants recommendations
+
+**IMPORTANT FOR CLAUDE**: If user hasn't specified technology in requirements, use these decision trees to make informed choices. Document your reasoning in REQUIREMENTS.md or memory/requirements.md.
+
+---
+
+#### Decision Tree 1: Programming Language Selection
+
+**START**: What type of project?
+
+**For Web APIs / Backend Services**:
+```
+Q1: What are your performance requirements?
+├─ High throughput (>10K req/sec), low latency (<50ms) → Go or Rust
+├─ Moderate throughput, rapid development priority → Python (FastAPI/Flask) or Node.js (Express)
+└─ Enterprise environment, strong typing → Java (Spring) or C# (.NET)
+
+Q2: What's your deployment environment?
+├─ Cloud-native (AWS Lambda, serverless) → Node.js or Python
+├─ Containerized (Kubernetes) → Any (prefer Go for small images)
+├─ Traditional servers → Any
+
+Q3: Data science / ML integration needed?
+├─ Yes, heavy ML → Python (ecosystem advantage)
+└─ No → Continue with Q1 choice
+```
+
+**For CLI Tools**:
+```
+Q1: Distribution method?
+├─ Single binary (no dependencies) → Go or Rust
+├─ Package manager (npm, pip) → Node.js or Python
+└─ Multi-platform (Windows, Mac, Linux) → Go (easiest cross-compilation)
+
+Q2: Complexity?
+├─ Simple scripts (<500 lines) → Python or Bash
+├─ Medium tools (500-5000 lines) → Python or Go
+└─ Complex tools (>5000 lines) → Go or Rust
+```
+
+**For Libraries / Packages**:
+```
+Q1: Target ecosystem?
+├─ Data science / ML → Python
+├─ Web development → JavaScript/TypeScript
+├─ Systems programming → Rust or C++
+├─ Enterprise / Android → Java or Kotlin
+└─ iOS / macOS → Swift
+```
+
+**For Mobile Apps**:
+```
+Q1: Platform support?
+├─ iOS only → Swift
+├─ Android only → Kotlin
+├─ Cross-platform (iOS + Android) → React Native or Flutter
+└─ Web + Mobile → React Native (shared code with web)
+```
+
+**Default recommendations** (when unclear):
+- **General-purpose**: Python 3.11+ (versatile, readable, rich ecosystem)
+- **Performance-critical**: Go (balance of speed and simplicity)
+- **Systems/embedded**: Rust (memory safety + performance)
+- **Enterprise**: Java 17+ or C# .NET 8+
+
+**Claude's decision format**:
+```markdown
+## Technology Decision: Programming Language
+
+**Selected**: Python 3.11+
+
+**Rationale**:
+- Project type: Web API with data processing
+- Requirements indicate moderate throughput (<1K req/sec)
+- Rapid development prioritized (6-week deadline)
+- Data analysis integration mentioned (pandas, numpy)
+- User constraint: Must deploy on AWS Lambda (Python well-supported)
+
+**Alternative considered**: Node.js (rejected: no data science integration)
+```
+
+---
+
+#### Decision Tree 2: Web Framework Selection (by Language)
+
+**Python Web Frameworks**:
+```
+Q1: Project complexity?
+├─ Microservice / API only → FastAPI (modern, fast, auto-docs)
+├─ Full-stack with admin panel → Django (batteries-included)
+├─ Lightweight, flexibility priority → Flask (minimalist)
+└─ Async/high-concurrency → FastAPI or aiohttp
+
+Q2: Database ORM needed?
+├─ Yes, complex models → Django (built-in ORM)
+├─ Yes, lightweight → SQLAlchemy (with Flask/FastAPI)
+└─ No (raw SQL) → FastAPI or Flask
+
+Recommendation: FastAPI (modern default for new APIs)
+```
+
+**JavaScript/TypeScript Frameworks**:
+```
+Q1: Frontend included?
+├─ Yes, SSR (Server-Side Rendering) → Next.js
+├─ Yes, SPA (Single-Page App) → React + Express API
+├─ No, API only → Express or Fastify
+└─ Real-time (WebSockets) → Express + Socket.io or Nest.js
+
+Q2: TypeScript requirement?
+├─ Yes, large project → Nest.js (TypeScript-first, structured)
+├─ Yes, simple project → Express + TypeScript
+└─ No (JavaScript) → Express
+
+Recommendation: Express (simplest) or Next.js (if frontend needed)
+```
+
+**Go Frameworks**:
+```
+Q1: Project size?
+├─ Microservice / simple API → Chi or Fiber (lightweight)
+├─ Complex API with many routes → Gin (popular, feature-rich)
+└─ Enterprise / large team → Echo or Go standard library (most explicit)
+
+Recommendation: Gin (balance of features and simplicity)
+```
+
+---
+
+#### Decision Tree 3: Database Selection
+
+**START**: What type of data?
+
+**Structured Data (tables, relationships)**:
+```
+Q1: Scale expectations?
+├─ Small (<100K rows total) → SQLite (serverless, simple)
+├─ Medium (<10M rows) → PostgreSQL (robust, feature-rich)
+├─ Large (>10M rows) → PostgreSQL with partitioning OR cloud DB (RDS, Cloud SQL)
+└─ Massive (>100M rows) → PostgreSQL + read replicas OR distributed SQL (CockroachDB)
+
+Q2: ACID requirements?
+├─ Critical (financial, medical) → PostgreSQL or MySQL
+├─ Important → PostgreSQL
+└─ Relaxed → SQLite or NoSQL
+
+Q3: Deployment complexity?
+├─ Zero setup (local, prototyping) → SQLite
+├─ Cloud-hosted → Amazon RDS (PostgreSQL) or Cloud SQL
+└─ Self-hosted → PostgreSQL in Docker
+
+Recommendation: PostgreSQL (most versatile) or SQLite (simplest)
+```
+
+**Unstructured / Semi-Structured Data (documents, JSON)**:
+```
+Q1: Query patterns?
+├─ Key-value lookup only → Redis (in-memory) or DynamoDB
+├─ Rich queries, indexing → MongoDB (flexible schema)
+├─ Full-text search → Elasticsearch
+└─ Graph relationships → Neo4j or PostgreSQL with JSONB
+
+Q2: Consistency vs availability?
+├─ Consistency critical → PostgreSQL with JSONB (SQL + JSON)
+├─ Availability critical → MongoDB or DynamoDB
+└─ Balanced → MongoDB
+
+Recommendation: PostgreSQL with JSONB (SQL benefits + JSON flexibility)
+```
+
+**Time-Series Data (metrics, logs, IoT)**:
+```
+Q1: Volume?
+├─ Low (<1M points/day) → PostgreSQL with TimescaleDB extension
+├─ High (>1M points/day) → InfluxDB or TimescaleDB
+└─ Massive (>100M points/day) → InfluxDB or cloud solution (Timestream)
+
+Recommendation: TimescaleDB (PostgreSQL extension, familiar SQL)
+```
+
+**Default recommendation** (when unclear): PostgreSQL 15+ (handles most use cases)
+
+---
+
+#### Decision Tree 4: Infrastructure Tool Selection
+
+**For Infrastructure as Code (IaC)**:
+```
+Q1: Cloud provider?
+├─ AWS only, AWS-native → CloudFormation
+├─ AWS, multi-tool ecosystem → Terraform or Pulumi
+├─ Azure only → Azure Resource Manager (ARM) or Terraform
+├─ GCP only → Google Deployment Manager or Terraform
+├─ Multi-cloud → Terraform (de facto standard)
+└─ Cloud-agnostic → Pulumi (modern, supports programming languages)
+
+Q2: Team background?
+├─ DevOps / HCL experience → Terraform
+├─ Developers (Python/JS/Go) → Pulumi (real programming languages)
+└─ Sysadmin / YAML preference → Ansible
+
+Q3: State management?
+├─ Simple (small team) → Terraform with local/S3 state
+├─ Complex (large team) → Terraform Cloud or Pulumi Cloud
+└─ No cloud dependencies → Ansible (agentless, stateless)
+
+Recommendation: Terraform (most widely adopted, mature ecosystem)
+```
+
+**For Container Orchestration**:
+```
+Q1: Scale?
+├─ Single server, simple → Docker Compose
+├─ Multi-server, moderate scale → Docker Swarm or Nomad
+├─ Large scale, production → Kubernetes
+└─ Serverless containers → AWS ECS/Fargate or Google Cloud Run
+
+Q2: Team Kubernetes expertise?
+├─ Yes → Kubernetes (industry standard)
+├─ No, willing to learn → Kubernetes (invest in learning)
+├─ No, need simplicity → Docker Compose or cloud-managed (ECS, Cloud Run)
+└─ No, need something between → Nomad
+
+Recommendation: Kubernetes (if scale justifies complexity) or Docker Compose (simple)
+```
+
+**For CI/CD Pipelines**:
+```
+Q1: Repository platform?
+├─ GitHub → GitHub Actions (native integration)
+├─ GitLab → GitLab CI (native integration)
+├─ Bitbucket → Bitbucket Pipelines or Jenkins
+├─ Self-hosted Git → Jenkins or GitLab CI (self-hosted)
+└─ Multiple platforms → Jenkins (universal)
+
+Q2: Complexity?
+├─ Simple (build + test + deploy) → GitHub Actions or GitLab CI
+├─ Complex (many stages, approvals) → Jenkins or CircleCI
+└─ Highly customized → Jenkins
+
+Recommendation: GitHub Actions (if GitHub repo) or GitLab CI (if GitLab repo)
+```
+
+---
+
+#### Decision Tree 5: Testing Framework Selection
+
+**Python**:
+- **Unit/Integration**: pytest (de facto standard)
+- **Web API**: pytest + httpx or requests
+- **BDD**: behave or pytest-bdd
+
+**JavaScript/TypeScript**:
+- **Unit/Integration**: Jest (React/Node) or Vitest (Vite projects)
+- **E2E Web**: Playwright or Cypress
+- **API**: Supertest + Jest
+
+**Go**:
+- **Unit**: Built-in `testing` package
+- **HTTP**: `httptest` (built-in)
+- **Advanced**: testify (assertions), ginkgo/gomega (BDD)
+
+**Rust**:
+- **Unit**: Built-in `#[test]`
+- **Integration**: `tests/` directory
+- **Property-based**: proptest
+
+---
+
+#### Autonomous Selection Example (Complete)
+
+**Scenario**: User requests "Build a web API for habit tracking with user authentication, deployed on AWS Lambda, needs to be done in 6 weeks."
+
+**Claude's autonomous technology decisions**:
+
+```markdown
+## Autonomous Technology Selections
+
+### Language: Python 3.11+
+**Decision Tree Used**: Decision Tree 1 (Language Selection) → Web APIs branch
+**Rationale**:
+- Project type: Web API (REST endpoints)
+- Performance: Moderate throughput expected (habit tracking = <1K users initially)
+- Deployment: AWS Lambda (Python well-supported, fast cold starts)
+- Timeline: 6 weeks (rapid development needed → Python or Node.js)
+- Choice: Python (mature API frameworks, easier authentication libraries)
+
+### Framework: FastAPI
+**Decision Tree Used**: Decision Tree 2 (Python Web Frameworks)
+**Rationale**:
+- Microservice / API only (no admin panel needed)
+- Async support (good for Lambda)
+- Auto-generated OpenAPI docs (useful for development)
+- Modern Python 3.11+ features (type hints, async/await)
+- Alternative considered: Flask (rejected: FastAPI more modern, better async)
+
+### Database: PostgreSQL (Amazon RDS)
+**Decision Tree Used**: Decision Tree 3 (Database Selection) → Structured Data
+**Rationale**:
+- Data type: Structured (users, habits, entries → clear relationships)
+- Scale: Medium (starting small, may grow → SQLite too limited)
+- ACID: Important (user data, authentication → consistency matters)
+- Deployment: Cloud-hosted (AWS Lambda → can't use local SQLite)
+- Choice: PostgreSQL on RDS (managed, serverless option available)
+- Alternative considered: DynamoDB (rejected: relational data model fits SQL better)
+
+### Testing: pytest
+**Decision Tree Used**: Decision Tree 5 (Testing Framework)
+**Rationale**: Python standard for testing
+
+### Deployment: AWS Lambda + API Gateway
+**Rationale**: User specified AWS Lambda
+
+## Summary
+- **Stack**: Python 3.11 + FastAPI + PostgreSQL (RDS) + pytest
+- **Deployment**: AWS Lambda + API Gateway + RDS
+- **Estimated effort**: 8-12 sessions (breakdown in decomposition plan)
+```
+
+**This decision set is now documented** and Claude can proceed with implementation autonomously.
+
+---
+
+### Technology Selection Completion
+
+**After Step 0.7 or 0.7A, verify**:
+- [ ] ✅ All technology choices made (explicitly or via decision trees)
+- [ ] ✅ Choices documented in REQUIREMENTS.md or memory/requirements.md
+- [ ] ✅ Rationale provided for each choice (why this vs alternatives)
+- [ ] ✅ Stack is compatible (language + framework + database + deployment work together)
+
+**Output**: Complete, documented technology stack ready for framework setup
+
+**Before proceeding to framework setup, verify**:
+
+- [ ] ✅ Problem statement written (Step 0.1)
+- [ ] ✅ Core requirements listed (5+ items minimum) (Step 0.2)
+- [ ] ✅ Constraints identified (Step 0.3)
+- [ ] ✅ Success criteria defined (Step 0.4)
+- [ ] ✅ Risks assessed (Step 0.5)
+- [ ] ✅ Rough decomposition completed (Step 0.6)
+- [ ] ✅ Technology decisions made (Step 0.7) OR acknowledged as "decide later"
+
+**Where to save this information**:
+- Temporary file: `REQUIREMENTS.md` in project root (can delete after setup)
+- OR: In project documentation: `docs/requirements.md`
+- OR: In framework memory: `memory/requirements.md` (preferred - preserves requirements for Claude)
+
+---
+
+### Project Readiness (Final Check)
+
+**Now verify you're ready for framework setup**:
 - [ ] Project directory created
-- [ ] Basic project structure decided (language, type)
-- [ ] Goals defined (what you're building)
-- [ ] Time allocated (30-45 min for setup)
+- [ ] Requirements documented (Phase 0 above completed)
+- [ ] Technology stack decided (or explicitly deferred)
+- [ ] Time allocated (30-45 min for framework setup)
 
 ---
 
@@ -97,17 +726,109 @@ Project details:
 → **Project Type: CODING**
 → Go to: [Coding Project Setup](#coding-project-characteristics)
 
-**B) Written document (paper, book, documentation)**
-→ **Project Type: NON-CODING**
-→ Go to: Question 2
+**B) Infrastructure or configuration (deployed, not executed locally)**
+→ **Project Type: INFRASTRUCTURE**
+→ Go to: Question 2-A
 
-**C) Both significant code AND significant writing**
+**C) Design or architecture (specifications, not implementation)**
+→ **Project Type: DESIGN**
+→ Go to: Question 2-B
+
+**D) Improvement to existing system (refactor, optimize, secure)**
+→ **Project Type: MAINTENANCE**
+→ Go to: Question 2-C
+
+**E) Written document (paper, book, documentation)**
+→ **Project Type: NON-CODING**
+→ Go to: Question 2-D
+
+**F) Both significant code AND significant writing**
 → **Project Type: HYBRID**
 → Go to: [Hybrid Projects](#hybrid-projects-separate-approach)
 
 ---
 
-#### Question 2: What kind of document? (Non-Coding Projects)
+#### Question 2-A: What kind of infrastructure? (Infrastructure Projects)
+
+**A) Infrastructure as Code (IaC) - cloud resources, servers**
+→ **Sub-type: IAC**
+→ Examples: Terraform, CloudFormation, Pulumi, Ansible
+→ Templates: `project_types/infrastructure/iac/`
+→ Go to: [Infrastructure Project Setup](#infrastructure-project-characteristics)
+
+**B) Container/Orchestration - deployment configurations**
+→ **Sub-type: CONTAINER_ORCHESTRATION**
+→ Examples: Kubernetes manifests, Docker Compose, Helm charts
+→ Templates: `project_types/infrastructure/containers/`
+→ Go to: [Infrastructure Project Setup](#infrastructure-project-characteristics)
+
+**C) CI/CD Pipelines - automation workflows**
+→ **Sub-type: CI_CD**
+→ Examples: GitHub Actions, GitLab CI, Jenkins pipelines
+→ Templates: `project_types/infrastructure/cicd/`
+→ Go to: [Infrastructure Project Setup](#infrastructure-project-characteristics)
+
+**D) Configuration Management - app config, feature flags**
+→ **Sub-type: CONFIGURATION**
+→ Examples: Config files, environment setup
+→ Templates: Use `project_types/coding/` (lightweight)
+→ Go to: [Coding Project Setup](#coding-project-characteristics)
+
+---
+
+#### Question 2-B: What kind of design? (Design Projects)
+
+**A) System Architecture - high-level system design**
+→ **Sub-type: SYSTEM_ARCHITECTURE**
+→ Deliverables: Architecture diagrams, ADRs, component specs
+→ Templates: `project_types/design/architecture/`
+→ Go to: [Design Project Setup](#design-project-characteristics)
+
+**B) Database Schema - data model, relationships**
+→ **Sub-type: DATABASE_DESIGN**
+→ Deliverables: ERDs, migration scripts, seed data
+→ Templates: `project_types/design/database/`
+→ Go to: [Design Project Setup](#design-project-characteristics)
+
+**C) API Design - endpoints, contracts (before implementation)**
+→ **Sub-type: API_DESIGN**
+→ Deliverables: OpenAPI/Swagger specs, GraphQL schemas
+→ Templates: `project_types/design/api/`
+→ Go to: [Design Project Setup](#design-project-characteristics)
+
+**D) UI/UX Design - interfaces, user flows**
+→ **Sub-type: UX_DESIGN**
+→ Deliverables: Wireframes, mockups, prototypes, design system
+→ Templates: `project_types/design/ux/`
+→ Go to: [Design Project Setup](#design-project-characteristics)
+
+---
+
+#### Question 2-C: What kind of maintenance? (Maintenance Projects)
+
+**A) Legacy Refactoring - improve existing code without changing behavior**
+→ **Sub-type: REFACTORING**
+→ Templates: `project_types/maintenance/refactoring/`
+→ Go to: [Maintenance Project Setup](#maintenance-project-characteristics)
+
+**B) Performance Optimization - make existing system faster**
+→ **Sub-type: PERFORMANCE**
+→ Templates: `project_types/maintenance/performance/`
+→ Go to: [Maintenance Project Setup](#maintenance-project-characteristics)
+
+**C) Security Hardening - fix vulnerabilities, improve security**
+→ **Sub-type: SECURITY**
+→ Templates: `project_types/maintenance/security/`
+→ Go to: [Maintenance Project Setup](#maintenance-project-characteristics)
+
+**D) Technical Debt Reduction - improve code quality, reduce debt**
+→ **Sub-type: TECH_DEBT**
+→ Templates: `project_types/maintenance/tech_debt/`
+→ Go to: [Maintenance Project Setup](#maintenance-project-characteristics)
+
+---
+
+#### Question 2-D: What kind of document? (Non-Coding Projects)
 
 **A) Academic research paper or technical report**
 → **Sub-type: RESEARCH**
@@ -174,6 +895,165 @@ Project details:
 **Work unit**: Section = 1,000-1,500 words or 1 argument/concept
 **Validation**: Citation checks, word counts, coherence review
 **State tracking**: Sections complete, word count, references cited
+
+---
+
+### Infrastructure Project Characteristics
+
+**Use infrastructure templates if your project includes**:
+- Configuration files that define infrastructure (not execute)
+- Declarative specifications (describe desired state)
+- Deployment automation
+- Resource provisioning
+- Environment management
+
+**Examples**:
+- Terraform/CloudFormation/Pulumi (cloud resources)
+- Kubernetes manifests (container orchestration)
+- Ansible playbooks (configuration management)
+- Docker Compose files (local orchestration)
+- CI/CD pipelines (GitHub Actions, GitLab CI)
+
+**Work unit sizing**:
+- **IaC**: 1 resource group OR 1 service OR 10-15 resources (whichever smaller)
+  - Example: "VPC + subnets + security groups" = 1 module
+  - Example: "S3 bucket + IAM policies" = 1 module
+- **Containers**: 1 deployment + service OR 1 namespace
+  - Example: "Backend deployment + load balancer" = 1 module
+- **CI/CD**: 1 job OR 1 stage (5-10 steps)
+  - Example: "Build + test" job = 1 module
+
+**Validation**:
+- **IaC**: `terraform plan` (no errors), `terraform validate`, dry-run tests
+- **Containers**: `kubectl dry-run`, `helm lint`, manifest validation
+- **CI/CD**: Syntax validation, test run in isolated environment
+
+**State tracking**: Modules (resource groups) complete, validation passing
+
+**Special considerations**:
+- State management conflicts (Terraform state, K8s state)
+- Idempotency testing (can run multiple times safely?)
+- Drift detection (infrastructure matches code?)
+
+---
+
+### Design Project Characteristics
+
+**Use design templates if your project includes**:
+- Specifications created before implementation
+- Diagrams and visual artifacts
+- Decision documentation
+- Design review and iteration
+- Non-executable deliverables
+
+**Examples**:
+- System architecture (C4 diagrams, component diagrams, ADRs)
+- Database schema (ERDs, normalization, migration plans)
+- API specifications (OpenAPI/Swagger, GraphQL schemas)
+- UI/UX design (wireframes, mockups, prototypes, design systems)
+
+**Work unit sizing**:
+- **System Architecture**: 1 component OR 1 subsystem OR 1 ADR
+  - Example: "Authentication service architecture" = 1 module
+  - Example: "Data storage decision (ADR)" = 1 module
+- **Database Design**: 1 entity + relationships OR 3-5 tables
+  - Example: "User + Profile + Preferences tables" = 1 module
+- **API Design**: 1 resource (all CRUD) OR 5-7 endpoints
+  - Example: "/users endpoint (GET, POST, PUT, DELETE)" = 1 module
+- **UX Design**: 1 screen + user flow OR 1 component family
+  - Example: "Login screen + password reset flow" = 1 module
+
+**Validation**:
+- **System Architecture**: Design review checklist, ADR completeness, diagram clarity
+- **Database**: Normalization check, relationship validity, migration testability
+- **API**: OpenAPI validation, contract testing, consistency check
+- **UX**: Usability heuristics, accessibility check, design system adherence
+
+**State tracking**: Design modules complete, reviews passed
+
+**Deliverables per module**:
+- Diagrams (PNG/SVG exports)
+- Specifications (Markdown/YAML/JSON)
+- Decision records (ADRs in markdown)
+- Design files (Figma/Sketch links or exports)
+
+**Special considerations**:
+- Design iteration (multiple revisions expected)
+- Stakeholder review cycles
+- Design-to-implementation handoff
+
+---
+
+### Maintenance Project Characteristics
+
+**Use maintenance templates if your project includes**:
+- Existing codebase as starting point
+- Improvement without new features
+- Preservation of existing functionality
+- Regression testing critical
+- Before/after comparison important
+
+**Examples**:
+- Legacy refactoring (improve structure, no behavior change)
+- Performance optimization (make faster, same functionality)
+- Security hardening (fix vulnerabilities, add protections)
+- Technical debt reduction (improve quality metrics)
+
+**Work unit sizing**:
+- **Refactoring**: 1 function/class extraction OR 1 pattern application OR 1 file refactor (max 250 lines)
+  - Example: "Extract payment processing into PaymentService class" = 1 module
+  - Example: "Replace nested conditionals with strategy pattern in OrderProcessor" = 1 module
+- **Performance**: 1 bottleneck fix OR 1 algorithm optimization
+  - Example: "Optimize N+1 query in user dashboard" = 1 module
+  - Example: "Add caching layer to product search" = 1 module
+- **Security**: 1 vulnerability fix OR 1 attack vector mitigation
+  - Example: "Fix SQL injection in search endpoint" = 1 module
+  - Example: "Implement rate limiting on API" = 1 module
+- **Tech Debt**: 1 debt item OR 1 code smell elimination
+  - Example: "Remove deprecated API usage in auth module" = 1 module
+
+**Validation (Critical for Maintenance)**:
+- **ALL existing tests must pass** (before AND after)
+- **New tests** for refactored code
+- **Regression testing**: Ensure no behavior changes (unless intended)
+- **Performance benchmarks**: Before/after comparison (for optimization)
+- **Security scans**: Vulnerability scans before/after (for security)
+- **Code quality metrics**: Complexity, duplication, coverage improvement
+
+**State tracking**:
+- Modules refactored/optimized/secured
+- Tests passing (all, not just new)
+- Metrics improvement (before/after)
+
+**Special considerations**:
+- **Context challenge**: Large existing codebase
+  - Use external memory heavily (document existing code in memory/)
+  - Don't load entire codebase into context
+  - Target specific areas only
+- **Risk management**: Higher risk than greenfield
+  - Smaller modules (150-200 lines instead of 250)
+  - More validation per module
+  - Frequent checkpoints
+- **Documentation**: Before/after comparison critical
+  - Document original behavior
+  - Document changes made
+  - Document why changes were safe
+
+**Refactoring-specific**:
+- **Work unit**: Often smaller than greenfield (150-200 lines)
+- **Tests first**: Ensure tests exist before refactoring
+- **Incremental**: Small steps, validate frequently
+- **Behavior preservation**: Critical constraint
+
+**Performance-specific**:
+- **Work unit**: Profile → Fix one bottleneck → Measure
+- **Validation**: Benchmarks mandatory (before/after)
+- **Tradeoffs**: Document what was traded (memory for speed, etc.)
+
+**Security-specific**:
+- **Work unit**: Fix one vulnerability or harden one attack surface
+- **Validation**: Security scans, penetration testing
+- **Compliance**: May need to document for audits
 
 ---
 
@@ -256,18 +1136,61 @@ ln -s ../shared/data ./references/datasets
 
 ### Decision Summary Table
 
+**Coding Projects** (Executable Output):
+
 | Your Project | Primary Output | Code Amount | Writing Amount | Framework Type | Templates |
 |--------------|----------------|-------------|----------------|----------------|-----------|
 | Web API | Executable | High | Low (docs) | CODING | `coding/` |
 | CLI Tool | Executable | High | Low (help) | CODING | `coding/` |
-| Library | Executable | High | Low (docs) | CODING | `coding/` |
-| Research Paper | Document | Low (none) | High | RESEARCH | `non_coding/` |
-| Research Paper | Document | Low (figures) | High | RESEARCH | `non_coding/` |
-| Book | Document | Low (examples) | High | WRITING | `non_coding/` |
-| Documentation | Document | Low (examples) | High | DOCUMENTATION | `non_coding/` |
-| ML Research | Both | High (training) | High (paper) | HYBRID | Separate projects |
-| Data Analysis Report | Both | Medium (scripts) | High (findings) | HYBRID | Separate projects |
-| Software + Paper | Both | High (implementation) | Medium (paper) | HYBRID | Separate projects |
+| Library/Package | Executable | High | Low (docs) | CODING | `coding/` |
+| Mobile App | Executable | High | Low (docs) | CODING | `coding/` |
+| Desktop Application | Executable | High | Low (docs) | CODING | `coding/` |
+
+**Infrastructure Projects** (Configuration/Deployed):
+
+| Your Project | Primary Output | Config Amount | Writing Amount | Framework Type | Templates |
+|--------------|----------------|---------------|----------------|----------------|-----------|
+| Terraform/IaC | Infrastructure | High (HCL/YAML) | Low (docs) | INFRASTRUCTURE (IaC) | `infrastructure/iac/` |
+| Kubernetes Manifests | Containers | High (YAML) | Low (docs) | INFRASTRUCTURE (K8s) | `infrastructure/containers/` |
+| CI/CD Pipelines | Automation | Medium (YAML) | Low (docs) | INFRASTRUCTURE (CI/CD) | `infrastructure/cicd/` |
+| Ansible/Config Mgmt | Configuration | High (YAML) | Low (docs) | INFRASTRUCTURE (Config) | `infrastructure/config/` |
+
+**Design Projects** (Specifications):
+
+| Your Project | Primary Output | Design Amount | Writing Amount | Framework Type | Templates |
+|--------------|----------------|---------------|----------------|----------------|-----------|
+| System Architecture | Diagrams + ADRs | High (diagrams) | High (specs) | DESIGN (Architecture) | `design/architecture/` |
+| Database Schema | ERDs + Migrations | Medium (SQL) | Medium (docs) | DESIGN (Database) | `design/database/` |
+| API Specification | OpenAPI/GraphQL | Medium (YAML/JSON) | Medium (docs) | DESIGN (API) | `design/api/` |
+| UI/UX Design | Mockups + Flows | High (design files) | Medium (specs) | DESIGN (UX) | `design/ux/` |
+
+**Maintenance Projects** (Existing Codebase Improvement):
+
+| Your Project | Primary Output | Code Changes | Testing Emphasis | Framework Type | Templates |
+|--------------|----------------|--------------|------------------|----------------|-----------|
+| Legacy Refactoring | Improved structure | Medium-High | Critical (no behavior change) | MAINTENANCE (Refactor) | `maintenance/refactoring/` |
+| Performance Optimization | Faster system | Low-Medium | High (benchmarks required) | MAINTENANCE (Performance) | `maintenance/performance/` |
+| Security Hardening | Secured system | Low-Medium | High (security scans) | MAINTENANCE (Security) | `maintenance/security/` |
+| Tech Debt Reduction | Quality improvement | Low-Medium | High (metrics improvement) | MAINTENANCE (Tech Debt) | `maintenance/tech_debt/` |
+
+**Non-Coding Projects** (Written Documents):
+
+| Your Project | Primary Output | Code Amount | Writing Amount | Framework Type | Templates |
+|--------------|----------------|-------------|----------------|----------------|-----------|
+| Research Paper | Academic paper | Low (none/figures) | High | RESEARCH | `non_coding/research/` |
+| Technical Book | Book manuscript | Low (examples) | High | WRITING (Book) | `non_coding/book/` |
+| Documentation | User guides | Low (examples) | High | DOCUMENTATION | `non_coding/documentation/` |
+| Grant Proposal | Proposal document | None | High | WRITING (Proposal) | `non_coding/proposal/` |
+| Technical Report | Report | Low (data scripts) | High | RESEARCH | `non_coding/research/` |
+
+**Hybrid Projects** (Both Code and Writing):
+
+| Your Project | Primary Output | Code Amount | Writing Amount | Framework Type | Templates |
+|--------------|----------------|-------------|----------------|----------------|-----------|
+| ML Research | Code + Paper | High (training) | High (paper) | HYBRID | Separate projects |
+| Data Analysis Report | Scripts + Report | Medium (analysis) | High (findings) | HYBRID | Separate projects |
+| Software + Paper | Implementation + Paper | High (code) | Medium (paper) | HYBRID | Separate projects |
+| Book + Code Examples | Book + Codebase | Medium (examples) | High (manuscript) | HYBRID | Separate projects |
 
 ---
 

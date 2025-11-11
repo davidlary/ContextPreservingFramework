@@ -1,8 +1,8 @@
-# Context-Preserving Implementation Framework v3.1
+# Context-Preserving Implementation Framework v3.2
 
 **Master Navigation Hub** - Read this first, then navigate to specific files
 
-**Version**: 3.1 (Autonomous Readiness Update - January 2025)
+**Version**: 3.2 (Universal Applicability Update - January 2025)
 **Purpose**: Universal framework for massive projects (coding & non-coding) without context exhaustion
 **Proven Results**: 60% fewer sessions, 87% fewer crashes, 92% faster recovery
 
@@ -353,7 +353,25 @@ A: Yes in v3.0 - they're integrated into core workflow (not optional)
 
 ## 📄 Version History
 
-**v3.1** (January 2025) - Current
+**v3.2** (January 2025) - Current
+- **True universal applicability** (comprehensive evaluation implemented)
+- Expanded project type coverage: 27 types (was 10)
+  - Infrastructure (IaC, Containers, CI/CD, Config)
+  - Design (System Architecture, Database, API, UX)
+  - Maintenance (Refactoring, Performance, Security, Tech Debt)
+- Requirements phase guidance (Phase 0)
+  - Problem statement, constraints, success criteria
+  - Risk assessment, decomposition planning
+- Autonomous technology selection
+  - 5 decision trees (language, framework, database, infrastructure, testing)
+  - Documented decision format with rationale
+- Explicit module boundary guidelines
+  - Cohesion test (4 questions)
+  - Single responsibility test
+  - Domain-specific patterns (5 domains)
+  - Decomposition algorithm (6 steps)
+
+**v3.1** (January 2025)
 - 100% autonomous readiness (eliminates all ambiguity)
 - Project type decision tree
 - Work unit sizing edge cases

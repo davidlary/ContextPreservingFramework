@@ -230,6 +230,443 @@ If ≥ 35%: Create recovery prompt, exit
 
 ---
 
+## Module Boundary Determination Guidelines
+
+**Purpose**: Explicit rules for determining where one module ends and the next begins
+**Why critical**: Eliminates subjectivity in "what is a module?" - enables autonomous decomposition
+**Duration**: 5-10 minutes to determine boundaries before implementation
+
+---
+
+### What is a Module? (Explicit Definition)
+
+**A module is the smallest independently implementable, testable, and committable unit of work.**
+
+**Core criteria** (ALL must be true):
+1. ✅ **Independently implementable**: Can be written without requiring other in-progress work
+2. ✅ **Independently testable**: Can write tests without waiting for other modules
+3. ✅ **Cohesive**: All functions/content serve a single, clear purpose
+4. ✅ **Committable**: Represents progress worth saving (not mid-thought)
+5. ✅ **Sized appropriately**: 150-350 lines (coding) OR 800-1,800 words (writing) OR 30-90 minutes
+
+**Anti-patterns** (NOT valid modules):
+- ❌ "Write all CRUD operations" (too large, split into Create, Read, Update, Delete modules)
+- ❌ "Write function X" (too small if <100 lines, combine with related functions)
+- ❌ "Start refactoring" (no end boundary, needs specific scope)
+- ❌ "Half of authentication" (not complete, can't test)
+
+---
+
+### Cohesion Test: Do These Functions Belong Together?
+
+**Use this checklist** to determine if functions should be in the same module:
+
+**Question 1: Do they operate on the same data?**
+```python
+# YES - Same module (User data operations)
+def get_user(user_id): ...
+def update_user(user_id, data): ...
+def delete_user(user_id): ...
+
+# NO - Different modules (User vs Product)
+def get_user(user_id): ...      # Module 1: User operations
+def get_product(product_id): ... # Module 2: Product operations
+```
+
+**Question 2: Do they represent one logical feature?**
+```python
+# YES - Same module (Password reset feature)
+def generate_reset_token(user_id): ...
+def send_reset_email(user_id, token): ...
+def validate_reset_token(token): ...
+def reset_password(user_id, new_password): ...
+
+# NO - Different modules (different features)
+def reset_password(user_id, new_password): ...  # Module 1: Password reset
+def change_email(user_id, new_email): ...       # Module 2: Email management
+```
+
+**Question 3: Would splitting them create unnecessary coupling?**
+```python
+# YES - Same module (tightly coupled validation + processing)
+def validate_payment_data(data): ...
+def process_payment(validated_data): ...
+# Splitting: Module 1 validation, Module 2 processing would require
+# Module 2 to trust Module 1's validation without seeing it
+
+# NO - Different modules (loosely coupled)
+def validate_input(data): ...    # Module 1: Generic validation
+def calculate_tax(amount): ...   # Module 2: Tax calculation (independent)
+```
+
+**Question 4: Do they depend on each other's internals?**
+```python
+# YES - Same module (shared internal state)
+class StateMachine:
+    def __init__(self): self.state = "init"
+    def transition_to_ready(self): ...
+    def transition_to_processing(self): ...
+    def transition_to_complete(self): ...
+# All transitions modify shared self.state - must be one module
+
+# NO - Different modules (no shared state)
+def parse_json(text): ...        # Module 1: Parsing
+def save_to_database(data): ...  # Module 2: Storage
+```
+
+**Result**: If 3+ questions answered "YES", functions belong in same module
+
+---
+
+### Single Responsibility Test: Does Module Have One Clear Purpose?
+
+**Each module should complete this sentence:**
+> "This module [ONE VERB] [ONE NOUN]"
+
+**Good examples** (single responsibility):
+- ✅ "This module **implements** **user authentication**" (login, logout, session validation)
+- ✅ "This module **processes** **payment transactions**" (validate, charge, record)
+- ✅ "This module **generates** **PDF reports**" (format data, create PDF, add styling)
+- ✅ "This module **parses** **configuration files**" (read YAML, validate schema, return config object)
+
+**Bad examples** (multiple responsibilities):
+- ❌ "This module implements authentication AND handles payments" → Split into 2 modules
+- ❌ "This module does user-related stuff" → Too vague, what specifically?
+- ❌ "This module has helper functions" → What do helpers do? Group by purpose
+
+**Edge case - Utilities**:
+```python
+# BAD: Generic utils.py (multiple responsibilities)
+def format_date(date): ...
+def send_email(recipient, body): ...
+def encrypt_password(password): ...
+# → Split into: date_utils.py, email_utils.py, crypto_utils.py
+
+# GOOD: Cohesive string_utils.py (one responsibility: string manipulation)
+def capitalize_words(text): ...
+def remove_whitespace(text): ...
+def truncate_string(text, max_length): ...
+```
+
+---
+
+### Common Module Patterns by Domain
+
+**Use these patterns** when decomposing your project:
+
+#### Web API Modules
+
+**Pattern 1: One Module per Resource (CRUD)**
+```
+Module 1.1: User CRUD operations
+  - create_user()
+  - get_user()
+  - update_user()
+  - delete_user()
+  - list_users()
+
+Module 1.2: Product CRUD operations
+  - create_product()
+  - get_product()
+  - update_product()
+  - delete_product()
+  - list_products()
+```
+
+**Pattern 2: One Module per Feature**
+```
+Module 2.1: Authentication
+  - login()
+  - logout()
+  - refresh_token()
+  - validate_session()
+
+Module 2.2: Authorization
+  - check_permission()
+  - assign_role()
+  - revoke_access()
+```
+
+**Pattern 3: Layer-based (for complex features)**
+```
+Module 3.1: Payment validation layer
+  - validate_card_number()
+  - validate_billing_address()
+  - check_fraud_score()
+
+Module 3.2: Payment processing layer
+  - charge_card()
+  - handle_payment_callback()
+  - record_transaction()
+
+Module 3.3: Payment reconciliation layer
+  - match_payments_to_orders()
+  - generate_payment_report()
+```
+
+---
+
+#### Data Processing Modules
+
+**Pattern: One Module per Transform**
+```
+Module 1.1: Data loading
+  - load_csv()
+  - validate_schema()
+  - handle_missing_values()
+
+Module 1.2: Data cleaning
+  - remove_duplicates()
+  - normalize_values()
+  - fix_encoding_issues()
+
+Module 1.3: Feature engineering
+  - create_derived_features()
+  - encode_categorical_variables()
+  - scale_numeric_features()
+
+Module 1.4: Data export
+  - format_for_export()
+  - write_to_parquet()
+  - generate_metadata()
+```
+
+---
+
+#### CLI Tool Modules
+
+**Pattern 1: One Module per Command**
+```
+Module 1.1: 'init' command
+  - parse_init_args()
+  - create_directory_structure()
+  - generate_config_file()
+
+Module 1.2: 'build' command
+  - parse_build_args()
+  - compile_sources()
+  - create_output()
+
+Module 1.3: 'deploy' command
+  - parse_deploy_args()
+  - validate_deployment_target()
+  - upload_artifacts()
+```
+
+**Pattern 2: Layer-based**
+```
+Module 2.1: Argument parsing layer
+  - setup_argparse()
+  - validate_arguments()
+  - display_help()
+
+Module 2.2: Core logic layer
+  - execute_build()
+  - execute_test()
+  - execute_deploy()
+
+Module 2.3: Output formatting layer
+  - format_success_message()
+  - format_error_message()
+  - format_progress_bar()
+```
+
+---
+
+#### UI Component Modules
+
+**Pattern: One Module per Component**
+```
+Module 1.1: LoginForm component
+  - render()
+  - handle_submit()
+  - validate_credentials()
+  - display_errors()
+
+Module 1.2: Dashboard component
+  - render()
+  - fetch_dashboard_data()
+  - handle_refresh()
+  - render_widgets()
+```
+
+---
+
+#### Research Paper Modules (Non-Coding)
+
+**Pattern: One Module per Section**
+```
+Module 1: Introduction (1,200 words)
+  - Background context
+  - Problem statement
+  - Research questions
+  - Paper structure overview
+
+Module 2: Literature Review (2,000 words, split into 2.1 and 2.2 if too long)
+  - Theme 1: Prior approaches
+  - Theme 2: Existing gaps
+  - Synthesis and positioning
+
+Module 3: Methodology (1,500 words)
+  - Research design
+  - Data collection
+  - Analysis approach
+```
+
+---
+
+### Module Decomposition Decision Algorithm
+
+**When unclear how to split work**, follow this algorithm:
+
+**Step 1: Estimate total size**
+- Coding: How many lines?
+- Writing: How many words?
+- Time: How many hours?
+
+**Step 2: Apply size thresholds**
+```
+If size < 150 lines (or <800 words):
+  → Combine with related work (see "Too Small" edge case)
+
+If size 150-350 lines (or 800-1,800 words):
+  → GOOD - This is one module
+
+If size 350-600 lines (or 1,800-3,000 words):
+  → Split into 2 modules using cohesion test
+
+If size > 600 lines (or >3,000 words):
+  → Split into 3+ modules using domain patterns
+```
+
+**Step 3: Verify independence**
+```
+For each proposed module:
+  Q: Can this be implemented without waiting for other modules?
+  Q: Can this be tested independently?
+
+  If NO to either: Recombine modules or reorder implementation
+```
+
+**Step 4: Verify single responsibility**
+```
+For each proposed module:
+  Q: Can I describe purpose in "This module [VERB] [NOUN]" format?
+  Q: Do all functions serve that single purpose?
+
+  If NO to either: Split further or recombine differently
+```
+
+**Step 5: Apply domain pattern**
+```
+Match project type to common patterns above:
+  - Web API → Resource-based or Feature-based
+  - Data Processing → Transform-based pipeline
+  - CLI Tool → Command-based or Layer-based
+  - UI → Component-based
+```
+
+**Step 6: Document decomposition**
+```
+In IMPLEMENTATION_PLAN.md:
+  Module X.Y: [Name]
+    Purpose: [One sentence]
+    Size: [N] lines / [N] words / [N] hours
+    Functions: [list]
+    Dependencies: [other modules needed, or "None"]
+    Tests: [what will be tested]
+```
+
+---
+
+### Example: Decomposing "User Management System"
+
+**Initial vague request**: "Build a user management system"
+
+**Step 1: Estimate size**
+- Rough estimate: 800-1,000 lines
+- Too large for one module
+
+**Step 2: Apply domain pattern** (Web API → Resource-based + Feature-based)
+
+**Step 3: Decompose**
+```
+Module 1.1: User CRUD (180 lines)
+  - create_user(email, password)
+  - get_user(user_id)
+  - update_user(user_id, data)
+  - delete_user(user_id)
+  - list_users(filters)
+
+Module 1.2: Authentication (210 lines)
+  - login(email, password)
+  - logout(session_id)
+  - refresh_token(token)
+  - validate_session(session_id)
+
+Module 1.3: Authorization (160 lines)
+  - check_permission(user_id, resource, action)
+  - assign_role(user_id, role)
+  - revoke_role(user_id, role)
+  - list_user_permissions(user_id)
+
+Module 1.4: Password Management (190 lines)
+  - hash_password(password)
+  - verify_password(password, hash)
+  - generate_reset_token(user_id)
+  - reset_password(user_id, token, new_password)
+
+Module 1.5: User Profile (180 lines)
+  - get_profile(user_id)
+  - update_profile(user_id, profile_data)
+  - upload_avatar(user_id, image)
+  - delete_avatar(user_id)
+```
+
+**Step 4: Verify independence**
+- Module 1.1 (CRUD) can be implemented first
+- Module 1.2 (Auth) depends on Module 1.1 (needs get_user)
+- Module 1.3 (Authz) depends on Module 1.1 (needs user data)
+- Module 1.4 (Password) independent (crypto utilities)
+- Module 1.5 (Profile) depends on Module 1.1 (extends user data)
+
+**Implementation order**: 1.1 → 1.4 → 1.2 → 1.3 → 1.5
+
+**Step 5: Document**
+```markdown
+## Module 1.1: User CRUD Operations
+**Purpose**: Implement basic user data management
+**Size**: 180 lines
+**Dependencies**: None (first module)
+**Functions**: create_user, get_user, update_user, delete_user, list_users
+**Tests**: 15 unit tests (CRUD + edge cases)
+
+## Module 1.2: Authentication
+**Purpose**: Handle user login and session management
+**Size**: 210 lines
+**Dependencies**: Module 1.1 (requires get_user)
+**Functions**: login, logout, refresh_token, validate_session
+**Tests**: 12 unit tests (auth flows + token validation)
+```
+
+---
+
+### Module Boundary Checklist (Use Before Implementation)
+
+**Before starting ANY module, verify**:
+
+- [ ] ✅ Module has clear purpose (single responsibility)
+- [ ] ✅ Module is independently implementable (no circular dependencies)
+- [ ] ✅ Module is independently testable (can write tests)
+- [ ] ✅ Module size is 150-350 lines (or 800-1,800 words, or 30-90 min)
+- [ ] ✅ All functions in module are cohesive (belong together)
+- [ ] ✅ Module has clear completion criteria (definition of "done")
+- [ ] ✅ Module documented in IMPLEMENTATION_PLAN.md
+
+**If ANY checkbox fails**: Revisit decomposition before implementing
+
+---
+
 ### Work Unit Sizing Edge Cases
 
 **Purpose**: Handle scenarios where standard sizing rules (250 lines, 1 hour) don't apply cleanly
