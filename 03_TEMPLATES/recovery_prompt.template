@@ -75,3 +75,102 @@ Context target: Keep below 35%
 - Files modified: [N]
 - Commits: [N]
 - Tests: [passing/total]
+
+---
+
+## Recovery Prompt Validation Checklist
+
+**IMPORTANT**: Before finalizing this recovery prompt, verify all fields are complete.
+**Purpose**: Ensure prompt is usable for session resumption (incomplete prompts cause confusion).
+
+### Section 1: Header Information
+- [ ] Session ID present (e.g., "Session 5" or "Session_20250111_143000")
+- [ ] Git commit hash present (7+ characters) OR version timestamp if no git
+- [ ] Context percentage present (0-100)
+- [ ] Status present (IN_PROGRESS/COMPLETED/BLOCKED)
+
+### Section 2: Goal
+- [ ] Goal description present (what session is accomplishing)
+- [ ] Goal is specific (not vague like "work on project")
+
+### Section 3: Completed
+- [ ] Completed list present (may be empty for first session)
+- [ ] Each item uses ✅ emoji and past tense verb
+- [ ] List matches master_state.json modules_complete/sections_complete
+
+### Section 4: In Progress
+- [ ] Current task specified (or explicitly state "None")
+- [ ] If task present: Uses 🔄 emoji and present continuous tense
+- [ ] If task present: Partial work described (what's done, what remains)
+- [ ] If task present: Next steps listed for resuming (minimum 1 step)
+
+### Section 5: Next Steps
+- [ ] Next steps list present (minimum 1 item)
+- [ ] Steps are actionable (start with verb: "Read", "Implement", "Test", etc.)
+- [ ] Steps are ordered (1, 2, 3...)
+- [ ] Immediate next step clearly identified
+
+### Section 6: Context Needed
+- [ ] Files needed for resumption listed
+- [ ] Each file has brief reason ("Why needed")
+- [ ] State files included (master_state.json at minimum)
+
+### Section 7: Recovery Prompt (Paste This)
+- [ ] Recovery prompt block present (the ```...``` section)
+- [ ] Prompt mentions this recovery file by name
+- [ ] Prompt includes git commit hash (or version)
+- [ ] Prompt has specific instructions (not just "continue work")
+- [ ] Prompt specifies autonomous mode status (ACTIVE/INACTIVE)
+- [ ] Prompt reminds about 35% context target
+
+### Section 8: Files Modified
+- [ ] All modified files listed
+- [ ] Each file has description of changes
+- [ ] List is accurate (matches git diff or actual changes)
+
+### Section 9: Important Notes
+- [ ] If blockers exist: Documented here
+- [ ] If edge case occurred: Documented here
+- [ ] If emergency stop: INCOMPLETE flag present
+
+### Section 10: Session Metrics
+- [ ] Duration present (minutes)
+- [ ] Context percentage present (final value)
+- [ ] Files modified count present
+- [ ] Commits count present
+- [ ] Tests status present (if applicable to project type)
+
+---
+
+### Validation Result
+
+**If ALL checkboxes are checked**: ✅ Recovery prompt is complete and ready
+**If ANY checkbox is UNCHECKED**: ⚠️ Prompt is incomplete - add missing information before session end
+
+**Critical fields** (must never be missing):
+1. Git commit hash (or version)
+2. Context percentage
+3. Current task status (in progress or none)
+4. Next steps (minimum 1)
+5. Recovery prompt block
+
+---
+
+### Usage Notes
+
+**When to validate**:
+- Before displaying checkpoint box
+- Before ending session
+- After creating recovery prompt file
+
+**If validation fails**:
+1. Identify missing fields from checklist
+2. Add missing information to recovery prompt
+3. Re-run validation checklist
+4. Only proceed with session end when ALL boxes checked
+
+**Why this matters**:
+- Incomplete recovery prompts cause confusion in next session
+- Missing next steps = wasted time figuring out what to do
+- Missing git commit = can't verify state
+- Ensures seamless session continuity
