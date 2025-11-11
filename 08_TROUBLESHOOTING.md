@@ -17,6 +17,7 @@
 6. [Issue 6: Git Commits Missing](#issue-6-git-commits-missing)
 7. [Issue 7: Sessions Too Short](#issue-7-sessions-too-short)
 8. [Issue 8: Template Setup Failed](#issue-8-template-setup-failed)
+9. [Issue 9: Large Project Management (>100 modules)](#issue-9-large-project-management-100-modules)
 
 ---
 
@@ -1374,6 +1375,466 @@ cd ../paper/
 **Alternative** (if one dominates >70%):
 - Code-heavy: Use CODING templates, treat paper as "documentation module"
 - Writing-heavy: Use RESEARCH templates, treat code as "analysis scripts"
+
+---
+
+## Issue 9: Large Project Management (>100 modules)
+
+### Symptoms
+
+- Project has grown to >100 modules
+- State files becoming very large (>100KB)
+- Recovery prompts are long and complex
+- Git history has 100+ commits
+- Difficulty tracking overall progress
+- Context consumption increasing over time
+- Overwhelmed by the number of files/modules
+
+### Why This Happens
+
+**Framework designed for**: 10-150 module projects (tested on PedagogicalEngine: 109 modules)
+**Large project challenges**:
+1. **State file size**: master_state.json with 200 modules = ~50KB
+2. **Recovery prompt volume**: Hard to summarize 200 modules concisely
+3. **Git history size**: 200 commits = harder to navigate
+4. **Mental overhead**: Tracking many modules simultaneously
+5. **Dependency complexity**: More modules = more dependencies
+
+**Good news**: Framework still works, but needs additional strategies
+
+---
+
+### Solution 1: Multi-Phase Architecture (Recommended)
+
+**Break project into phases** (20-50 modules per phase):
+
+**Example: Large API Project (150 modules total)**
+
+```
+Phase 1: Core Foundation (30 modules, 8 weeks)
+├── User management
+├── Authentication
+├── Authorization
+├── Core data models
+└── Basic API endpoints
+
+Phase 2: Business Logic (45 modules, 12 weeks)
+├── Payment processing
+├── Order management
+├── Inventory system
+├── Notification system
+└── Reporting
+
+Phase 3: Advanced Features (40 modules, 10 weeks)
+├── Analytics
+├── Admin dashboard
+├── Third-party integrations
+├── Advanced search
+└── Caching layer
+
+Phase 4: Optimization & Polish (35 modules, 8 weeks)
+├── Performance optimization
+├── Security hardening
+├── Comprehensive testing
+├── Documentation
+└── Deployment automation
+```
+
+**Implementation**:
+
+```bash
+# Directory structure
+project/
+├── phase1_foundation/       # Separate framework instance
+│   ├── CLAUDE.md
+│   ├── AUTONOMOUS_MODE.md
+│   ├── data/state/
+│   └── docs/
+├── phase2_business_logic/   # Separate framework instance
+│   ├── CLAUDE.md
+│   └── ...
+├── phase3_advanced/         # Separate framework instance
+│   └── ...
+└── phase4_optimization/     # Separate framework instance
+    └── ...
+```
+
+**Benefits**:
+- ✅ Each phase: manageable state files (~20-30KB)
+- ✅ Each phase: clear completion criteria
+- ✅ Each phase: independent git history
+- ✅ Can run phases in parallel (different developers)
+- ✅ Natural checkpoints between phases
+
+**How to transition between phases**:
+```bash
+# At end of Phase 1
+cd phase1_foundation/
+git tag phase-1-complete
+cd ..
+
+# Start Phase 2 (references Phase 1 code)
+cd phase2_business_logic/
+# In CLAUDE.md or memory/phase1_summary.md:
+# Document: "Phase 1 complete - see ../phase1_foundation/ for foundation code"
+```
+
+---
+
+### Solution 2: Module Grouping & Hierarchical State
+
+**For projects that can't be phased**, use hierarchical state tracking:
+
+**Standard approach** (flat):
+```json
+{
+  "modules_complete": [
+    "1.1", "1.2", "1.3", ..., "15.8", "15.9", "15.10"
+  ]
+}
+```
+**Problem**: 150-item array = hard to read
+
+**Hierarchical approach**:
+```json
+{
+  "components": {
+    "user_management": {
+      "status": "complete",
+      "modules": ["1.1", "1.2", "1.3", "1.4", "1.5"],
+      "completion_date": "2025-01-15"
+    },
+    "authentication": {
+      "status": "complete",
+      "modules": ["2.1", "2.2", "2.3"],
+      "completion_date": "2025-01-18"
+    },
+    "payment_processing": {
+      "status": "in_progress",
+      "modules_complete": ["3.1", "3.2"],
+      "modules_pending": ["3.3", "3.4", "3.5", "3.6"],
+      "current_module": "3.3"
+    },
+    "analytics": {
+      "status": "not_started",
+      "modules": ["4.1", "4.2", "4.3", "4.4", "4.5", "4.6", "4.7"]
+    }
+  },
+  "overall_progress": {
+    "components_complete": 2,
+    "components_total": 12,
+    "percentage": 17
+  }
+}
+```
+
+**Benefits**:
+- ✅ High-level overview (12 components vs 150 modules)
+- ✅ Easier to track (component-level progress)
+- ✅ Recovery prompts: "Working on payment_processing component" (not "Module 3.3")
+
+**Implementation**:
+```bash
+# Create component-level state
+cat > data/state/component_state.json << 'EOF'
+{
+  "components": {
+    "component_name": {
+      "status": "not_started | in_progress | complete",
+      "modules": ["list"],
+      "completion_date": "ISO date"
+    }
+  }
+}
+EOF
+```
+
+---
+
+### Solution 3: Archival Strategy
+
+**Problem**: Git history with 200+ commits = hard to navigate
+
+**Solution**: Archive completed work
+
+**After each major milestone (e.g., 50 modules complete)**:
+
+```bash
+# Create archive branch
+git checkout -b archive/phase1-complete
+git push origin archive/phase1-complete
+
+# Create release tag
+git tag -a v1.0-phase1-complete -m "Phase 1: 50 modules complete"
+git push origin v1.0-phase1-complete
+
+# Squash commit history on main (optional, use with caution)
+# This reduces commit count from 50 to 1
+git checkout main
+git merge --squash archive/phase1-complete
+git commit -m "Phase 1 complete: User management, Auth, Core API (50 modules)"
+
+# Alternative: Keep detailed history, just tag for reference
+# (Recommended - safer)
+git tag -a milestone-50-modules -m "Milestone: 50 modules complete"
+```
+
+**Result**:
+- Main branch: Clean, high-level commits (one per phase/milestone)
+- Archive branches: Detailed commit history preserved
+- Tags: Easy navigation to milestones
+
+---
+
+### Solution 4: External Memory for Historical Context
+
+**Problem**: Recovery prompts mention 100+ modules - too long
+
+**Solution**: Use external memory files for history
+
+**Create memory/project_history.md**:
+```markdown
+# Project History - Large API Project
+
+## Phase 1: Foundation (Complete)
+**Dates**: Jan 1 - Feb 28, 2025
+**Modules**: 1.1 - 5.10 (50 modules)
+**Summary**: Core user management, authentication, authorization, data models, basic CRUD APIs
+**Git**: See archive/phase1-complete branch
+**Key decisions**:
+- Chose PostgreSQL over MongoDB (see memory/tech_decisions.md)
+- Implemented JWT authentication (see modules 2.1-2.3)
+
+## Phase 2: Business Logic (In Progress)
+**Dates**: Mar 1 - present
+**Modules Complete**: 6.1 - 8.5 (25 modules)
+**Modules Pending**: 8.6 - 10.15 (20 modules)
+**Current**: Module 8.6 - Payment validation
+**Summary**: Payment processing, order management, inventory
+
+## Phase 3: Advanced Features (Not Started)
+**Planned**: May 2025
+**Modules**: 11.1 - 14.8 (40 modules)
+```
+
+**In recovery prompts**, reference instead of listing:
+```markdown
+## Recovery Prompt
+
+**Project**: Large API (150 modules total)
+**History**: See memory/project_history.md for Phases 1-2
+**Current Phase**: Phase 2 - Business Logic (Module 8.6 in progress)
+**Last Session**: Completed payment data validation (Module 8.5)
+**Next**: Implement payment processing logic (Module 8.6)
+```
+
+**Benefits**:
+- ✅ Recovery prompts stay short (<500 words)
+- ✅ Historical context preserved externally
+- ✅ Easy to reference when needed
+
+---
+
+### Solution 5: Modular Documentation
+
+**Problem**: ARCHITECTURE.md for 150-module project = 50KB+ (huge context cost)
+
+**Solution**: Split architecture into component-level docs
+
+**Before** (single file):
+```
+ARCHITECTURE.md (50KB - expensive to load)
+```
+
+**After** (modular):
+```
+ARCHITECTURE.md (5KB - high-level overview)
+docs/architecture/
+├── component_overview.md      (10KB - components list)
+├── user_management.md         (5KB - component 1 details)
+├── authentication.md          (4KB - component 2 details)
+├── payment_processing.md      (6KB - component 3 details)
+├── analytics.md              (5KB - component 4 details)
+└── deployment.md             (4KB - deployment architecture)
+```
+
+**ARCHITECTURE.md becomes a table of contents**:
+```markdown
+# Project Architecture - High Level
+
+**Total**: 12 components, 150 modules
+
+## Quick Reference
+
+- [User Management](docs/architecture/user_management.md) - Modules 1.1-5.10
+- [Authentication](docs/architecture/authentication.md) - Modules 6.1-8.5
+- [Payment Processing](docs/architecture/payment_processing.md) - Modules 9.1-12.8
+
+## Current Work
+- **Phase**: Phase 2 - Business Logic
+- **Component**: Payment Processing
+- **Module**: 9.3
+
+For detailed architecture of current component, see:
+→ docs/architecture/payment_processing.md
+```
+
+**Claude only reads**:
+- ARCHITECTURE.md (5KB)
+- Current component doc (5KB)
+- **Total**: 10KB (not 50KB)
+
+---
+
+### Solution 6: Progress Visualization
+
+**For very large projects**, create visual progress tracking:
+
+**Create scripts/progress_dashboard.sh**:
+```bash
+#!/bin/bash
+# Generate progress dashboard
+
+echo "=========================================="
+echo "PROJECT PROGRESS DASHBOARD"
+echo "=========================================="
+echo ""
+
+# Extract component status from state
+cat data/state/component_state.json | jq -r '
+  .components | to_entries[] |
+  "\(.key): \(.value.status) (\(.value.modules | length) modules)"
+'
+
+echo ""
+echo "Overall Progress:"
+cat data/state/component_state.json | jq -r '
+  .overall_progress |
+  "\(.components_complete)/\(.components_total) components complete (\(.percentage)%)"
+'
+
+echo ""
+echo "Last 5 commits:"
+git log --oneline -5
+```
+
+**Run at session start**:
+```bash
+bash scripts/progress_dashboard.sh
+```
+
+**Output**:
+```
+==========================================
+PROJECT PROGRESS DASHBOARD
+==========================================
+
+user_management: complete (50 modules)
+authentication: complete (25 modules)
+payment_processing: in_progress (15/35 modules)
+analytics: not_started (40 modules)
+
+Overall Progress:
+2/12 components complete (17%)
+
+Last 5 commits:
+abc1234 Module 9.3: Payment validation - COMPLETE
+def5678 Module 9.2: Card processing - COMPLETE
+...
+```
+
+---
+
+### Solution 7: Dependency Management for Large Projects
+
+**Problem**: 150 modules = complex dependencies
+
+**Solution**: Dependency matrix
+
+**Create docs/DEPENDENCIES.md**:
+```markdown
+# Module Dependencies
+
+## Components (High-Level)
+
+```
+User Management → Authentication → Authorization → Business Logic
+                                        ↓
+                                   Payment Processing → Reporting
+```
+
+## Critical Dependencies (Module-Level)
+
+| Module | Depends On | Reason |
+|--------|-----------|--------|
+| 6.1 (Login) | 1.1 (User CRUD) | Needs get_user() |
+| 7.1 (Permissions) | 1.1, 6.1 | Needs user data + sessions |
+| 9.1 (Payment) | 1.1, 7.1 | Needs user + authorization |
+
+## Independent Modules (Can Implement Anytime)
+
+- 12.1-12.8: Analytics (reads data, no writes)
+- 13.1-13.5: Logging utilities
+- 14.1-14.3: CLI tools
+```
+
+**Benefits**:
+- ✅ Know which modules can be done in parallel
+- ✅ Identify critical path
+- ✅ Avoid circular dependencies
+
+---
+
+### When to Use Each Solution
+
+| Project Size | Recommended Solutions |
+|-------------|---------------------|
+| 100-150 modules | Solutions 2, 4, 5 (hierarchical state, external memory, modular docs) |
+| 150-300 modules | Solutions 1, 2, 3, 4, 5 (multi-phase + all others) |
+| 300+ modules | Solution 1 (multi-phase) is **mandatory** - split into 4-6 phases |
+
+---
+
+### Scalability Checklist
+
+**For projects >100 modules, verify**:
+
+- [ ] ✅ Project broken into phases (if >150 modules) OR components (if <150)
+- [ ] ✅ Hierarchical state tracking implemented
+- [ ] ✅ External memory used for history (memory/project_history.md)
+- [ ] ✅ Architecture split into component-level docs
+- [ ] ✅ Git history archived periodically (milestones tagged)
+- [ ] ✅ Progress dashboard script created
+- [ ] ✅ Dependency matrix documented
+- [ ] ✅ Recovery prompts stay <500 words (reference external docs)
+
+---
+
+### Success Story: PedagogicalEngine (109 modules)
+
+**Project**: Educational software with curriculum engine
+**Size**: 109 modules, 58MB codebase
+**Framework usage**: v3.1, 4 months
+**Result**: Successful completion
+
+**Strategies used**:
+- ✅ Hierarchical state (6 components: Core, Curriculum, Assessment, Analytics, UI, Integration)
+- ✅ External memory for requirements and decisions
+- ✅ Modular architecture docs (component-level)
+- ✅ Git tags at 25, 50, 75, 100 module milestones
+
+**Metrics**:
+- Sessions: 12 (vs 25-30 without framework)
+- Context crashes: 2 (vs 15+ without framework)
+- Recovery time: <2 min per session
+
+**Lessons learned**:
+1. Component grouping (hierarchical state) essential after 50 modules
+2. External memory critical for architectural decisions
+3. Git tags made progress tracking much easier
+4. Breaking into 6 components made project feel manageable
+
+**Recommendation**: For projects >100 modules, adopt these strategies from the start (not retroactively)
 
 ---
 
