@@ -223,7 +223,7 @@
 
 ```
 Start Claude Code session in:
-/Users/davidlary/Dropbox/Environments/Code/PedagogicalEngine/ContextPreservingFramework
+[YOUR_FRAMEWORK_PATH]/ContextPreservingFramework
 
 Prompt:
 "Complete Context-Preserving Framework v3.0.
@@ -336,9 +336,9 @@ Autonomous mode: proceed without asking."
 
 ### If Providing Feedback
 
-**Contact**: David Lary
-**GitHub**: (if framework becomes open source)
+**GitHub**: (link when open sourced)
 **Use cases appreciated**: Help improve examples
+**Contributions welcome**: See CONTRIBUTING.md (if available)
 
 ---
 
