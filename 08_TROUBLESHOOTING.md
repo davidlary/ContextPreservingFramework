@@ -856,6 +856,527 @@ Use this checklist for new projects:
 
 ---
 
+## Edge Cases and Rare Scenarios
+
+**Purpose**: Handle unusual situations not covered by standard workflow
+**When to use**: Encountered scenario not in main documentation
+
+---
+
+### Edge Case 1: Module Cannot Be Decomposed to 250 Lines
+
+**Scenario**: Algorithm is inherently complex, cannot be split without breaking logic
+
+**Common in**:
+- Dynamic programming algorithms (requires complete state table)
+- State machine implementations (all states must be defined together)
+- Parser implementations (grammar rules interconnected)
+- Complex mathematical algorithms (steps tightly coupled)
+
+**Symptoms**:
+- Planning phase identifies module that must be >250 lines
+- Breaking it up would obscure algorithm logic
+- All functions highly interdependent
+
+**Diagnosis**:
+```bash
+# Review module plan
+cat docs/IMPLEMENTATION_PLAN.md | grep -A 10 "Module [X.Y]"
+# Estimated lines: >300
+```
+
+**Solution**:
+
+**Approach A**: Placeholder Pattern (Recommended)
+1. **Session 1**: Implement core structure + placeholders (~200 lines)
+   ```python
+   def complex_algorithm(data):
+       """Complex DP algorithm - see design doc"""
+       # Initialize state table
+       result = initialize_state_table(data)
+
+       # Placeholder for step 1 (implement next session)
+       result = _step1_process(result)  # TODO: Implement
+
+       # Placeholder for step 2 (implement next session)
+       result = _step2_optimize(result)  # TODO: Implement
+
+       return finalize(result)
+
+   def _step1_process(result):
+       raise NotImplementedError("Implement in next session")
+
+   def _step2_optimize(result):
+       raise NotImplementedError("Implement in next session")
+   ```
+2. Write tests for placeholders (expected behavior, can mock for now)
+3. Checkpoint (core structure complete)
+4. **Session 2**: Implement `_step1_process` (~100 lines), test, checkpoint
+5. **Session 3**: Implement `_step2_optimize` (~100 lines), test, checkpoint
+
+**Approach B**: Extended Session (Use Sparingly)
+1. Allow up to **350 lines** (absolute maximum)
+2. Monitor context continuously (check every 30 minutes)
+3. If context hits 33%, stop and checkpoint (even if incomplete)
+4. Mark in IMPLEMENTATION_PLAN.md as "Large Module" (2 sessions allocated)
+
+**Approach C**: Redesign (Last Resort)
+1. If algorithm truly cannot be decomposed AND exceeds 350 lines:
+2. Question: Is there architectural refactor that could help?
+3. Example: Extract initialization, finalization into separate modules
+4. Consult with human if stuck
+
+**Prevention**:
+- During planning, flag any module estimated >250 lines
+- Apply decomposition strategy during planning, not during implementation
+
+---
+
+### Edge Case 2: Context Hits 35% Mid-Function
+
+**Scenario**: Writing critical function, context suddenly at 36%, function half-done
+
+**Symptoms**:
+- Checkpoint box shows context 35-38%
+- Currently in middle of writing function (not at natural stopping point)
+- Function is partially written, incomplete
+
+**Diagnosis**:
+```bash
+# Check exact context
+python scripts/estimate_context.py
+# Output: Context: 36.2%
+
+# Check what happened
+tail -20 logs/operation_log.txt
+# Look for: Unexpected large operations (big file reads, exploration)
+```
+
+**Solution - Immediate Actions**:
+
+1. **Stop writing immediately** (even mid-line if at 38%+)
+2. Add inline comment:
+   ```python
+   def critical_function(data):
+       # Process step 1
+       result = step1(data)
+
+       # INCOMPLETE: Resume here
+       # NEXT: Process step 2 - apply transformation using result
+       # NEXT: Validate result meets criteria X
+       # NEXT: Return processed result
+   ```
+3. Commit incomplete work:
+   ```bash
+   git add .
+   git commit -m "[Session N] Module X.Y: INCOMPLETE (context hit 36%)
+
+   Status: Function 'critical_function' partially implemented
+   Resume at: Line 45, step 2 processing
+   Context: 36%"
+   ```
+4. Update module_state.json:
+   ```json
+   {
+     "status": "incomplete",
+     "incomplete_function": "critical_function",
+     "resume_at": "line 45 - step 2 processing",
+     "reason": "context_exceeded"
+   }
+   ```
+5. Create detailed recovery prompt:
+   ```markdown
+   ## INCOMPLETE WORK - Resume Point
+
+   **Function**: critical_function in core/module_1_3.py
+   **Line**: 45
+   **What's done**:
+   - Step 1: Process input data
+   - Result variable contains processed data
+
+   **What remains**:
+   - Step 2: Apply transformation using result
+   - Step 3: Validate result meets criteria X
+   - Step 4: Return processed result
+
+   **Estimated**: ~20-30 lines remaining
+
+   **To Resume**:
+   1. Open core/module_1_3.py
+   2. Find comment "# INCOMPLETE: Resume here"
+   3. Continue implementation from that point
+   ```
+6. Exit session
+
+**Next Session**:
+1. Read recovery prompt (2K tokens)
+2. Open file, find resume marker
+3. Complete function (~20-30 lines)
+4. Test immediately
+5. Checkpoint
+
+**Root Cause Analysis**:
+- Why did context jump unexpectedly?
+- Common causes:
+  - Large file read without using external memory
+  - Extensive debugging/exploration
+  - Reading documentation instead of using scratch files
+- Fix: Implement better context tracking
+
+**Prevention**:
+- Check context after EVERY function (not just after module)
+- Use `scripts/estimate_context.py` continuously
+- If context >30%, be extra careful (prepare to checkpoint any time)
+
+---
+
+### Edge Case 3: Git Not Available
+
+**Scenario**: Working in environment without git (cloud IDE, restricted system, corporate policy)
+
+**Symptoms**:
+- `git` command fails: "command not found"
+- No .git directory can be created
+- Company policy blocks git usage
+- Cloud IDE doesn't provide git access
+
+**Diagnosis**:
+```bash
+# Test git
+which git
+# Output: (empty) or "not found"
+
+git --version
+# Output: Error
+```
+
+**Solution - Manual Versioning**:
+
+**Step 1**: Replace git with filesystem snapshots
+```bash
+# In project root, create versions directory
+mkdir -p versions/
+
+# After each module completion (instead of git commit):
+VERSION=$(date +%Y%m%d_%H%M%S)
+mkdir -p versions/v_$VERSION
+cp -r . versions/v_$VERSION/
+echo "Module X.Y complete" > versions/v_$VERSION/VERSION_NOTES.txt
+```
+
+**Step 2**: Update CLAUDE.md:
+```markdown
+## Git Protocol (Modified - No Git Available)
+
+After each module completion:
+1. Create version snapshot: `./scripts/create_version.sh`
+2. Version stored in: versions/v_YYYYMMDD_HHMMSS/
+3. Add notes: Edit VERSION_NOTES.txt in version directory
+```
+
+**Step 3**: Create helper script:
+```bash
+# scripts/create_version.sh
+#!/bin/bash
+VERSION=$(date +%Y%m%d_%H%M%S)
+mkdir -p versions/v_$VERSION
+cp -r . versions/v_$VERSION/
+rm -rf versions/v_$VERSION/versions  # Don't copy versions into versions
+echo "Version: v_$VERSION" > versions/v_$VERSION/VERSION_NOTES.txt
+echo "Created version: v_$VERSION"
+```
+
+**Step 4**: Update rules/CLAUDE.md:
+- Change RULE 16 "Git Commit Protocol" to "Versioning Protocol"
+- Replace `git commit` instructions with `./scripts/create_version.sh`
+
+**Step 5**: Update recovery prompts:
+- Instead of "Git commit: abc123"
+- Use "Version: v_20250111_143000"
+
+**Limitations**:
+- No branching
+- No push/pull (versions are local only)
+- Disk space grows faster (use cleanup script)
+
+**Cleanup script**:
+```bash
+# scripts/cleanup_old_versions.sh
+# Keep only last 10 versions
+cd versions/
+ls -t | tail -n +11 | xargs rm -rf
+```
+
+**If git becomes available later**:
+```bash
+# Initialize git
+git init
+
+# Import version history
+for dir in versions/v_*; do
+  VERSION=$(basename $dir)
+  cp -r $dir/* .
+  git add .
+  git commit -m "Import $VERSION"
+done
+```
+
+---
+
+### Edge Case 4: Tests Fail After 3 Retries
+
+**Scenario**: Implemented module, wrote tests, tests fail, fixed issue, repeat 3x, still failing
+
+**Symptoms**:
+- Module implementation looks correct
+- Tests consistently fail
+- Already attempted 3 fixes
+- Each fix changes something but tests still fail
+
+**Diagnosis**:
+```bash
+# Run tests with verbose output
+pytest tests/test_module_x_y.py -vv
+
+# Check test output carefully
+# Look for:
+# - Consistent error pattern
+# - Environmental issues
+# - Dependency problems
+```
+
+**Common Root Causes**:
+
+**Cause 1**: Architecture Problem (not just bug)
+- Example: Module assumes synchronous, but system is async
+- Example: Module doesn't handle database transactions correctly
+- Fix: Requires architectural refactor, not simple bug fix
+
+**Cause 2**: Environment/Dependency Issue
+- Example: Test passes locally, fails in framework environment
+- Example: Missing environment variable
+- Example: Database not seeded with test data
+- Fix: Setup issue, not code issue
+
+**Cause 3**: Test is Wrong (not code)
+- Example: Test has incorrect assertions
+- Example: Test expectations don't match actual requirements
+- Fix: Update test, not code
+
+**Solution - Escalation Protocol**:
+
+1. **Stop autonomous fixes** (after 3 attempts)
+2. Create issue file:
+   ```markdown
+   # issues/ISSUE_MODULE_X_Y_TESTS_FAILING.md
+
+   ## Problem
+   Module X.Y tests failing after 3 fix attempts
+
+   ## Module Details
+   - Module: X.Y [Name]
+   - File: core/module_x_y.py
+   - Test: tests/test_module_x_y.py
+   - Lines: ~250
+
+   ## Test Output
+   ```
+   [Paste full test output here]
+   ```
+
+   ## Fix Attempts
+
+   ### Attempt 1
+   - What was tried: [description]
+   - Rationale: [why we thought this would fix it]
+   - Result: [still failed, error changed/same]
+
+   ### Attempt 2
+   - What was tried: [description]
+   - Rationale: [why we thought this would fix it]
+   - Result: [still failed, error changed/same]
+
+   ### Attempt 3
+   - What was tried: [description]
+   - Rationale: [why we thought this would fix it]
+   - Result: [still failed, error changed/same]
+
+   ## Hypothesis
+   [Best guess at root cause after 3 attempts]
+   - [ ] Architecture problem?
+   - [ ] Environment issue?
+   - [ ] Test is incorrect?
+   - [ ] Dependency missing?
+
+   ## Current State
+   - Code committed: [git hash or version]
+   - Module status: "blocked_on_tests"
+   - Context: [N]%
+
+   ## Next Steps
+   - [ ] Human review required
+   - [ ] Possible architecture refactor needed
+   - [ ] Or: Skip module, continue with others, return later
+   ```
+
+3. Update master_state.json:
+   ```json
+   {
+     "modules_blocked": ["X.Y"],
+     "issues": ["ISSUE_MODULE_X_Y_TESTS_FAILING"]
+   }
+   ```
+
+4. **Decision Point**: Continue or Stop?
+   - **Option A**: Move to next module (come back to blocked module later)
+   - **Option B**: Escalate to human (stop autonomous work)
+   - Recommendation: Option A if other modules don't depend on this one
+
+5. Create recovery prompt noting blocked module
+
+**When Human Reviews**:
+- Read issue file
+- Review all 3 fix attempts
+- Identify actual root cause
+- Provide guidance or architectural refactor
+- Mark issue resolved
+
+**Prevention**:
+- Better planning (identify architecture risks early)
+- Write tests before implementation (TDD approach)
+- Validate test assertions are correct
+
+---
+
+### Edge Case 5: Hybrid Project (Code + Writing)
+
+**Scenario**: Project has BOTH significant code AND significant writing (e.g., ML research = training code + paper)
+
+**Symptoms**:
+- Need to implement model training (code)
+- Need to write research paper (writing)
+- Neither dominates (40/60 or 60/40 split)
+- Unclear which framework template to use
+
+**Diagnosis**:
+```bash
+# Assess project composition
+find . -name "*.py" | xargs wc -l | tail -1
+# Code: ~1,500 lines
+
+find . -name "*.md" -path "*/paper/*" | xargs wc -w | tail -1
+# Writing: ~6,000 words
+
+# Conclusion: Both substantial → Hybrid project
+```
+
+**Solution - Separate Projects Approach**:
+
+**Rationale**: Mixing coding and writing templates creates confusion. Separate projects maintain clarity.
+
+**Step 1**: Restructure directories
+```bash
+# Create parent directory
+mkdir -p my_research_project/
+cd my_research_project/
+
+# Two sub-projects
+mkdir -p code/       # Coding project (ML training)
+mkdir -p paper/      # Writing project (research paper)
+mkdir -p shared/     # Shared resources
+```
+
+**Step 2**: Set up coding project
+```bash
+cd code/
+
+# Copy coding templates
+cp -r ~/ContextPreservingFramework/03_TEMPLATES/project_types/coding/* .
+cp ~/ContextPreservingFramework/03_TEMPLATES/CLAUDE.md.template ./CLAUDE.md
+cp ~/ContextPreservingFramework/03_TEMPLATES/AUTONOMOUS_MODE.md.template ./AUTONOMOUS_MODE.md
+
+# Customize
+# - Project type: CODING
+# - Language: Python
+# - Modules: data loading, model training, evaluation, etc.
+
+# Initialize
+mkdir -p core tests data/state logs
+git init
+```
+
+**Step 3**: Set up paper project
+```bash
+cd ../paper/
+
+# Copy non-coding templates
+cp -r ~/ContextPreservingFramework/03_TEMPLATES/project_types/non_coding/* .
+cp ~/ContextPreservingFramework/03_TEMPLATES/CLAUDE.md.template ./CLAUDE.md
+cp ~/ContextPreservingFramework/03_TEMPLATES/AUTONOMOUS_MODE.md.template ./AUTONOMOUS_MODE.md
+
+# Customize
+# - Project type: RESEARCH
+# - Domain: Machine learning
+# - Sections: intro, related work, methods, results, discussion
+
+# Initialize
+mkdir -p sections references figures data/state logs
+git init
+```
+
+**Step 4**: Link shared resources
+```bash
+cd code/
+ln -s ../shared/data ./data/shared
+ln -s ../shared/results ./results
+
+cd ../paper/
+ln -s ../shared/results ./figures/from_code
+ln -s ../shared/data ./references/datasets
+```
+
+**Step 5**: Workflow
+```bash
+# Phase 1: Code implementation (work in code/)
+cd code/
+# - Implement data loading (Module 1.1)
+# - Implement model training (Module 1.2)
+# - Generate results → ../shared/results/
+# - Checkpoint, exit
+
+# Phase 2: Paper writing (work in paper/)
+cd ../paper/
+# - Write methods section (reference ../shared/results/)
+# - Write results section (import figures from ../shared/results/)
+# - Checkpoint, exit
+```
+
+**Benefits**:
+- ✅ Clean separation of concerns
+- ✅ Appropriate templates for each (coding vs research)
+- ✅ Appropriate validation (tests for code, citations for paper)
+- ✅ Can work on both in parallel (different sessions)
+- ✅ No template confusion
+
+**State Tracking**:
+- `code/data/state/master_state.json` (modules_complete, tests_passing)
+- `paper/data/state/master_state.json` (sections_complete, word_count, references_cited)
+- Independent recovery prompts for each
+
+**Git Options**:
+- **Option A**: Separate repos (code/.git, paper/.git)
+- **Option B**: Single repo with prefixes:
+  ```bash
+  git commit -m "[CODE] Module 1.1: Data loading"
+  git commit -m "[PAPER] Section 3: Methods"
+  ```
+
+**Alternative** (if one dominates >70%):
+- Code-heavy: Use CODING templates, treat paper as "documentation module"
+- Writing-heavy: Use RESEARCH templates, treat code as "analysis scripts"
+
+---
+
 ## Getting Help
 
 If you're still stuck:
