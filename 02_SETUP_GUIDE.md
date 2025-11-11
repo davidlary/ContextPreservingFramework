@@ -708,6 +708,253 @@ Project details:
 
 ---
 
+## Lightweight Mode (For Small Projects)
+
+**When to use**: Projects with <20 modules OR <5,000 lines of code OR <2 weeks duration
+**Benefits**: Reduced setup overhead, simplified workflow, faster start
+**Trade-off**: Less automation, manual tracking (but still context-safe)
+
+### Is Lightweight Mode Right for You?
+
+**Use Lightweight Mode if**:
+- [ ] Project has <20 modules (or <10 sections for writing)
+- [ ] Estimated <5,000 lines of code (or <15,000 words for writing)
+- [ ] Solo developer (not team collaboration)
+- [ ] Duration: <2 weeks full-time (or <1 month part-time)
+- [ ] Low complexity (straightforward requirements, few dependencies)
+
+**Use Full Framework if**:
+- [ ] Project has >20 modules
+- [ ] Multiple developers collaborating
+- [ ] Duration: >2 weeks
+- [ ] High complexity (many dependencies, integration points)
+- [ ] Critical project (must not lose work)
+
+### Lightweight Setup (5 minutes)
+
+**Step 1: Minimal Directory Structure**
+
+```bash
+# Create only essential directories
+mkdir -p .claude docs logs
+
+# Initialize git
+git init
+```
+
+**Step 2: Create Minimal CLAUDE.md**
+
+```bash
+cat > CLAUDE.md << 'EOF'
+# [Project Name]
+
+**Type**: [Coding/Research/Design/etc.]
+**Size**: Small (<20 modules)
+**Mode**: Lightweight (simplified framework)
+
+## Project Goal
+
+[1-2 sentences: What are we building?]
+
+## Modules/Sections
+
+1. [Module 1 name] - [status: pending/in-progress/complete]
+2. [Module 2 name] - [status: pending/in-progress/complete]
+3. [Module 3 name] - [status: pending/in-progress/complete]
+...
+
+## Current Work
+
+**Module**: [Current module name]
+**Status**: [Brief status]
+**Next**: [Next task]
+
+## Rules
+
+1. **Context Exit**: Stop at 35% context
+2. **Checkpoints**: Commit after each module complete
+3. **Recovery**: Update "Current Work" section before ending session
+4. **Module Size**: Max 250 lines or 1 hour per module
+
+## Commands
+
+**Test**: [your test command]
+**Run**: [your run command]
+EOF
+```
+
+**Step 3: Create Simple Recovery System**
+
+```bash
+# Create docs directory for notes
+mkdir -p docs/notes
+
+# Optional: Create lightweight state file
+cat > docs/progress.md << 'EOF'
+# Project Progress
+
+## Modules Complete
+- [ ] Module 1
+- [ ] Module 2
+- [ ] Module 3
+
+## Current Session
+**Started**: [date/time]
+**Module**: [current module]
+**Progress**: [what's done]
+
+## Next Session
+**Start with**: [module name or task]
+**Remember**: [any important context]
+EOF
+```
+
+**Duration**: 5 minutes
+
+---
+
+### Lightweight Workflow
+
+**Session Start**:
+1. Read CLAUDE.md "Current Work" section (30 seconds)
+2. Check docs/progress.md (if used)
+3. Start working on current module
+
+**During Work**:
+1. Write code/content (no state file updates needed)
+2. Monitor context (use /context command or manual estimate)
+3. Commit when module complete: `git add . && git commit -m "Module X complete"`
+
+**Session End** (at 30-35% context):
+1. **Update CLAUDE.md "Current Work" section**:
+   ```markdown
+   ## Current Work
+
+   **Module**: Module 3 - User authentication
+   **Status**: 70% complete - login done, logout pending
+   **Next**: Implement logout function, then test both
+   ```
+2. **Commit** (if module complete): `git add . && git commit -m "Module X: [description]"`
+3. **Quick note** (if useful): Add to docs/notes/[date].md
+
+**Recovery** (Next Session):
+1. Read CLAUDE.md "Current Work" - immediate context
+2. `git log --oneline -3` - see recent commits
+3. Continue where you left off
+
+---
+
+### What Lightweight Mode Skips
+
+**Not included** (vs full framework):
+- ❌ Automated state files (master_state.json, module_state.json)
+- ❌ Context estimation scripts
+- ❌ Recovery prompt generation
+- ❌ AUTONOMOUS_MODE.md
+- ❌ Detailed validation tests
+- ❌ External memory system
+
+**Still included** (essential):
+- ✅ 35% exit threshold (critical)
+- ✅ Git checkpoints after modules
+- ✅ CLAUDE.md instructions
+- ✅ Manual recovery (via CLAUDE.md updates)
+- ✅ Module-based workflow
+
+**Result**: 80% less setup, 90% of the safety
+
+---
+
+### When to Upgrade to Full Framework
+
+**Consider upgrading if**:
+1. Project grows beyond 20 modules
+2. You're losing track of progress (need automated state)
+3. Recovery takes >5 minutes (need better recovery prompts)
+4. Team collaboration starts (need formal state tracking)
+5. Context management becomes challenging
+
+**How to upgrade**:
+1. Read 02_SETUP_GUIDE.md "Manual Setup" section
+2. Add missing directories (data/state/, memory/, etc.)
+3. Create state files (master_state.json)
+4. Set up automated scripts
+5. Migrate progress from CLAUDE.md to state files
+
+**Migration time**: 15-20 minutes
+
+---
+
+### Lightweight Mode Example
+
+**Scenario**: Simple CLI tool (5 modules, 1,500 lines, 1 week project)
+
+**Setup** (5 min):
+```bash
+mkdir my-cli-tool
+cd my-cli-tool
+git init
+mkdir -p .claude docs logs
+
+# Create CLAUDE.md with 5 modules listed
+# Module 1: Argument parsing
+# Module 2: Config file loading
+# Module 3: Core logic
+# Module 4: Output formatting
+# Module 5: Error handling
+```
+
+**Implementation** (5 sessions over 1 week):
+```
+Session 1 (1 hour, 35% context):
+- Module 1: Argument parsing (250 lines) ✅
+- Commit: "Module 1: Argument parsing complete"
+- Update CLAUDE.md: "Current Work: Module 2 - Config loading"
+
+Session 2 (1 hour, 33% context):
+- Module 2: Config file loading (180 lines) ✅
+- Module 3: Core logic START (120 lines of 300)
+- Commit: "Module 2 complete, Module 3 started"
+- Update CLAUDE.md: "Module 3 - 40% complete, main logic done, edge cases pending"
+
+Session 3 (1 hour, 34% context):
+- Module 3: Core logic COMPLETE (180 more lines) ✅
+- Commit: "Module 3: Core logic complete"
+- Update CLAUDE.md: "Module 4 - Output formatting"
+
+Session 4 (1 hour, 32% context):
+- Module 4: Output formatting (200 lines) ✅
+- Module 5: Error handling (150 lines) ✅
+- Commit: "Modules 4 & 5 complete"
+- Update CLAUDE.md: "Project complete"
+
+Session 5 (45 min, 25% context):
+- Testing, bug fixes, documentation
+- Commit: "Testing complete, v1.0 ready"
+```
+
+**Total time**: ~5 hours implementation + 5 min setup = 5 hours
+**Context crashes**: 0
+**Sessions needed**: 5 (vs 10-15 without framework)
+
+---
+
+### Lightweight Mode Checklist
+
+**Before starting, verify**:
+- [ ] ✅ Project qualifies (<20 modules, <2 weeks)
+- [ ] ✅ CLAUDE.md created with module list
+- [ ] ✅ Git initialized
+- [ ] ✅ Understand 35% exit threshold
+- [ ] ✅ Know how to update "Current Work" section
+
+**After each session, verify**:
+- [ ] ✅ CLAUDE.md "Current Work" updated (30 seconds)
+- [ ] ✅ Commit created if module complete
+- [ ] ✅ Context stayed below 35% (or exited)
+
+---
+
 ## Project Type Selection
 
 **Purpose**: Determine correct framework configuration for your project
