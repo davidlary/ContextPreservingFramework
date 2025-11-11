@@ -12,9 +12,10 @@
 
 1. [Prerequisites](#prerequisites)
 2. [Quick Setup (Automated)](#quick-setup-automated)
-3. [Manual Setup (Step-by-Step)](#manual-setup-step-by-step)
-4. [Project Type Adaptations](#project-type-adaptations)
-5. [Validation](#validation)
+3. [Project Type Selection](#project-type-selection)
+4. [Manual Setup (Step-by-Step)](#manual-setup-step-by-step)
+5. [Project Type Adaptations](#project-type-adaptations)
+6. [Validation](#validation)
 
 ---
 
@@ -74,7 +75,215 @@ Project details:
 
 **If script works**: Skip to [Validation](#validation) section.
 
-**If script fails or unavailable**: Proceed to Manual Setup below.
+**If script fails or unavailable**: Proceed to Project Type Selection below.
+
+---
+
+## Project Type Selection
+
+**Purpose**: Determine correct framework configuration for your project
+**Duration**: 2-5 minutes
+**Critical**: Choosing the right type affects templates, state schemas, and validation
+
+---
+
+### Decision Tree: What Type is Your Project?
+
+**START**: Answer these questions to determine your project type.
+
+#### Question 1: What is your primary output?
+
+**A) Executable code, library, or application**
+→ **Project Type: CODING**
+→ Go to: [Coding Project Setup](#coding-project-characteristics)
+
+**B) Written document (paper, book, documentation)**
+→ **Project Type: NON-CODING**
+→ Go to: Question 2
+
+**C) Both significant code AND significant writing**
+→ **Project Type: HYBRID**
+→ Go to: [Hybrid Projects](#hybrid-projects-separate-approach)
+
+---
+
+#### Question 2: What kind of document? (Non-Coding Projects)
+
+**A) Academic research paper or technical report**
+→ **Sub-type: RESEARCH**
+→ Templates: `project_types/non_coding/`
+→ State file: `master_state_writing.json` (adapt for research)
+
+**B) Book (fiction or non-fiction)**
+→ **Sub-type: WRITING**
+→ Templates: `project_types/non_coding/`
+→ State file: `master_state_writing.json`
+
+**C) Technical documentation or user guides**
+→ **Sub-type: DOCUMENTATION**
+→ Templates: `project_types/non_coding/`
+→ State file: `master_state_writing.json` (adapt for docs)
+
+**D) Data analysis report or findings narrative**
+→ **Consider**: Is there substantial code for the analysis?
+→ If YES: This might be HYBRID (see below)
+→ If NO (mainly narrative): Sub-type RESEARCH
+
+---
+
+### Coding Project Characteristics
+
+**Use coding templates if your project includes**:
+- Source code files that execute
+- Test suites (unit, integration, e2e)
+- Build/compile steps
+- Package management (pip, npm, cargo, etc.)
+- API endpoints, CLI commands, or libraries
+
+**Examples**:
+- Web APIs (FastAPI, Express, Rails)
+- CLI tools (Python argparse, Go cobra, etc.)
+- Libraries/packages (published to PyPI, npm, crates.io)
+- Mobile apps (React Native, Flutter)
+- Data pipelines (Airflow, dbt)
+- Machine learning models (training code, not the paper)
+
+**Work unit**: Module = 1 file or 250 lines of code
+**Validation**: Test suites (pytest, jest, cargo test, etc.)
+**State tracking**: Modules complete, tests passing
+
+---
+
+### Non-Coding Project Characteristics
+
+**Use non-coding templates if your project includes**:
+- Primarily written text (prose, explanations, arguments)
+- Citations and references
+- Narrative structure (introduction, body, conclusion)
+- Word count targets
+- Minimal or no executable code
+
+**Examples**:
+- Academic papers (research findings, meta-analyses)
+- Books (fiction novels, technical books, memoirs)
+- Documentation (user guides, API docs, tutorials)
+- Grant proposals
+- Technical reports
+- Course curriculum (lesson plans, syllabi)
+
+**Work unit**: Section = 1,000-1,500 words or 1 argument/concept
+**Validation**: Citation checks, word counts, coherence review
+**State tracking**: Sections complete, word count, references cited
+
+---
+
+### Hybrid Projects: Separate Approach
+
+**What is a hybrid project?**
+A project with BOTH:
+- Substantial executable code (>500 lines, multiple modules)
+- Substantial written narrative (>3,000 words, multiple sections)
+- Neither dominates (roughly 40/60 to 60/40 split)
+
+**Examples**:
+- Machine learning research: Training code + research paper
+- Software with academic publication: Implementation + paper
+- Data analysis with report: Analysis scripts + findings document
+- Book with code examples: Manuscript + example codebase
+
+---
+
+#### Hybrid Solution: Create Two Separate Projects
+
+**Rationale**: Mixing coding and writing templates creates confusion. Separate projects maintain clarity.
+
+**Step 1**: Create two project directories
+```bash
+# Example: ML research project
+mkdir -p my_research_project/
+cd my_research_project/
+
+# Two sub-projects:
+mkdir -p code/     # Coding project
+mkdir -p paper/    # Non-coding (research) project
+mkdir -p shared/   # Shared data/results
+```
+
+**Step 2**: Set up each project independently
+```bash
+# Setup coding project
+cd code/
+# Copy coding templates from 03_TEMPLATES/project_types/coding/
+# Initialize as CODING project
+
+# Setup paper project
+cd ../paper/
+# Copy non-coding templates from 03_TEMPLATES/project_types/non_coding/
+# Initialize as RESEARCH project
+```
+
+**Step 3**: Link shared resources
+```bash
+# From code/ directory:
+ln -s ../shared/data ./data/shared
+ln -s ../shared/results ./results
+
+# From paper/ directory:
+ln -s ../shared/results ./figures/from_code
+ln -s ../shared/data ./references/datasets
+```
+
+**Step 4**: Workflow
+1. **Code phase**: Work in `code/`, implement ML training, generate results → `shared/results/`
+2. **Writing phase**: Work in `paper/`, reference results from `shared/results/`, write narrative
+3. Each project has independent:
+   - State files (master_state.json)
+   - Recovery prompts
+   - Git commits (or same repo, different prefixes)
+   - Context tracking
+
+**Benefits**:
+- ✅ Clean separation of concerns
+- ✅ Appropriate validation for each (tests for code, citations for paper)
+- ✅ Can work on code and paper in parallel (different sessions)
+- ✅ No template confusion (each uses correct type)
+
+**Alternative**: If one heavily dominates (>70%):
+- Code-heavy (>70% code): Use CODING templates, treat paper as "documentation module"
+- Writing-heavy (>70% writing): Use RESEARCH templates, treat code as "analysis scripts"
+
+---
+
+### Decision Summary Table
+
+| Your Project | Primary Output | Code Amount | Writing Amount | Framework Type | Templates |
+|--------------|----------------|-------------|----------------|----------------|-----------|
+| Web API | Executable | High | Low (docs) | CODING | `coding/` |
+| CLI Tool | Executable | High | Low (help) | CODING | `coding/` |
+| Library | Executable | High | Low (docs) | CODING | `coding/` |
+| Research Paper | Document | Low (none) | High | RESEARCH | `non_coding/` |
+| Research Paper | Document | Low (figures) | High | RESEARCH | `non_coding/` |
+| Book | Document | Low (examples) | High | WRITING | `non_coding/` |
+| Documentation | Document | Low (examples) | High | DOCUMENTATION | `non_coding/` |
+| ML Research | Both | High (training) | High (paper) | HYBRID | Separate projects |
+| Data Analysis Report | Both | Medium (scripts) | High (findings) | HYBRID | Separate projects |
+| Software + Paper | Both | High (implementation) | Medium (paper) | HYBRID | Separate projects |
+
+---
+
+### Next Steps After Selection
+
+**Once you've determined your project type**:
+
+1. **If CODING**: Proceed to [Manual Setup - Phase 1](#phase-1-directory-structure-5-minutes) with coding configurations
+
+2. **If NON-CODING**: Proceed to [Manual Setup - Phase 1](#phase-1-directory-structure-5-minutes) with non-coding configurations
+
+3. **If HYBRID**:
+   - Create separate directories
+   - Set up each as independent project
+   - Follow manual setup twice (once for code/, once for paper/)
+   - Link shared resources
 
 ---
 
