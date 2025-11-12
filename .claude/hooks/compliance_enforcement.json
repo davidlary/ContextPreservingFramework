@@ -1,0 +1,43 @@
+{
+  "name": "Framework Compliance Enforcement",
+  "version": "1.0.0",
+  "description": "Enforces mandatory compliance with Framework Rules 14-17 after tool operations",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "name": "Validate State Tracking After Edits",
+        "description": "Verifies state files updated after Read/Edit/Write operations (RULE 14)",
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/validate_compliance.sh file_operation"
+          }
+        ]
+      },
+      {
+        "name": "Validate State Tracking After Bash",
+        "description": "Verifies state files updated after Bash operations (RULE 14)",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/validate_compliance.sh bash_operation"
+          }
+        ]
+      }
+    ]
+  },
+  "enforcement_level": "mandatory",
+  "rules_enforced": [
+    "RULE 14: State Tracking (MUST update after EVERY operation)",
+    "RULE 15: Visible Tracking (MUST display checkpoint box)",
+    "RULE 17: Next Steps (MUST display at end of response)"
+  ],
+  "notes": [
+    "PostToolUse hooks run AFTER tool completion",
+    "Hooks cannot block execution but provide feedback Claude MUST address",
+    "Hook output treated as user feedback per Claude Code system instructions",
+    "If validation fails, Claude sees error and MUST fix before continuing"
+  ]
+}

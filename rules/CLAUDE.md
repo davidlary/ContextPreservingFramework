@@ -1,15 +1,44 @@
-# Enforcement Rules - [PROJECT_NAME]
+# Enforcement Rules - Context-Preserving Framework
 
 **Purpose**: Strict rules for Claude Code (concise format for token efficiency)
-**Status**: ACTIVE
+**Status**: ACTIVE - ENFORCED (Not just instructions, technically validated)
 **Version**: v4.0.1 (Integrated - combines v3.x enforcement with v4.0 RFC 2119 requirements)
 **Detailed Docs**: See project documentation for full examples and explanations
 
-**Keywords** (RFC 2119):
-- **MUST** / **SHALL** / **REQUIRED**: Absolute requirement (non-negotiable)
-- **MUST NOT** / **SHALL NOT**: Absolute prohibition
-- **SHOULD** / **RECOMMENDED**: Strong recommendation (follow unless good reason)
-- **MAY** / **OPTIONAL**: Truly optional
+---
+
+## 🚨 ENFORCEMENT: These Rules Are MANDATORY
+
+**Critical Change**: Previous versions relied on instruction-based enforcement (Claude reads rules and hopes to follow them). This caused "persistent no compliance" issues.
+
+**New Enforcement**: Multi-layered technical enforcement system
+
+**4 Enforcement Layers**:
+1. **Auto-Loading**: CLAUDE.md automatically read by Claude Code at session start (GUARANTEED)
+2. **Explicit Instructions**: RFC 2119 MUST/SHALL keywords (STRONG PROMPTING)
+3. **Automated Validation**: PostToolUse hooks run `scripts/validate_compliance.sh` after EVERY tool call (TECHNICAL CHECK)
+4. **Feedback Loop**: Hook failures treated as user messages Claude MUST respond to (PERSISTENT CORRECTION)
+
+**What This Means**:
+- ✅ State files (RULE 14) validated automatically after every Read/Edit/Write/Bash
+- ✅ Violations detected immediately and surfaced as errors
+- ✅ Claude sees violations as user feedback and must fix them
+- ✅ Creates self-correcting feedback loop (violations cannot be silently ignored)
+
+**Documentation**: See `ENFORCEMENT_MECHANISMS.md` for complete technical details
+
+**Activation**: Hooks must be registered with `/hooks` command (see enforcement doc)
+
+**Result**: Changes problem from "persistent no compliance" to "rare transient violations that auto-correct"
+
+---
+
+## 📋 RFC 2119 Keywords (Enforcement Levels)
+
+- **MUST** / **SHALL** / **REQUIRED**: Absolute requirement (Tier 1 - Critical, validated by hooks)
+- **MUST NOT** / **SHALL NOT**: Absolute prohibition (Tier 1 - Critical)
+- **SHOULD** / **RECOMMENDED**: Strong recommendation (Tier 2 - Important, follow unless good reason)
+- **MAY** / **OPTIONAL**: Truly optional (Tier 3 - Optimization)
 
 ---
 

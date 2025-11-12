@@ -10,11 +10,12 @@
     "backward_compatibility_fix",
     "verification_documentation",
     "self_enforcement_implementation",
-    "scope_clarification_documentation"
+    "scope_clarification_documentation",
+    "mandatory_enforcement_mechanisms"
   ],
   "modules_in_progress": [],
   "modules_pending": [],
-  "last_update": "2025-01-12T16:37:45Z",
+  "last_update": "2025-01-12T22:52:30Z",
   "created_date": "2025-01-12",
   "framework_version": "4.0.1",
   "using_own_framework": true,
