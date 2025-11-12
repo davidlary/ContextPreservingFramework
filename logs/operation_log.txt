@@ -18,3 +18,10 @@
 [2025-01-12T16:25:15Z] GIT_COMMIT 68c756f State tracking updates committed
 [2025-01-12T16:25:30Z] GIT_PUSH Pushed to origin/main (4e2099e..68c756f)
 [2025-01-12T16:25:45Z] SYNC_COMPLETE Local and remote repositories synchronized
+[2025-01-12T16:35:00Z] EDIT README.md Added "Using This Framework In Your Project" section (166 lines)
+[2025-01-12T16:36:00Z] EDIT PROTOCOL_CORE_RULES.md Added SCOPE clarification section
+[2025-01-12T16:36:30Z] EDIT guides/02_SETUP_GUIDE.md Added reference to README setup section
+[2025-01-12T16:37:00Z] GIT_COMMIT 4de1b2f Documentation clarifications committed
+[2025-01-12T16:37:15Z] GIT_COMMIT a52e939 State tracking updates committed
+[2025-01-12T16:37:30Z] GIT_PUSH Pushed to origin/main (68c756f..a52e939)
+[2025-01-12T16:37:45Z] DOCS_COMPLETE Clarified per-project scope and multi-machine usage
