@@ -1,8 +1,8 @@
-# Context-Preserving Implementation Framework v3.3
+# Context-Preserving Implementation Framework v3.4
 
 **Master Navigation Hub** - Read this first, then navigate to specific files
 
-**Version**: 3.3 (Advanced Capabilities Update - January 2025)
+**Version**: 3.4 (Production Readiness Update - January 2025)
 **Purpose**: Universal framework for massive projects (coding & non-coding) without context exhaustion
 **Proven Results**: 60% fewer sessions, 87% fewer crashes, 92% faster recovery
 
@@ -51,6 +51,18 @@ Enables Claude Code to manage massive projects without hitting the 200K token co
 ### Working with a Team?
 → **Read**: `11_TEAM_COLLABORATION.md` (450 lines, 15 min)
 → Multi-developer workflows, handoffs, and coordination
+
+### Setting Up CI/CD?
+→ **Read**: `12_AUTOMATION_GUIDE.md` (550 lines, 15 min)
+→ GitHub Actions, GitLab CI, automated testing
+
+### Need Better Performance?
+→ **Read**: `13_PERFORMANCE_GUIDE.md` (500 lines, 15 min)
+→ Large file handling, state optimization, benchmarking
+
+### Recovering from Crash?
+→ **Read**: `14_RECOVERY_GUIDE.md` (520 lines, 15 min)
+→ Crash detection, auto-recovery, emergency protocols
 
 ### Want to See Examples?
 → **Read ONE example** from `09_EXAMPLES/` based on your project:
@@ -108,7 +120,10 @@ ContextPreservingFramework/
 │   ├── commit_templates.md
 │   └── metrics.md
 │
-└── 11_TEAM_COLLABORATION.md           (Multi-developer workflows)
+├── 11_TEAM_COLLABORATION.md           (Multi-developer workflows)
+├── 12_AUTOMATION_GUIDE.md             (CI/CD integration)
+├── 13_PERFORMANCE_GUIDE.md            (Optimization techniques)
+└── 14_RECOVERY_GUIDE.md               (Crash recovery procedures)
 ```
 
 ---
@@ -145,6 +160,93 @@ ContextPreservingFramework/
 | Context crashes | 15+ | 2 | **87% reduction** |
 | Recovery time | 30+ min | < 2 min | **92% faster** |
 | Test pass rate | Variable | 100% | Consistent quality |
+
+---
+
+## 🎨 What's New in v3.4
+
+### Production Readiness Update (January 2025)
+
+**Theme**: Make framework production-ready with automation, performance, and recovery
+
+**Priority 3 Improvements (3 major enhancements)**:
+
+1. **Advanced Automation** (12_AUTOMATION_GUIDE.md, ~550 lines, new file)
+   - **GitHub Actions workflows**:
+     - Basic test workflow (pytest, coverage)
+     - Framework state validation workflow
+     - Comprehensive CI pipeline (lint, test, validate, security)
+     - Deployment workflow (build, publish)
+     - Recovery prompt generation on failure
+   - **GitLab CI templates**:
+     - Complete .gitlab-ci.yml configuration
+     - Parallel test execution
+     - State validation on state file changes
+   - **Automated testing strategies**:
+     - Parallel test execution (pytest-xdist)
+     - Scheduled nightly validation
+     - Matrix testing across Python versions
+   - **CI/CD best practices**:
+     - Dependency caching
+     - Fail-fast strategies
+     - Secrets management
+     - Artifact preservation
+
+2. **Performance Optimization** (13_PERFORMANCE_GUIDE.md, ~500 lines, new file)
+   - **Large file handling**:
+     - Partial file reads (read only what you need)
+     - File splitting strategies (>1000 lines → modules)
+     - File indexing for fast lookups
+     - Line range reads with Read tool
+   - **State update optimization**:
+     - Atomic file writes (no corruption)
+     - Incremental updates (update only changed fields)
+     - Batch updates (reduce file I/O)
+     - State caching with TTL
+   - **Memory management**:
+     - File streaming (no full load)
+     - Generator patterns for large collections
+     - Explicit cleanup (gc.collect())
+     - Memory-mapped files for 1GB+ files
+   - **Git performance**:
+     - Effective .gitignore patterns
+     - Git LFS for large files
+     - Shallow clones for CI
+     - Git worktrees for parallel work
+   - **Context optimization**:
+     - File summaries (interfaces only)
+     - Reference by path, not content
+     - Compressed state representation
+   - **Benchmarking**:
+     - Performance monitoring scripts
+     - Dashboard visualization
+     - Performance targets
+
+3. **Enhanced Recovery** (14_RECOVERY_GUIDE.md, ~520 lines, new file)
+   - **Crash detection**:
+     - 4 crash types (context overflow, network timeout, state corruption, git conflict)
+     - Automated crash detection script
+     - Session abandonment detection
+   - **Automatic recovery**:
+     - State backup before recovery
+     - Restore from git history
+     - Validation of restored state
+     - Recovery instructions generation
+   - **State corruption**:
+     - Comprehensive state validator
+     - Consistency checks
+     - Automatic repair attempts
+     - Backup creation before repair
+   - **Emergency protocols**:
+     - Complete state loss recovery
+     - Rebuild from git history
+     - Nuclear option (fresh start with archive)
+   - **Recovery validation**:
+     - Comprehensive validation checklist
+     - Test execution after recovery
+     - Git conflict verification
+
+**Result**: Framework is now production-ready with enterprise-grade automation, performance, and recovery capabilities
 
 ---
 
@@ -356,9 +458,12 @@ When stuck:
 | 07_TESTING_GUIDE.md | 1550 | 25K | During validation |
 | 08_TROUBLESHOOTING.md | 400 | 10K | When issues arise |
 | 11_TEAM_COLLABORATION.md | 450 | 11K | When working with teams |
+| 12_AUTOMATION_GUIDE.md | 550 | 12K | Setting up CI/CD |
+| 13_PERFORMANCE_GUIDE.md | 500 | 11K | Performance optimization |
+| 14_RECOVERY_GUIDE.md | 520 | 12K | Crash recovery |
 | ONE example | 300 | 7K | Once for your project type |
 
-**Maximum context** (worst case - setup session): ~65K tokens (32.5%)
+**Maximum context** (worst case - setup session): ~100K tokens (50%)
 **Typical context** (daily work): ~15K tokens (7.5%)
 
 ---
@@ -419,7 +524,31 @@ A: Use lightweight mode (<5K LOC, solo developer). Use full framework (>5K LOC o
 
 ## 📄 Version History
 
-**v3.3** (January 2025) - Current
+**v3.4** (January 2025) - Current
+- **Production readiness and operational excellence**
+- Advanced automation (12_AUTOMATION_GUIDE.md, ~550 lines, new)
+  - GitHub Actions workflows (test, validate, deploy)
+  - GitLab CI templates
+  - State validation in CI pipelines
+  - Automated testing strategies
+  - Deployment automation
+  - Docker build automation
+- Performance optimization (13_PERFORMANCE_GUIDE.md, ~500 lines, new)
+  - Large file handling strategies
+  - State update optimization (atomic writes, batching, caching)
+  - Memory management techniques
+  - Git performance optimization
+  - Context window optimization
+  - Benchmarking and monitoring
+- Enhanced recovery (14_RECOVERY_GUIDE.md, ~520 lines, new)
+  - Crash detection mechanisms (4 types)
+  - Automatic recovery procedures
+  - State corruption detection and repair
+  - Session timeout handling
+  - Recovery validation
+  - Emergency recovery protocols
+
+**v3.3** (January 2025)
 - **Advanced capabilities for large-scale development**
 - Large project scalability guidance (02_SETUP_GUIDE.md)
   - 1M+ LOC handling strategies
