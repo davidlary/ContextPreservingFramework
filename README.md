@@ -1,8 +1,8 @@
-# Context-Preserving Implementation Framework v3.2
+# Context-Preserving Implementation Framework v3.3
 
 **Master Navigation Hub** - Read this first, then navigate to specific files
 
-**Version**: 3.2 (Universal Applicability Update - January 2025)
+**Version**: 3.3 (Advanced Capabilities Update - January 2025)
 **Purpose**: Universal framework for massive projects (coding & non-coding) without context exhaustion
 **Proven Results**: 60% fewer sessions, 87% fewer crashes, 92% faster recovery
 
@@ -40,12 +40,17 @@ Enables Claude Code to manage massive projects without hitting the 200K token co
 → Contains implementation instructions for 3 core scripts
 
 ### Running Validation Tests?
-→ **Read**: `07_TESTING_GUIDE.md` (400 lines, 12 min)
+→ **Read**: `07_TESTING_GUIDE.md` (1550 lines, 20 min)
 → Progressive testing (one test at a time)
+→ Integration testing patterns and examples
 
 ### Having Problems?
 → **Read**: `08_TROUBLESHOOTING.md` (400 lines, 12 min)
 → Find your issue, read solution only
+
+### Working with a Team?
+→ **Read**: `11_TEAM_COLLABORATION.md` (450 lines, 15 min)
+→ Multi-developer workflows, handoffs, and coordination
 
 ### Want to See Examples?
 → **Read ONE example** from `09_EXAMPLES/` based on your project:
@@ -87,7 +92,7 @@ ContextPreservingFramework/
 │   └── schema_validation.md
 │
 ├── 06_SCRIPTS_GUIDE.md                (Script implementation instructions)
-├── 07_TESTING_GUIDE.md                (Progressive validation tests)
+├── 07_TESTING_GUIDE.md                (Progressive validation + integration tests)
 ├── 08_TROUBLESHOOTING.md              (Common issues & solutions)
 │
 ├── 09_EXAMPLES/                       (Project-specific examples)
@@ -97,11 +102,13 @@ ContextPreservingFramework/
 │   ├── example_book_writing.md
 │   └── example_documentation.md
 │
-└── 10_REFERENCE/                      (Quick lookup tables)
-    ├── token_costs.md
-    ├── state_schemas.md
-    ├── commit_templates.md
-    └── metrics.md
+├── 10_REFERENCE/                      (Quick lookup tables)
+│   ├── token_costs.md
+│   ├── state_schemas.md
+│   ├── commit_templates.md
+│   └── metrics.md
+│
+└── 11_TEAM_COLLABORATION.md           (Multi-developer workflows)
 ```
 
 ---
@@ -141,7 +148,62 @@ ContextPreservingFramework/
 
 ---
 
-## 🎨 What's New in v3.1
+## 🎨 What's New in v3.3
+
+### Advanced Capabilities Update (January 2025)
+
+**Theme**: Scale from tiny to massive projects, support solo and team development
+
+**Priority 2 Improvements (4 major enhancements)**:
+
+1. **Large Project Scalability** (02_SETUP_GUIDE.md, ~460 lines)
+   - Handling 1M+ lines of code projects
+   - Memory-constrained environment optimization (4GB RAM systems)
+   - Multi-year project patterns and recovery strategies
+   - Monorepo vs multi-repo decision guidance
+   - Incremental migration strategies for existing projects
+
+2. **Lightweight Mode** (02_SETUP_GUIDE.md, ~245 lines)
+   - Minimal 3-file setup for projects <5K LOC
+   - Simplified workflow without framework overhead
+   - When to use full vs lightweight mode decision tree
+   - Quick start guide (5 minutes to productive)
+
+3. **Integration Testing Expansion** (07_TESTING_GUIDE.md, ~760 lines)
+   - Integration testing patterns overview
+   - API testing examples:
+     - REST API with Python/pytest
+     - GraphQL API with JavaScript/Jest
+   - Database integration examples:
+     - Transaction testing with SQLAlchemy
+     - Migration testing with Knex
+   - External service mocking examples:
+     - HTTP API mocking with Python/responses
+     - Weather API mocking with JavaScript/nock
+   - Integration testing best practices
+   - Unit vs integration test decision tree
+
+4. **Team Collaboration Support** (11_TEAM_COLLABORATION.md, ~450 lines, new file)
+   - Multi-developer workflow patterns (3 types: independent, dependent, parallel)
+   - Module ownership strategies:
+     - Module assignment (2-4 developers)
+     - Feature branches (5+ developers)
+     - Pair programming with handoffs
+   - Handoff procedures with templates and checklists
+   - Shared state management protocols
+   - Code review checklist for framework projects
+   - Conflict resolution procedures (4 types)
+   - Team communication patterns (standups, async, weekly syncs)
+
+**Result**: Framework now scales from solo 1K LOC projects to team-based 1M+ LOC projects
+
+---
+
+## 🎨 What's New in v3.2
+
+### Universal Applicability Update (January 2025)
+
+**Theme**: True universal applicability (comprehensive evaluation implemented)
 
 ### Autonomous Readiness Improvements (January 2025)
 
@@ -291,11 +353,12 @@ When stuck:
 | 02_SETUP_GUIDE.md | 500 | 12K | Once (setup) |
 | 04_CORE_WORKFLOW.md | 500 | 12K | Once, then reference |
 | 06_SCRIPTS_GUIDE.md | 400 | 10K | When implementing scripts |
-| 07_TESTING_GUIDE.md | 400 | 10K | During validation |
+| 07_TESTING_GUIDE.md | 1550 | 25K | During validation |
 | 08_TROUBLESHOOTING.md | 400 | 10K | When issues arise |
+| 11_TEAM_COLLABORATION.md | 450 | 11K | When working with teams |
 | ONE example | 300 | 7K | Once for your project type |
 
-**Maximum context** (worst case - setup session): ~50K tokens (25%)
+**Maximum context** (worst case - setup session): ~65K tokens (32.5%)
 **Typical context** (daily work): ~15K tokens (7.5%)
 
 ---
@@ -347,13 +410,38 @@ A: `08_TROUBLESHOOTING.md` - Find your issue, read solution
 A: Yes! Check `09_EXAMPLES/` for similar project, adapt as needed
 
 **Q: Do I need all the enhancements?**
-A: Yes in v3.0 - they're integrated into core workflow (not optional)
+A: Yes in v3.0+ - they're integrated into core workflow (not optional)
+
+**Q: Should I use lightweight mode or full framework?**
+A: Use lightweight mode (<5K LOC, solo developer). Use full framework (>5K LOC or team-based)
 
 ---
 
 ## 📄 Version History
 
-**v3.2** (January 2025) - Current
+**v3.3** (January 2025) - Current
+- **Advanced capabilities for large-scale development**
+- Large project scalability guidance (02_SETUP_GUIDE.md)
+  - 1M+ LOC handling strategies
+  - Memory-constrained environment optimizations
+  - Multi-year project patterns
+- Lightweight mode for small projects (02_SETUP_GUIDE.md)
+  - Minimal 3-file setup for <5K LOC projects
+  - Simplified workflow without complexity overhead
+- Comprehensive integration testing (07_TESTING_GUIDE.md, ~760 lines added)
+  - API testing examples (REST, GraphQL)
+  - Database integration patterns (transactions, migrations)
+  - External service mocking (Python/responses, JavaScript/nock)
+  - Integration vs unit testing decision trees
+- Team collaboration support (11_TEAM_COLLABORATION.md, new)
+  - Multi-developer workflow patterns
+  - Module ownership strategies (3 approaches)
+  - Handoff procedures and templates
+  - Shared state management protocols
+  - Code review checklist for framework projects
+  - Conflict resolution procedures
+
+**v3.2** (January 2025)
 - **True universal applicability** (comprehensive evaluation implemented)
 - Expanded project type coverage: 27 types (was 10)
   - Infrastructure (IaC, Containers, CI/CD, Config)
@@ -370,6 +458,16 @@ A: Yes in v3.0 - they're integrated into core workflow (not optional)
   - Single responsibility test
   - Domain-specific patterns (5 domains)
   - Decomposition algorithm (6 steps)
+
+**v3.1** (January 2025)
+- 100% autonomous readiness (eliminates all ambiguity)
+- Project type decision tree
+- Work unit sizing edge cases
+- Checkpoint decision algorithm
+- Validation tables (all project types)
+- Edge case handling (5 scenarios)
+- Rule hierarchy (3 tiers)
+- Recovery prompt validation
 
 **v3.1** (January 2025)
 - 100% autonomous readiness (eliminates all ambiguity)
