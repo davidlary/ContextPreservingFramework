@@ -3,8 +3,8 @@
   "version": "4.0.1",
   "project_type": "documentation",
   "language": "markdown",
-  "current_phase": "maintenance",
-  "current_module": null,
+  "current_phase": "checkpoint",
+  "current_module": "checkpoint_001",
   "modules_complete": [
     "v4.0.1_integration",
     "backward_compatibility_fix",
