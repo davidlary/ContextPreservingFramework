@@ -179,6 +179,60 @@ Claude will read the compressed protocol (~1500 tokens) and apply it to your cur
 | **Team project** | Option 2 (Manual Setup) | Explicit rules, shared state, documentation |
 | **One-off task** | Option 3 (Quick Reference) | Lightweight, no project changes |
 | **Multiple Dropbox machines** | Option 2 (Manual Setup) | Files sync automatically, consistent across machines |
+| **Want guaranteed compliance** | **Option 4 (Technical Enforcement)** | **Automated validation, feedback loops, no silent violations** |
+
+---
+
+### Option 4: Activate Technical Enforcement (Recommended)
+
+**For maximum compliance** - activate automated validation hooks:
+
+#### Step 1: Copy enforcement files to your project
+
+```bash
+cd /path/to/YourProject
+
+# Copy validation script
+cp /path/to/ContextPreservingFramework/scripts/validate_compliance.sh ./scripts/
+chmod +x scripts/validate_compliance.sh
+
+# Copy hooks configuration (optional - for reference)
+cp /path/to/ContextPreservingFramework/.claude/hooks/compliance_enforcement.json ./.claude/hooks/
+```
+
+#### Step 2: Register PostToolUse hooks with Claude Code
+
+```bash
+# In Claude Code, use /hooks command:
+/hooks add PostToolUse "Read|Edit|Write" "bash scripts/validate_compliance.sh file_operation"
+/hooks add PostToolUse "Bash" "bash scripts/validate_compliance.sh bash_operation"
+```
+
+#### Step 3: Verify hooks active
+
+```bash
+/hooks list
+# Should show 2 PostToolUse hooks registered
+```
+
+#### Step 4: Test validation
+
+```bash
+# Make a change and validation should run automatically
+echo "test" > test.txt
+# You should see validation output after the operation
+```
+
+**What this does**:
+- ✅ Validates Rules 14-17 automatically after EVERY operation
+- ✅ Checks state files updated, valid JSON, recent timestamps
+- ✅ Checks git status, warns if uncommitted changes
+- ✅ Creates feedback loop: violations surfaced, must be corrected
+- ✅ Addresses "persistent no compliance" through technical enforcement
+
+**Best for**: Anyone who wants guaranteed compliance, not just instructions
+
+**See**: `ENFORCEMENT_MECHANISMS.md` for complete technical details
 
 ---
 
@@ -292,10 +346,16 @@ v4.0 incorporates latest AI agent research:
 ContextPreservingFramework/
 ├── README.md                              ← YOU ARE HERE (start here)
 ├── PROTOCOL_CORE_RULES.md                 ← Quick reference (~1500 tokens, 5 min)
+├── ENFORCEMENT_MECHANISMS.md              ← NEW: Multi-layered enforcement (650+ lines)
+├── GIT_AUTOMATION_REQUIREMENTS.md         ← NEW: Git automation clarification (500+ lines)
 ├── V3_V4_INTEGRATION_ANALYSIS.md          ← Integration design doc
 ├── RESEARCH_ANALYSIS_2025.md              ← Research foundation (2025 AI agent studies)
 ├── PARADIGM_SHIFT_v4.0.md                 ← Design evolution notes
 ├── CLAUDE_AUTONOMOUS_PROTOCOL.md          ← Detailed protocol spec (for reference)
+├── scripts/                               ← NEW: Enforcement automation
+│   └── validate_compliance.sh             ← Validates Rules 14-17 after every operation
+├── .claude/hooks/                         ← NEW: PostToolUse hook configuration
+│   └── compliance_enforcement.json        ← Automatic validation trigger
 └── guides/                                ← Comprehensive setup guides
     ├── 01_PHILOSOPHY.md                   ← Framework philosophy
     ├── 02_SETUP_GUIDE.md                  ← Full setup (30-45 min, with decision trees)
@@ -509,6 +569,25 @@ Starting with Module 1.1: User database schema..."
   - Git operations (4 points)
   - Display requirements (4 points)
   - Context management (3 points)
+
+✅ **Multi-Layered Enforcement System** (NEW - Addresses "persistent no compliance")
+  - **Layer 1**: Auto-loading (CLAUDE.md read at session start - GUARANTEED)
+  - **Layer 2**: Explicit Instructions (RFC 2119 MUST/SHALL keywords - STRONG)
+  - **Layer 3**: Automated Validation (PostToolUse hooks + validation script - TECHNICAL)
+  - **Layer 4**: Feedback Loops (Violations surfaced, must be corrected - PERSISTENT)
+  - See `ENFORCEMENT_MECHANISMS.md` (650+ lines)
+
+✅ **Git Automation** (NEW - State files committed automatically)
+  - Validation checks git status before checkpoint display
+  - Warns if uncommitted changes detected
+  - Creates feedback loop: "commit before checkpoint box"
+  - See `GIT_AUTOMATION_REQUIREMENTS.md` (500+ lines)
+
+✅ **Validation Script** (NEW - Technical enforcement)
+  - `scripts/validate_compliance.sh` (200+ lines)
+  - Validates RULE 14 (state tracking), RULE 15 (checkpoints), RULE 16 (git), RULE 17 (next steps)
+  - Runs automatically via PostToolUse hooks after EVERY operation
+  - Returns ✅ PASSED or ❌ FAILED with specific violations
 
 ✅ **Visible Progress Tracking**
   - Checkpoint boxes after every operation (RULE 15)

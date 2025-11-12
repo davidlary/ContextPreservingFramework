@@ -18,6 +18,8 @@
 
 **Using this in YOUR project?** See [README.md § Using This Framework In Your Project](../README.md#-using-this-framework-in-your-project) for setup instructions.
 
+**Want technical enforcement?** See [README.md § Option 4: Activate Technical Enforcement](../README.md#option-4-activate-technical-enforcement-recommended) to enable automated validation hooks.
+
 ---
 
 ## 🚨 SESSION START INSTRUCTION (READ THIS FIRST)
