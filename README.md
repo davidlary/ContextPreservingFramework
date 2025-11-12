@@ -1,16 +1,27 @@
-# Context-Preserving Framework v4.0
+# Context-Preserving Framework v4.0.1
 
-**Autonomous Planning & Execution Protocol for Claude Code**
+**Comprehensive Context Management System for Claude Code**
 
-**Version**: 4.0.0 (Autonomous Internal Protocol)
-**Purpose**: Enable Claude Code to automatically manage large projects without context exhaustion
-**Application**: Automatic - zero user setup required
+**Version**: 4.0.1
+**Purpose**: Enable Claude Code to manage large projects without context exhaustion
+**Approach**: Two paths - Quick start OR Comprehensive setup
 
 ---
 
 ## 🎯 What Is This?
 
-**v4.0 is an autonomous internal protocol** that Claude Code automatically applies when working on large/complex projects. Unlike previous versions (user-facing setup guides), v4.0 operates **transparently** - users simply describe what they want, and Claude handles everything.
+**The Context-Preserving Framework v4.0.1** is a comprehensive system that enables Claude Code to:
+- ✅ Manage projects of any size without running out of context (200K token window)
+- ✅ Work autonomously with 19 enforcement rules and 33-point validation
+- ✅ Maintain 100% test coverage and comprehensive documentation
+- ✅ Recover seamlessly from crashes or interruptions
+- ✅ Support teams with shared state and handoff procedures
+
+**Two ways to use it:**
+1. **Quick Start**: Read compressed protocol (~1500 tokens, 5 min), Claude auto-initializes
+2. **Comprehensive Setup**: Follow detailed guides with decision trees and templates (30-45 min)
+
+Both paths use the same underlying enforcement system with identical capabilities.
 
 ### User Experience
 
@@ -67,7 +78,7 @@ Claude: [INTERNAL: Checkpoint loaded, summaries restored]
 | User learning curve | 14 guides, 6K lines | None (transparent) | **Eliminated** |
 | Framework visibility | High (user sees mechanics) | Zero (transparent) | **100% invisible** |
 
-### Proven Results (v3.x baseline)
+### Proven Results
 
 - 60% fewer sessions needed
 - 87% fewer context crashes
@@ -104,19 +115,31 @@ v4.0 incorporates latest AI agent research:
 
 ---
 
-## 📁 Framework Structure (v4.0)
+## 📁 Framework Structure (v4.0.1)
 
 ```
 ContextPreservingFramework/
-├── README.md                              ← YOU ARE HERE
-├── CLAUDE_AUTONOMOUS_PROTOCOL.md          ← Core protocol (900 lines)
-├── RESEARCH_ANALYSIS_2025.md              ← Research foundation
-├── PARADIGM_SHIFT_v4.0.md                 ← v3→v4 transition guide
-└── LEGACY_v3/                             ← Archived v3.4 guides (reference)
-    ├── 01_PHILOSOPHY.md
-    ├── 02_SETUP_GUIDE.md
-    ├── 04_CORE_WORKFLOW.md
-    └── ... (14 guides)
+├── README.md                              ← YOU ARE HERE (start here)
+├── PROTOCOL_CORE_RULES.md                 ← Quick reference (~1500 tokens, 5 min)
+├── V3_V4_INTEGRATION_ANALYSIS.md          ← Integration design doc
+├── RESEARCH_ANALYSIS_2025.md              ← Research foundation (2025 AI agent studies)
+├── PARADIGM_SHIFT_v4.0.md                 ← Design evolution notes
+├── CLAUDE_AUTONOMOUS_PROTOCOL.md          ← Detailed protocol spec (for reference)
+└── guides/                                ← Comprehensive setup guides
+    ├── 01_PHILOSOPHY.md                   ← Framework philosophy
+    ├── 02_SETUP_GUIDE.md                  ← Full setup (30-45 min, with decision trees)
+    ├── 03_TEMPLATES/                      ← Project templates
+    ├── 04_CORE_WORKFLOW.md                ← Daily workflow patterns
+    ├── 05_ENHANCEMENTS/                   ← Optional enhancements
+    ├── 06_SCRIPTS_GUIDE.md                ← Automation scripts
+    ├── 07_TESTING_GUIDE.md                ← Validation & testing
+    ├── 08_TROUBLESHOOTING.md              ← Common issues & solutions
+    ├── 09_EXAMPLES/                       ← Real-world examples
+    ├── 10_REFERENCE/                      ← Technical reference
+    ├── 11_TEAM_COLLABORATION.md           ← Multi-developer workflows
+    ├── 12_AUTOMATION_GUIDE.md             ← CI/CD integration
+    ├── 13_PERFORMANCE_GUIDE.md            ← Large file optimization
+    └── 14_RECOVERY_GUIDE.md               ← Crash recovery
 ```
 
 ---
@@ -277,63 +300,134 @@ Starting with Module 1.1: User database schema..."
 
 ---
 
-### Migration Guide
+### Research & Design Notes
+
+**`RESEARCH_ANALYSIS_2025.md`**
+- 2025 AI agent research findings
+- Optimal context thresholds
+- Hierarchical decomposition patterns
+- Checkpoint/recovery patterns
+- Performance optimizations
+
+**`V3_V4_INTEGRATION_ANALYSIS.md`**
+- Integration design decisions
+- Feature preservation analysis
+- Enhancement specifications
 
 **`PARADIGM_SHIFT_v4.0.md`**
-- v3.4 → v4.0 transition
-- What changed and why
+- Framework evolution notes
+- Design philosophy
 - Technical comparisons
-- Migration steps for existing projects
-
-**Read this if**: You used v3.x and want to understand v4.0 changes
 
 ---
 
-### Legacy Documentation
+## 📦 What's Included
 
-**`LEGACY_v3/`** (Archived)
-- All v3.4 guides (14 files, 6000+ lines)
-- User-facing setup instructions
-- Manual workflows
+### Core Features
 
-**Read this if**: You need v3.x reference or maintaining legacy projects
+✅ **19 Enforcement Rules** (RFC 2119 MUST/SHALL/SHOULD/MAY)
+  - 17 original rules with 3-tier priority system
+  - RULE 18: Mandatory Testing (>80% coverage, 100% passing)
+  - RULE 19: Mandatory Auto-Documentation (5 types)
 
----
+✅ **33-Point Validation Checklist**
+  - Code quality (8 points)
+  - Testing requirements (5 points)
+  - Documentation requirements (5 points)
+  - State tracking (5 points)
+  - Git operations (4 points)
+  - Display requirements (4 points)
+  - Context management (3 points)
 
-## 🆚 v4.0 vs Previous Versions
+✅ **Visible Progress Tracking**
+  - Checkpoint boxes after every operation (RULE 15)
+  - Clear next steps formatting for recovery (RULE 17)
+  - Real-time context percentage display
 
-### v3.4 and Earlier (User-Facing)
+✅ **Research-Based Thresholds**
+  - 65% primary checkpoint (130K tokens)
+  - 75% emergency checkpoint (150K tokens)
+  - Based on 2025 AI agent research (Goose AI, Databricks, Deep Agent)
+  - Backward compatible with custom thresholds
 
-**User experience**:
-1. Read 14 guides (~6000 lines)
-2. Set up AUTONOMOUS_MODE.md
-3. Create templates and state files
-4. Validate with 6 tests
-5. Manually monitor context
-6. Manually create recovery prompts
+✅ **Automatic Summarization**
+  - Compresses completed work 95% (45K → 2K tokens)
+  - Maintains full project history in minimal tokens
+  - Enables projects of any size
 
-**Pros**: Comprehensive, well-documented
-**Cons**: High barrier to entry, manual operations, framework-visible
+✅ **Hierarchical Task Decomposition (HTDAG)**
+  - Auto-decomposes complex requests into optimal execution order
+  - Dependency graph generation
+  - Topologically sorted module sequence
 
----
+### Comprehensive Guides
 
-### v4.0 (Autonomous Protocol)
+✅ **Setup Guide** (`guides/02_SETUP_GUIDE.md` - 63KB)
+  - Phase 0: Requirements gathering (7 steps)
+  - Autonomous technology selection decision trees (language, framework, database, infra, testing)
+  - 27+ project type adaptations (coding, non-coding, infrastructure, design, maintenance, hybrid)
+  - Lightweight mode for small projects
+  - Manual setup phases with validation
 
-**User experience**:
-```
-User: "Build [complex project]"
-Claude: [automatically applies protocol]
-```
+✅ **Core Workflow Guide** (`guides/04_CORE_WORKFLOW.md`)
+  - Session start patterns (first vs subsequent)
+  - Module implementation workflow (write → test → commit)
+  - Module boundary determination guidelines
+  - Cohesion and single responsibility tests
+  - Common module patterns by domain
 
-**Pros**:
-- Zero setup (0 seconds vs 30-45 minutes)
-- Transparent (user unaware of framework)
-- Research-based (optimal thresholds)
-- Fully autonomous (no manual steps)
+✅ **Testing Guide** (`guides/07_TESTING_GUIDE.md`)
+  - 6 sequential validation tests for framework setup
+  - Success criteria by project type
+  - Integration testing patterns (API, database, external services)
 
-**Cons**:
-- Less user control (protocol decides checkpoints)
-- Black box (framework invisible to user)
+✅ **Team Collaboration Guide** (`guides/11_TEAM_COLLABORATION.md`)
+  - 3 module ownership strategies
+  - Handoff procedures with templates
+  - Shared state management protocols
+
+✅ **Automation Guide** (`guides/12_AUTOMATION_GUIDE.md`)
+  - GitHub Actions workflows
+  - GitLab CI templates
+  - State validation in CI/CD
+
+✅ **Performance Guide** (`guides/13_PERFORMANCE_GUIDE.md`)
+  - Large file handling (partial reads, atomic writes)
+  - Memory management
+  - Git LFS integration
+
+✅ **Recovery Guide** (`guides/14_RECOVERY_GUIDE.md`)
+  - 4 crash type detection algorithms
+  - Auto-recovery scripts
+  - State corruption detection and repair
+
+✅ **Templates Directory** (`guides/03_TEMPLATES/`)
+  - CLAUDE.md, AUTONOMOUS_MODE.md, rules template
+  - Recovery prompt template
+  - Project type-specific templates
+
+✅ **Examples and Reference Materials** (`guides/09_EXAMPLES/`, `guides/10_REFERENCE/`)
+
+### Quick Reference
+
+✅ **Compressed Protocol** (`PROTOCOL_CORE_RULES.md`)
+  - ~1500 tokens (0.75% of context)
+  - All 19 rules in compressed format
+  - For experienced users or quick refresher
+
+### Two Setup Paths
+
+**Path 1: Quick Start** (~5 minutes)
+- Read: `PROTOCOL_CORE_RULES.md`
+- Claude auto-initializes based on project complexity
+- Best for: Experienced users, new projects, rapid prototyping
+
+**Path 2: Comprehensive Setup** (~30-45 minutes)
+- Read: `guides/02_SETUP_GUIDE.md`
+- Follow decision trees and step-by-step instructions
+- Best for: First-time users, complex requirements, team projects, custom configurations
+
+**Both paths use identical 19-rule enforcement with 33-point validation**
 
 ---
 
@@ -376,15 +470,19 @@ Yes! Protocol adapts to:
 Protocol not activated for small projects (<1000 lines, <3 components).
 Claude works normally without framework overhead.
 
-### How do I migrate from v3.x?
+### Which path should I choose?
 
-See `PARADIGM_SHIFT_v4.0.md` for detailed migration guide.
+**Quick Start** (`PROTOCOL_CORE_RULES.md`):
+- Best for: Experienced users, simple projects, rapid prototyping
+- Time: 5 minutes
+- Content: Compressed rules (~1500 tokens)
 
-**TL;DR**:
-1. Commit current work
-2. Create `.claude/` directory
-3. Ask Claude to generate v4.0 plan from existing progress
-4. Continue automatically
+**Comprehensive Setup** (`guides/02_SETUP_GUIDE.md`):
+- Best for: First-time users, complex projects, team collaboration, custom configurations
+- Time: 30-45 minutes
+- Content: Decision trees, project type adaptations, detailed templates
+
+Both use the same 19-rule enforcement system with 33-point validation
 
 ---
 
@@ -410,45 +508,37 @@ See `PARADIGM_SHIFT_v4.0.md` for detailed migration guide.
 
 ## 📜 Version History
 
-**v4.0.0** (January 2025) - **Current**
-- 🎯 **Paradigm shift**: User-facing → Autonomous internal protocol
-- 🔬 **Research-based**: Optimal 65% threshold, HTDAG planning, automatic summarization
-- ⚡ **Zero setup**: Fully automatic detection and initialization
-- 🔄 **Transparent**: User unaware of framework mechanics
-- 📊 **Performance**: 86% more usable context, 100% setup time reduction
+**v4.0.1** (January 2025) - **Current**
+- ✨ **Comprehensive system**: 19 enforcement rules with RFC 2119 keywords (MUST/SHALL/SHOULD/MAY)
+- 🧪 **Mandatory testing**: RULE 18 requires >80% coverage, 100% passing before checkpoint
+- 📝 **Mandatory documentation**: RULE 19 requires 5 documentation types (docstrings, README, API, ARCHITECTURE, CHANGELOG)
+- 📊 **Research-based thresholds**: 65% primary, 75% emergency (based on 2025 AI agent research)
+- 🔄 **Auto-summarization**: Compress completed work 95% (45K → 2K tokens)
+- 🎯 **HTDAG algorithm**: Hierarchical task decomposition with dependency graphs
+- ✅ **33-point validation**: Comprehensive pre-checkpoint checklist
+- 🛤️ **Two paths**: Quick start (PROTOCOL_CORE_RULES.md) OR Comprehensive setup (guides/02_SETUP_GUIDE.md)
+- 📚 **14 comprehensive guides**: Setup, workflow, testing, team collaboration, automation, performance, recovery, etc.
+- 🔧 **Templates**: Project-type specific templates for coding, non-coding, infrastructure, design, maintenance
 
-**v3.4** (January 2025)
-- Production readiness (automation, performance, recovery)
-
-**v3.3** (January 2025)
-- Advanced capabilities (scalability, teams, integration testing)
-
-**v3.2** (January 2025)
-- Universal applicability (27 project types)
-
-**v3.1** (January 2025)
-- 100% autonomous readiness improvements
-
-**v3.0** (January 2025)
-- Multi-file structure, non-coding support
-
-**v2.0** (November 2024)
-- Enhanced with research, schema validation
-
-**v1.5** (October 2024)
-- 35% threshold (major breakthrough)
-
-**v1.0** (Initial)
-- Basic instructions, 85% threshold
+**Previous Versions** (January 2025)
+- v3.4: Production readiness (automation, performance, recovery)
+- v3.3: Advanced capabilities (scalability, teams, integration testing)
+- v3.2: Universal applicability (27 project types)
+- v3.1: Autonomous readiness improvements
+- v3.0: Multi-file structure, non-coding support
+- v2.0: Enhanced with research, schema validation
+- v1.5: 35% threshold (major breakthrough)
+- v1.0: Basic instructions, 85% threshold
 
 ---
 
 ## 🔗 Quick Links
 
-**Core Protocol**: `CLAUDE_AUTONOMOUS_PROTOCOL.md`
-**Research**: `RESEARCH_ANALYSIS_2025.md`
-**Migration**: `PARADIGM_SHIFT_v4.0.md`
-**Legacy Docs**: `LEGACY_v3/`
+**Quick Start**: `PROTOCOL_CORE_RULES.md` (~1500 tokens, 5 min)
+**Full Setup**: `guides/02_SETUP_GUIDE.md` (comprehensive, 30-45 min)
+**Core Workflow**: `guides/04_CORE_WORKFLOW.md` (daily patterns)
+**Research Foundation**: `RESEARCH_ANALYSIS_2025.md` (2025 AI agent studies)
+**Integration Analysis**: `V3_V4_INTEGRATION_ANALYSIS.md` (design notes)
 **GitHub**: https://github.com/davidlary/ContextPreservingFramework
 
 ---
