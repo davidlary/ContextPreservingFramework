@@ -65,18 +65,23 @@ Claude: [INTERNAL: Checkpoint loaded, summaries restored]
 
 ---
 
-## 📊 Performance (Research-Based)
+## 📊 Performance & Capabilities
 
-### v4.0 vs v3.4 Improvements
+### Two Setup Paths in v4.0.1
 
-| Metric | v3.4 (User Setup) | v4.0 (Autonomous) | Improvement |
-|--------|-------------------|-------------------|-------------|
-| Setup time | 30-45 minutes | 0 seconds | **100% reduction** |
-| Usable context | 70K tokens (35%) | 130K tokens (65%) | **86% increase** |
-| Checkpoint trigger | Manual | Automatic | **Fully autonomous** |
-| Recovery time | ~2 minutes | <30 seconds | **75% faster** |
-| User learning curve | 14 guides, 6K lines | None (transparent) | **Eliminated** |
-| Framework visibility | High (user sees mechanics) | Zero (transparent) | **100% invisible** |
+v4.0.1 offers **both** quick start and comprehensive setup - you choose based on your needs:
+
+| Feature | Quick Start Path | Comprehensive Setup Path | Your Choice |
+|---------|------------------|--------------------------|-------------|
+| **Setup time** | 5 minutes | 30-45 minutes | Quick for rapid prototyping, Comprehensive for first-time or complex projects |
+| **Reading required** | PROTOCOL_CORE_RULES.md (~1500 tokens) | guides/02_SETUP_GUIDE.md (63KB) | Quick for experienced users, Comprehensive for step-by-step guidance |
+| **Context threshold** | 65%/75% (research-based, configurable) | 35% or 65%/75% (user choice) | Both support custom thresholds via config |
+| **Checkpoint trigger** | Automatic at threshold | Automatic at threshold | Same in both paths |
+| **Recovery** | Automatic (<30 sec) | Automatic (<30 sec) | Same in both paths |
+| **Enforcement** | 19 rules, 33-point validation | 19 rules, 33-point validation | Identical enforcement |
+| **Guides available** | All 14 guides available | All 14 guides used in setup | Same guides, different entry point |
+
+**Key insight**: Both paths use the **identical underlying system** - the only difference is the entry point (quick reference vs comprehensive guide).
 
 ### Proven Results
 

@@ -233,10 +233,32 @@ function resolve_rule_conflict(rules_in_conflict):
 - **MUST** use recovery prompts for session continuity
 - **MUST** apply automatic summarization: Compress completed work (95% token reduction)
 
-**Backward Compatibility**:
-- If user explicitly set custom threshold in config: Honor it
-- Default for new projects: 65%/75% (research-based)
-- Legacy projects with 35%: Continue using 35% unless user opts in to new thresholds
+**Backward Compatibility** (CRITICAL - MUST follow):
+
+**Detection order** (check in this sequence):
+1. **Check for explicit user configuration**:
+   - If `config/context_config.json` exists with `threshold` field: Use that value
+   - If `data/state/context_tracking.json` has `threshold_critical` set: Use that value
+   - If `CLAUDE.md` specifies threshold (e.g., "Exit at X%"): Use that value
+
+2. **Check for existing project**:
+   - If `.claude/` directory exists AND `data/state/master_state.json` has `created_before` field with date < 2025-01-12: Use 35% threshold (v3.x project)
+   - If project has commits dated before 2025-01-12: Use 35% threshold (v3.x project)
+
+3. **Default for new projects** (no config, no existing state):
+   - Use 65% primary, 75% emergency (research-based v4.0.1)
+
+**Example config file** (`config/context_config.json`):
+```json
+{
+  "threshold_warning": 50,
+  "threshold_critical": 35,
+  "threshold_emergency": 40,
+  "note": "Using conservative 35% threshold for this project"
+}
+```
+
+**Rule**: User's explicit configuration **ALWAYS** overrides defaults. Never force new thresholds on existing projects.
 
 **Validation**:
 - **MUST** verify context < threshold before each major operation
