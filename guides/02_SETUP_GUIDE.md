@@ -8,6 +8,20 @@
 
 ---
 
+## 🚀 NEW: Using This Framework In Your Own Project?
+
+**Before reading this guide**, see **[README.md § Using This Framework In Your Project](../README.md#-using-this-framework-in-your-project)** for:
+- **3 setup options** (Automatic, Manual, Quick Reference)
+- **Scope clarification** (per-project, not system-wide)
+- **Dropbox sync considerations** (multi-machine usage)
+- **Which option to choose** (decision table)
+
+**This guide** (below) is for **comprehensive manual setup** with decision trees and project type adaptations.
+
+**Most users (95%) should use Option 1 (Automatic)** - no setup needed, Claude detects complexity automatically.
+
+---
+
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)

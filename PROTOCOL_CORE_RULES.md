@@ -8,6 +8,18 @@
 
 ---
 
+## 📍 SCOPE: Where Does This Apply?
+
+**This protocol applies PER-PROJECT:**
+- ✅ Applies to **projects with `CLAUDE.md` or `rules/CLAUDE.md`** in root
+- ✅ Applies to **large projects Claude auto-detects** (>1000 lines, >3 components, >2 hours)
+- ❌ Does **NOT** apply system-wide to all Claude Code sessions
+- ❌ Does **NOT** apply to small projects (<1000 lines)
+
+**Using this in YOUR project?** See [README.md § Using This Framework In Your Project](../README.md#-using-this-framework-in-your-project) for setup instructions.
+
+---
+
 ## 🚨 SESSION START INSTRUCTION (READ THIS FIRST)
 
 **When Claude Code starts a session in ANY project using this framework:**

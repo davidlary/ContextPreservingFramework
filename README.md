@@ -45,6 +45,172 @@ Claude: [INTERNAL: Checkpoint loaded, summaries restored]
 
 ---
 
+## 🚀 Using This Framework In Your Project
+
+### Important: Scope and Application
+
+**This framework repository** (`/Dropbox/Environments/Code/ContextPreservingFramework/`) contains:
+- Documentation and guides (what you're reading now)
+- Templates for setting up the framework in YOUR projects
+- The framework repository itself uses its own rules as a demonstration
+
+**The framework is PER-PROJECT, not system-wide:**
+- ✅ Works in **any directory** where you set it up (syncs across Dropbox machines)
+- ❌ Does **NOT** automatically apply to all projects
+- ❌ Does **NOT** change system-wide Claude Code behavior
+
+Think of it like `.gitignore` or `package.json` - each project has its own.
+
+---
+
+### Option 1: Fully Automatic (Zero Setup) - Recommended for Most Users
+
+**Claude Code will automatically activate the protocol** when it detects large projects:
+- Estimated >1000 lines of code
+- Multiple interconnected components
+- Tasks >2 hours estimated
+- Keywords like "large", "complex", "full system"
+
+**No setup needed!** Just start working on your project and Claude will:
+1. Detect complexity automatically
+2. Initialize `.claude/` directory with state files
+3. Begin hierarchical planning and context management
+4. Work through your project with automatic checkpoints
+
+**Best for**: 95% of users who want zero-configuration automatic behavior
+
+---
+
+### Option 2: Explicit Setup (Manual) - For Custom Configurations
+
+If you want **explicit control** or **custom configurations** in your project:
+
+#### Step 1: Copy Template Files to Your Project
+
+```bash
+# Navigate to YOUR project directory
+cd /path/to/YourProject/
+
+# Copy the instruction file (tells Claude to use the framework)
+cp /Users/davidlary/Dropbox/Environments/Code/ContextPreservingFramework/guides/03_TEMPLATES/CLAUDE.md ./
+
+# Copy enforcement rules (19 rules with RFC 2119 keywords)
+cp -r /Users/davidlary/Dropbox/Environments/Code/ContextPreservingFramework/guides/03_TEMPLATES/rules/ ./
+```
+
+**If you're on Dropbox**: These files will sync to all your machines automatically.
+
+#### Step 2: Customize CLAUDE.md (Optional)
+
+Edit `CLAUDE.md` in your project to customize:
+- Project-specific context thresholds (default: 65%/75%)
+- Custom enforcement rules
+- Project-specific instructions
+
+```markdown
+# YourProject/CLAUDE.md
+
+**Project Type**: Web Application
+**Context Management**: Use 65%/75% thresholds
+**Special Requirements**: Must follow company coding standards
+```
+
+#### Step 3: Start Claude Code
+
+```bash
+cd /path/to/YourProject/
+# Start Claude Code - it will automatically:
+# 1. Read CLAUDE.md
+# 2. Read rules/CLAUDE.md
+# 3. Initialize state tracking (data/state/, logs/)
+# 4. Follow all 19 rules
+```
+
+**Claude will automatically**:
+- Create `data/state/` directory for state tracking
+- Create `logs/` directory for operation logs
+- Create `.claude/` directory for framework metadata
+- Initialize state files and begin tracking
+
+#### Step 4: Verify Setup
+
+Ask Claude: "Show me the framework status"
+
+You should see:
+```
+✅ Framework active
+✅ State tracking initialized
+✅ Context monitoring: 5.2K tokens (2.6%)
+✅ All 19 rules enforced
+```
+
+**Best for**:
+- Projects requiring custom thresholds
+- Team projects with specific enforcement requirements
+- Explicit documentation of framework usage
+- Projects where you want guaranteed framework activation
+
+---
+
+### Option 3: Quick Reference (No Project Setup)
+
+**For experienced users** who want Claude to reference the framework during work:
+
+```bash
+# In YOUR project, tell Claude:
+"Reference the Context-Preserving Framework at
+/Users/davidlary/Dropbox/Environments/Code/ContextPreservingFramework/PROTOCOL_CORE_RULES.md
+and follow all 19 rules for this project"
+```
+
+Claude will read the compressed protocol (~1500 tokens) and apply it to your current work.
+
+**Best for**: One-off projects, quick prototypes, experienced users
+
+---
+
+### Which Option Should You Choose?
+
+| Your Situation | Recommended Option | Why |
+|---------------|-------------------|-----|
+| **New user, large project** | Option 1 (Automatic) | Zero setup, Claude detects and activates automatically |
+| **Experienced user, custom needs** | Option 2 (Manual Setup) | Full control, explicit enforcement, team visibility |
+| **Quick prototype** | Option 1 (Automatic) | Fastest path, no overhead |
+| **Team project** | Option 2 (Manual Setup) | Explicit rules, shared state, documentation |
+| **One-off task** | Option 3 (Quick Reference) | Lightweight, no project changes |
+| **Multiple Dropbox machines** | Option 2 (Manual Setup) | Files sync automatically, consistent across machines |
+
+---
+
+### Dropbox Sync Considerations
+
+**If using Dropbox** (like this framework repository):
+
+✅ **Benefits**:
+- Template files (`CLAUDE.md`, `rules/`) sync across all your machines
+- State files sync automatically
+- Works identically on all machines
+
+⚠️ **Caution**:
+- **Don't work on the same project simultaneously on multiple machines**
+- State files (`data/state/master_state.json`) can conflict
+- Recommendation: Work on one machine at a time, or use git branches
+
+**Example workflow for multi-machine setup**:
+```bash
+# Machine 1 (work)
+cd ~/Dropbox/Projects/MyApp
+# Work with Claude...
+# Dropbox syncs files...
+
+# Machine 2 (home) - later that day
+cd ~/Dropbox/Projects/MyApp
+# Claude automatically loads synced state
+# Continue where you left off
+```
+
+---
+
 ## 🚀 Why v4.0?
 
 ### The Problem
