@@ -8,6 +8,24 @@
 
 ---
 
+## 🚨 SESSION START INSTRUCTION (READ THIS FIRST)
+
+**When Claude Code starts a session in ANY project using this framework:**
+
+1. **MUST** check for `CLAUDE.md` in project root
+2. **MUST** check for `rules/CLAUDE.md`
+3. If either exists: **MUST** read them before doing any work
+4. **MUST** check for `data/state/master_state.json` and load state
+5. **MUST** follow all 19 rules below with RFC 2119 enforcement (MUST/SHALL/SHOULD/MAY)
+
+**This applies to:**
+- User projects that set up the framework
+- **THIS framework repository itself** (we eat our own dog food)
+
+**If no framework files exist**: Work normally, protocol not activated.
+
+---
+
 ## CRITICAL: RFC 2119 Keywords
 
 - **MUST** / **SHALL** / **REQUIRED**: Absolute requirement

@@ -1,0 +1,20 @@
+{
+  "project": "ContextPreservingFramework",
+  "version": "4.0.1",
+  "project_type": "documentation",
+  "language": "markdown",
+  "current_phase": "maintenance",
+  "current_module": null,
+  "modules_complete": [
+    "v4.0.1_integration",
+    "backward_compatibility_fix",
+    "verification_documentation"
+  ],
+  "modules_in_progress": [],
+  "modules_pending": [],
+  "last_update": "2025-01-12T00:00:00Z",
+  "created_date": "2025-01-12",
+  "framework_version": "4.0.1",
+  "using_own_framework": true,
+  "notes": "This repository uses its own framework - all 19 rules apply"
+}
