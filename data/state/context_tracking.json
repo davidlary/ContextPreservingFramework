@@ -1,11 +1,11 @@
 {
-  "estimated_tokens": 36111,
+  "estimated_tokens": 39500,
   "max_tokens": 200000,
-  "usage_pct": 18.1,
+  "usage_pct": 19.8,
   "threshold_warning": 50.0,
   "threshold_critical": 65.0,
   "threshold_emergency": 75.0,
-  "operations_this_session": 8,
-  "last_update": "2025-01-12T16:21:45Z",
+  "operations_this_session": 12,
+  "last_update": "2025-01-12T16:25:45Z",
   "note": "Using research-based thresholds (65%/75%) for documentation repository"
 }
