@@ -11,11 +11,12 @@
     "verification_documentation",
     "self_enforcement_implementation",
     "scope_clarification_documentation",
-    "mandatory_enforcement_mechanisms"
+    "mandatory_enforcement_mechanisms",
+    "git_automation_clarification"
   ],
   "modules_in_progress": [],
   "modules_pending": [],
-  "last_update": "2025-01-12T22:52:30Z",
+  "last_update": "2025-01-12T23:08:15Z",
   "created_date": "2025-01-12",
   "framework_version": "4.0.1",
   "using_own_framework": true,

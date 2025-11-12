@@ -101,6 +101,25 @@ echo "   RULE 15 REQUIRES: Display checkpoint box BEFORE completing ANY response
 echo "   NOTE: This validation runs after tool calls. Claude must display box in response."
 echo -e "${GREEN}✅ Verification: This script confirms state files updated (checkpoint box required)${NC}"
 
+# RULE 16: Git Commit Protocol - Check for uncommitted changes
+echo ""
+echo "Checking RULE 16: Git Commit Protocol..."
+if command -v git &> /dev/null && [ -d ".git" ]; then
+    GIT_STATUS=$(git status --porcelain 2>/dev/null || echo "")
+    if [ -n "$GIT_STATUS" ]; then
+        echo -e "${YELLOW}⚠️  WARNING: Uncommitted changes detected${NC}"
+        echo "   RULE 16 REQUIRES: Commit before displaying checkpoint box"
+        echo "   Files with uncommitted changes:"
+        git status --short | head -10
+        echo ""
+        echo "   REQUIRED ACTION: git add -A && git commit -m 'Update state' && git push"
+    else
+        echo -e "${GREEN}✅ Git working tree: CLEAN (no uncommitted changes)${NC}"
+    fi
+else
+    echo "   Git not available or not a git repository (skipping git check)"
+fi
+
 # RULE 17: Next Steps - Reminder
 echo ""
 echo "Checking RULE 17: Next Steps..."
