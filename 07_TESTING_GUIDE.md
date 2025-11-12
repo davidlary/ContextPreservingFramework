@@ -789,5 +789,763 @@ Or:
 
 ---
 
-**Testing guide version**: 3.0
+## Integration Testing Patterns
+
+**Purpose**: Test interactions between multiple components, services, or systems
+**When to use**: After unit tests pass, before marking milestone complete
+**Critical**: Integration tests validate system behavior, not just component behavior
+
+---
+
+### What is Integration Testing?
+
+**Integration testing** validates that multiple components work together correctly:
+
+- **Unit tests**: Test individual functions/classes in isolation
+- **Integration tests**: Test how components interact (DB + API, API + external service, etc.)
+- **End-to-end tests**: Test entire user workflows (full stack)
+
+**When to write integration tests**:
+1. After implementing 2+ modules that must communicate
+2. Before milestone completion (every 3-5 modules)
+3. When adding external service integrations (APIs, databases, message queues)
+4. When refactoring shared interfaces
+
+---
+
+### Integration Testing Patterns by Project Type
+
+#### Coding Projects - Common Integration Scenarios
+
+| Scenario | What to Test | Example |
+|----------|--------------|---------|
+| **API + Database** | Data flows correctly from API to DB and back | POST /users → DB insert → GET /users returns new user |
+| **Service-to-Service** | Services communicate via defined interfaces | AuthService validates token → UserService returns user data |
+| **API + External Service** | API correctly calls third-party APIs | Payment API → Stripe API → returns transaction ID |
+| **Database Transactions** | Multi-table operations maintain consistency | Create order → deduct inventory → update user balance (all or nothing) |
+| **Message Queue Integration** | Messages published and consumed correctly | API publishes event → worker consumes → DB updated |
+
+---
+
+### API Testing Examples
+
+**Purpose**: Test HTTP APIs with real or stubbed backends
+
+#### Example 1: REST API Integration Test (Python + pytest)
+
+```python
+# tests/integration/test_api_users.py
+import pytest
+import requests
+from app import create_app, db
+from app.models import User
+
+@pytest.fixture
+def app():
+    """Create test app with test database"""
+    app = create_app('testing')
+    with app.app_context():
+        db.create_all()
+        yield app
+        db.session.remove()
+        db.drop_all()
+
+@pytest.fixture
+def client(app):
+    """Create test client"""
+    return app.test_client()
+
+@pytest.fixture
+def auth_headers():
+    """Create authentication headers"""
+    token = "test_token_12345"
+    return {"Authorization": f"Bearer {token}"}
+
+class TestUserAPI:
+    """Integration tests for User API"""
+
+    def test_create_user_and_fetch(self, client):
+        """Test POST /users then GET /users/{id}"""
+        # 1. Create user via API
+        response = client.post('/api/users', json={
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'securepass123'
+        })
+        assert response.status_code == 201
+        user_id = response.json['id']
+
+        # 2. Fetch created user
+        response = client.get(f'/api/users/{user_id}')
+        assert response.status_code == 200
+        assert response.json['username'] == 'testuser'
+        assert response.json['email'] == 'test@example.com'
+        # Password should NOT be returned
+        assert 'password' not in response.json
+
+    def test_update_user_persists_to_db(self, client, app):
+        """Test PUT /users/{id} updates database"""
+        # 1. Create user
+        response = client.post('/api/users', json={
+            'username': 'oldname',
+            'email': 'old@example.com'
+        })
+        user_id = response.json['id']
+
+        # 2. Update via API
+        response = client.put(f'/api/users/{user_id}', json={
+            'username': 'newname'
+        })
+        assert response.status_code == 200
+
+        # 3. Verify in database directly
+        with app.app_context():
+            user = User.query.get(user_id)
+            assert user.username == 'newname'
+            assert user.email == 'old@example.com'  # Unchanged
+
+    def test_delete_user_cascade(self, client, app):
+        """Test DELETE /users/{id} cascades to related records"""
+        # 1. Create user with posts
+        response = client.post('/api/users', json={
+            'username': 'testuser'
+        })
+        user_id = response.json['id']
+
+        # 2. Create posts for user
+        client.post(f'/api/users/{user_id}/posts', json={
+            'title': 'Post 1'
+        })
+        client.post(f'/api/users/{user_id}/posts', json={
+            'title': 'Post 2'
+        })
+
+        # 3. Delete user
+        response = client.delete(f'/api/users/{user_id}')
+        assert response.status_code == 204
+
+        # 4. Verify user and posts are gone
+        with app.app_context():
+            user = User.query.get(user_id)
+            assert user is None
+            posts = Post.query.filter_by(user_id=user_id).all()
+            assert len(posts) == 0  # Cascade delete worked
+
+    def test_auth_required_endpoints(self, client, auth_headers):
+        """Test protected endpoints require authentication"""
+        # 1. Without auth header - should fail
+        response = client.get('/api/users/me')
+        assert response.status_code == 401
+
+        # 2. With auth header - should succeed
+        response = client.get('/api/users/me', headers=auth_headers)
+        assert response.status_code == 200
+```
+
+**Run integration tests**:
+```bash
+# Run only integration tests
+pytest tests/integration/
+
+# With coverage
+pytest tests/integration/ --cov=app --cov-report=term
+```
+
+---
+
+#### Example 2: GraphQL API Integration Test (JavaScript + Jest)
+
+```javascript
+// tests/integration/userAPI.test.js
+const { ApolloServer } = require('apollo-server');
+const { createTestClient } = require('apollo-server-testing');
+const { typeDefs, resolvers } = require('../../src/schema');
+const { setupTestDB, teardownTestDB } = require('../helpers/db');
+
+describe('User GraphQL API Integration', () => {
+  let server, query, mutate, db;
+
+  beforeAll(async () => {
+    // Setup test database
+    db = await setupTestDB();
+
+    // Create Apollo server with test context
+    server = new ApolloServer({
+      typeDefs,
+      resolvers,
+      context: () => ({ db })
+    });
+
+    const testClient = createTestClient(server);
+    query = testClient.query;
+    mutate = testClient.mutate;
+  });
+
+  afterAll(async () => {
+    await teardownTestDB(db);
+  });
+
+  test('createUser mutation persists to database', async () => {
+    // 1. Execute mutation
+    const CREATE_USER = `
+      mutation CreateUser($input: CreateUserInput!) {
+        createUser(input: $input) {
+          id
+          username
+          email
+        }
+      }
+    `;
+
+    const { data } = await mutate({
+      mutation: CREATE_USER,
+      variables: {
+        input: {
+          username: 'testuser',
+          email: 'test@example.com'
+        }
+      }
+    });
+
+    expect(data.createUser).toMatchObject({
+      username: 'testuser',
+      email: 'test@example.com'
+    });
+
+    const userId = data.createUser.id;
+
+    // 2. Query database directly to verify persistence
+    const user = await db.collection('users').findOne({ _id: userId });
+    expect(user).toMatchObject({
+      username: 'testuser',
+      email: 'test@example.com'
+    });
+  });
+
+  test('user query with posts relationship', async () => {
+    // 1. Setup: Create user with posts in DB
+    const user = await db.collection('users').insertOne({
+      username: 'author',
+      email: 'author@example.com'
+    });
+
+    await db.collection('posts').insertMany([
+      { userId: user.insertedId, title: 'Post 1' },
+      { userId: user.insertedId, title: 'Post 2' }
+    ]);
+
+    // 2. Query user with posts via GraphQL
+    const GET_USER_WITH_POSTS = `
+      query GetUser($id: ID!) {
+        user(id: $id) {
+          id
+          username
+          posts {
+            id
+            title
+          }
+        }
+      }
+    `;
+
+    const { data } = await query({
+      query: GET_USER_WITH_POSTS,
+      variables: { id: user.insertedId.toString() }
+    });
+
+    // 3. Verify relationship loading
+    expect(data.user.username).toBe('author');
+    expect(data.user.posts).toHaveLength(2);
+    expect(data.user.posts[0].title).toBe('Post 1');
+    expect(data.user.posts[1].title).toBe('Post 2');
+  });
+});
+```
+
+---
+
+### Database Integration Examples
+
+**Purpose**: Test database operations with real database instances
+
+#### Example 3: Database Transaction Integration Test (Python + SQLAlchemy)
+
+```python
+# tests/integration/test_db_transactions.py
+import pytest
+from sqlalchemy.exc import IntegrityError
+from app import db
+from app.models import Order, Inventory, User
+from app.services.order_service import create_order
+
+@pytest.fixture
+def test_user(app):
+    """Create test user"""
+    with app.app_context():
+        user = User(username='testuser', balance=100.0)
+        db.session.add(user)
+        db.session.commit()
+        yield user
+        db.session.delete(user)
+        db.session.commit()
+
+@pytest.fixture
+def test_inventory(app):
+    """Create test inventory item"""
+    with app.app_context():
+        item = Inventory(product_id='PROD001', quantity=10, price=15.0)
+        db.session.add(item)
+        db.session.commit()
+        yield item
+        db.session.delete(item)
+        db.session.commit()
+
+class TestDatabaseTransactions:
+    """Test multi-table transaction integrity"""
+
+    def test_create_order_updates_inventory_and_balance(self, app, test_user, test_inventory):
+        """Test successful order creation updates all tables atomically"""
+        with app.app_context():
+            # Initial state
+            initial_inventory = test_inventory.quantity
+            initial_balance = test_user.balance
+
+            # Create order (should update: orders, inventory, users)
+            order = create_order(
+                user_id=test_user.id,
+                product_id='PROD001',
+                quantity=3
+            )
+
+            # Verify all changes committed atomically
+            db.session.refresh(test_user)
+            db.session.refresh(test_inventory)
+
+            assert order.status == 'confirmed'
+            assert test_inventory.quantity == initial_inventory - 3  # Inventory reduced
+            assert test_user.balance == initial_balance - (3 * 15.0)  # Balance deducted
+
+    def test_order_rollback_on_insufficient_inventory(self, app, test_user, test_inventory):
+        """Test transaction rollback when inventory check fails"""
+        with app.app_context():
+            initial_inventory = test_inventory.quantity
+            initial_balance = test_user.balance
+            initial_order_count = Order.query.count()
+
+            # Try to order more than available
+            with pytest.raises(ValueError, match="Insufficient inventory"):
+                create_order(
+                    user_id=test_user.id,
+                    product_id='PROD001',
+                    quantity=100  # More than available
+                )
+
+            # Verify NOTHING changed (full rollback)
+            db.session.refresh(test_user)
+            db.session.refresh(test_inventory)
+
+            assert test_inventory.quantity == initial_inventory  # Unchanged
+            assert test_user.balance == initial_balance  # Unchanged
+            assert Order.query.count() == initial_order_count  # No order created
+
+    def test_concurrent_order_handling(self, app, test_user, test_inventory):
+        """Test database handles concurrent orders correctly (pessimistic locking)"""
+        import threading
+
+        with app.app_context():
+            initial_inventory = test_inventory.quantity
+            results = []
+
+            def place_order():
+                try:
+                    order = create_order(
+                        user_id=test_user.id,
+                        product_id='PROD001',
+                        quantity=6
+                    )
+                    results.append(('success', order.id))
+                except Exception as e:
+                    results.append(('failed', str(e)))
+
+            # Simulate 2 concurrent orders for 6 items each (only 10 available)
+            thread1 = threading.Thread(target=place_order)
+            thread2 = threading.Thread(target=place_order)
+
+            thread1.start()
+            thread2.start()
+            thread1.join()
+            thread2.join()
+
+            # Verify: One succeeds, one fails (no overselling)
+            successes = [r for r in results if r[0] == 'success']
+            failures = [r for r in results if r[0] == 'failed']
+
+            assert len(successes) == 1  # Only one order succeeded
+            assert len(failures) == 1  # Other order failed
+
+            db.session.refresh(test_inventory)
+            assert test_inventory.quantity == initial_inventory - 6  # Only 6 sold
+```
+
+---
+
+#### Example 4: Database Migration Integration Test (Node.js + Knex)
+
+```javascript
+// tests/integration/migrations.test.js
+const knex = require('knex');
+const config = require('../../knexfile');
+
+describe('Database Migration Integration', () => {
+  let db;
+
+  beforeAll(async () => {
+    // Create fresh test database
+    db = knex(config.test);
+  });
+
+  afterAll(async () => {
+    await db.destroy();
+  });
+
+  test('migrations run successfully in order', async () => {
+    // 1. Rollback all migrations
+    await db.migrate.rollback(null, true);
+
+    // 2. Run all migrations
+    const [batch, migrations] = await db.migrate.latest();
+
+    expect(batch).toBeGreaterThan(0);
+    expect(migrations.length).toBeGreaterThan(0);
+
+    // 3. Verify tables exist
+    const tables = await db.raw(`
+      SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = 'public'
+    `);
+
+    const tableNames = tables.rows.map(t => t.table_name);
+    expect(tableNames).toContain('users');
+    expect(tableNames).toContain('posts');
+    expect(tableNames).toContain('comments');
+  });
+
+  test('migration rollback works correctly', async () => {
+    // 1. Apply all migrations
+    await db.migrate.latest();
+
+    // 2. Rollback one batch
+    const [batch, migrations] = await db.migrate.rollback();
+
+    expect(batch).toBeGreaterThan(0);
+    expect(migrations.length).toBeGreaterThan(0);
+
+    // 3. Verify rollback removed tables/columns
+    // (Specific assertions depend on what your last migration did)
+  });
+
+  test('schema matches expected structure after migrations', async () => {
+    // 1. Run all migrations
+    await db.migrate.latest();
+
+    // 2. Verify users table structure
+    const usersColumns = await db.table('users').columnInfo();
+    expect(usersColumns).toHaveProperty('id');
+    expect(usersColumns).toHaveProperty('username');
+    expect(usersColumns).toHaveProperty('email');
+    expect(usersColumns).toHaveProperty('created_at');
+
+    // 3. Verify foreign keys exist
+    const fkQuery = await db.raw(`
+      SELECT constraint_name, table_name, column_name
+      FROM information_schema.key_column_usage
+      WHERE constraint_name LIKE '%_fkey'
+    `);
+
+    const fkNames = fkQuery.rows.map(fk => fk.constraint_name);
+    expect(fkNames).toContain('posts_user_id_fkey');
+  });
+});
+```
+
+---
+
+### External Service Mocking Examples
+
+**Purpose**: Test integrations with third-party APIs without actual API calls
+
+#### Example 5: Mocking External HTTP APIs (Python + responses)
+
+```python
+# tests/integration/test_payment_service.py
+import pytest
+import responses
+from app.services.payment_service import process_payment, PaymentError
+
+class TestPaymentServiceIntegration:
+    """Test payment service with mocked Stripe API"""
+
+    @responses.activate
+    def test_successful_payment_processing(self):
+        """Test successful payment flow with Stripe API mock"""
+        # 1. Mock Stripe API response
+        responses.add(
+            responses.POST,
+            'https://api.stripe.com/v1/charges',
+            json={
+                'id': 'ch_test12345',
+                'status': 'succeeded',
+                'amount': 5000,
+                'currency': 'usd'
+            },
+            status=200
+        )
+
+        # 2. Call our payment service
+        result = process_payment(
+            amount=50.00,
+            currency='usd',
+            card_token='tok_test_card'
+        )
+
+        # 3. Verify our service handled response correctly
+        assert result['status'] == 'success'
+        assert result['transaction_id'] == 'ch_test12345'
+        assert result['amount'] == 50.00
+
+        # 4. Verify API was called with correct parameters
+        assert len(responses.calls) == 1
+        assert responses.calls[0].request.url == 'https://api.stripe.com/v1/charges'
+        assert 'amount=5000' in responses.calls[0].request.body
+
+    @responses.activate
+    def test_payment_failure_handling(self):
+        """Test payment service handles Stripe errors correctly"""
+        # 1. Mock Stripe API error response
+        responses.add(
+            responses.POST,
+            'https://api.stripe.com/v1/charges',
+            json={
+                'error': {
+                    'type': 'card_error',
+                    'code': 'card_declined',
+                    'message': 'Your card was declined.'
+                }
+            },
+            status=402
+        )
+
+        # 2. Verify our service raises appropriate exception
+        with pytest.raises(PaymentError) as exc_info:
+            process_payment(
+                amount=50.00,
+                currency='usd',
+                card_token='tok_test_card'
+            )
+
+        assert 'card_declined' in str(exc_info.value)
+        assert exc_info.value.code == 'card_declined'
+
+    @responses.activate
+    def test_payment_retry_logic(self):
+        """Test payment service retries on network errors"""
+        # 1. Mock: First call fails (timeout), second succeeds
+        responses.add(
+            responses.POST,
+            'https://api.stripe.com/v1/charges',
+            body=Exception('Connection timeout')
+        )
+        responses.add(
+            responses.POST,
+            'https://api.stripe.com/v1/charges',
+            json={'id': 'ch_retry_success', 'status': 'succeeded'},
+            status=200
+        )
+
+        # 2. Call payment service (should retry automatically)
+        result = process_payment(
+            amount=50.00,
+            currency='usd',
+            card_token='tok_test_card'
+        )
+
+        # 3. Verify retry worked
+        assert result['status'] == 'success'
+        assert result['transaction_id'] == 'ch_retry_success'
+        assert len(responses.calls) == 2  # Two attempts made
+```
+
+---
+
+#### Example 6: Mocking External APIs (JavaScript + nock)
+
+```javascript
+// tests/integration/weatherService.test.js
+const nock = require('nock');
+const { getWeather, WeatherAPIError } = require('../../src/services/weatherService');
+
+describe('Weather Service Integration', () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
+  test('successful weather data retrieval', async () => {
+    // 1. Mock OpenWeatherMap API
+    nock('https://api.openweathermap.org')
+      .get('/data/2.5/weather')
+      .query({ q: 'London', appid: 'test_api_key' })
+      .reply(200, {
+        main: { temp: 283.15, humidity: 75 },
+        weather: [{ main: 'Clouds', description: 'overcast clouds' }],
+        name: 'London'
+      });
+
+    // 2. Call our weather service
+    const weather = await getWeather('London');
+
+    // 3. Verify our service transformed response correctly
+    expect(weather).toEqual({
+      city: 'London',
+      temperature: 10,  // Converted from Kelvin to Celsius
+      humidity: 75,
+      condition: 'Clouds',
+      description: 'overcast clouds'
+    });
+  });
+
+  test('handles API rate limiting gracefully', async () => {
+    // 1. Mock rate limit response
+    nock('https://api.openweathermap.org')
+      .get('/data/2.5/weather')
+      .query(true)
+      .reply(429, {
+        message: 'Rate limit exceeded. Try again in 60 seconds.'
+      });
+
+    // 2. Verify our service handles rate limit
+    await expect(getWeather('London'))
+      .rejects
+      .toThrow(WeatherAPIError);
+
+    await expect(getWeather('London'))
+      .rejects
+      .toThrow('Rate limit exceeded');
+  });
+
+  test('caches API responses to reduce calls', async () => {
+    // 1. Mock API (should only be called once)
+    const scope = nock('https://api.openweathermap.org')
+      .get('/data/2.5/weather')
+      .query({ q: 'Paris', appid: 'test_api_key' })
+      .reply(200, {
+        main: { temp: 290.15 },
+        weather: [{ main: 'Clear' }],
+        name: 'Paris'
+      });
+
+    // 2. Call service twice
+    const weather1 = await getWeather('Paris');
+    const weather2 = await getWeather('Paris');
+
+    // 3. Verify cache worked (API called only once)
+    expect(weather1).toEqual(weather2);
+    expect(scope.isDone()).toBe(true);  // All mocked requests were called
+    // Second call should not trigger mock (would fail if it did)
+  });
+});
+```
+
+---
+
+### Integration Testing Best Practices
+
+**1. Use Test Databases**
+- Never run integration tests against production databases
+- Create dedicated test database per test suite
+- Reset database state between tests
+
+```bash
+# Example: Setup test database
+createdb myapp_test
+export DATABASE_URL=postgresql://localhost/myapp_test
+pytest tests/integration/
+```
+
+**2. Isolate External Dependencies**
+- Mock external APIs (Stripe, SendGrid, AWS, etc.)
+- Use test accounts for third-party services when mocking isn't possible
+- Implement circuit breakers for flaky external services
+
+**3. Test Failure Scenarios**
+- Happy path (success)
+- Error responses (4xx, 5xx)
+- Network timeouts
+- Database connection failures
+- Race conditions
+
+**4. Performance Considerations**
+- Integration tests are slower than unit tests (seconds vs milliseconds)
+- Run integration tests less frequently (on commit, not on save)
+- Parallelize test execution when possible
+
+```bash
+# Run tests in parallel
+pytest tests/integration/ -n 4  # 4 parallel workers
+```
+
+**5. CI/CD Integration**
+```yaml
+# Example: .github/workflows/test.yml
+name: Integration Tests
+on: [push, pull_request]
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_PASSWORD: test_pass
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run integration tests
+        env:
+          DATABASE_URL: postgresql://postgres:test_pass@localhost/test_db
+        run: |
+          pytest tests/integration/ --cov --cov-report=xml
+```
+
+---
+
+### When to Write Integration Tests vs Unit Tests
+
+| Use Unit Tests When | Use Integration Tests When |
+|---------------------|----------------------------|
+| Testing single function/class logic | Testing multiple components together |
+| Logic has no external dependencies | Testing database queries |
+| Execution is fast (<10ms per test) | Testing API endpoints |
+| Testing edge cases/error handling | Testing external service integrations |
+| Mocking would make test meaningless | Testing transaction integrity |
+
+**Example Decision Tree**:
+```
+Are you testing a single function with no I/O?
+  Yes → Unit test
+  No → Does it interact with a database/API?
+    Yes → Integration test
+    No → Does it call multiple modules?
+      Yes → Integration test
+      No → Unit test
+```
+
+---
+
+**Testing guide version**: 3.3
 **Last updated**: January 2025
