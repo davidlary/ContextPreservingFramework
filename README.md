@@ -52,11 +52,43 @@ Claude: [INTERNAL: Checkpoint loaded, summaries restored]
 
 ## 🚀 Using This Framework In Your Project
 
+### ⭐ NEW in v4.3.0: One-Command Installation
+
+The framework now includes **automated installation scripts** for easy setup:
+
+```bash
+# 1. Add framework as git submodule
+cd /path/to/YourProject
+git submodule add https://github.com/davidlary/ContextPreservingFramework.git cpf
+
+# 2. Run installer (one command!)
+cd cpf && ./cpf-install.sh && cd ..
+
+# Done! Framework is active.
+```
+
+**What the installer does:**
+- ✅ Creates `.cpf/` directory structure (config, state, logs, progress)
+- ✅ Copies configuration templates
+- ✅ Sets up Claude Code hooks (`.claude/`)
+- ✅ Creates git pre-commit hooks
+- ✅ Updates `.gitignore` automatically
+- ✅ Verifies installation
+
+**Maintenance commands:**
+- Update: `./cpf/cpf-update.sh` (pulls latest framework)
+- Uninstall: `./cpf/cpf-uninstall.sh` (removes cleanly)
+
+See [Installation Scripts](#installation-scripts) section below for details.
+
+---
+
 ### Important: Scope and Application
 
 **This framework repository** (`/Dropbox/Environments/Code/ContextPreservingFramework/`) contains:
 - Documentation and guides (what you're reading now)
 - Templates for setting up the framework in YOUR projects
+- Installation scripts for automated setup
 - The framework repository itself uses its own rules as a demonstration
 
 **The framework is PER-PROJECT, not system-wide:**
@@ -68,7 +100,47 @@ Think of it like `.gitignore` or `package.json` - each project has its own.
 
 ---
 
-### Option 1: Fully Automatic (Zero Setup) - Recommended for Most Users
+### Option 1: Automated Installation (Recommended) ⭐ NEW
+
+Use the **cpf-install.sh** script for automated setup:
+
+```bash
+# Add framework as submodule
+git submodule add https://github.com/davidlary/ContextPreservingFramework.git cpf
+
+# Run installer
+cd cpf && ./cpf-install.sh && cd ..
+```
+
+**Installation creates:**
+```
+YourProject/
+├── cpf/                    Framework (submodule)
+├── .cpf/                   Configuration & state
+│   ├── config.json         ← Customize for your project
+│   ├── AUTONOMOUS_MODE.md  ← Enable autonomous execution
+│   ├── state/              Runtime state
+│   ├── progress/           Progress tracking
+│   ├── logs/               Operation logs
+│   └── issues/             Issue tracking
+└── .claude/                Claude Code hooks (auto-copied)
+```
+
+**Benefits:**
+- ⚡ 30-second setup
+- ✅ Automatic configuration
+- ✅ Git hooks configured
+- ✅ Claude Code hooks activated
+- ✅ Installation verified
+
+**Next steps after installation:**
+1. Review `.cpf/config.json` - customize thresholds, testing requirements
+2. Update `.cpf/AUTONOMOUS_MODE.md` - set STATUS to ACTIVE if desired
+3. Start Claude Code - framework automatically active!
+
+---
+
+### Option 2: Fully Automatic (Zero Setup)
 
 **Claude Code will automatically activate the protocol** when it detects large projects:
 - Estimated >1000 lines of code
@@ -786,7 +858,17 @@ Both use the same 19-rule enforcement system with 33-point validation
 
 ## 📜 Version History
 
-**v4.2.0** (November 2025) - **Current** - MAJOR Enforcement Upgrade
+**v4.3.0** (November 2025) - **Current** - Repository Reorganization + Installation System
+- 🗂️ **MAJOR REORGANIZATION**: All documentation moved to `docs/` subdirectories (9 categories)
+- 📦 **NEW: Installation Scripts**: One-command setup with cpf-install.sh (automated installation)
+- 🛠️ **NEW: Maintenance Scripts**: cpf-update.sh (updates framework), cpf-uninstall.sh (clean removal)
+- 📚 **Documentation Index**: Comprehensive docs/README.md with navigation
+- 🎯 **Clean Root**: 6 files only (vs 37 previously) - professional structure
+- ✨ **Templates**: config_template.json, state_template.json for easy project setup
+- 🔗 **Updated Links**: All documentation references updated to new locations
+- See Session 006 for complete reorganization details
+
+**v4.2.0** (November 2025) - MAJOR Enforcement Upgrade
 - 🚀 **MAJOR UPDATE**: Comprehensive enforcement upgrade (40% → 70% technical enforcement)
 - 🤖 **NEW: SessionStart Hook (RULE 11)**: Checks `AUTONOMOUS_MODE.md` at session start, fixes permission-requesting issue
 - 🛡️ **Hooks v4.2.0**: 1 SessionStart + 6 PreToolUse + 10 PostToolUse = **17 total enforcement points** (up from 9)
