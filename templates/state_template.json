@@ -1,0 +1,66 @@
+{
+  "framework_version": "4.3.0",
+  "project": {
+    "name": "YourProject",
+    "type": "coding",
+    "initialized_at": "2025-01-13T00:00:00Z",
+    "last_updated": "2025-01-13T00:00:00Z"
+  },
+  "session": {
+    "session_id": 1,
+    "started_at": "2025-01-13T00:00:00Z",
+    "last_active": "2025-01-13T00:00:00Z",
+    "status": "active"
+  },
+  "hierarchical_plan": {
+    "total_components": 0,
+    "total_modules": 0,
+    "execution_order": [],
+    "dependencies": {}
+  },
+  "current_progress": {
+    "current_component": null,
+    "current_module": null,
+    "modules_completed": 0,
+    "modules_total": 0,
+    "percent_complete": 0
+  },
+  "context_tracking": {
+    "current_tokens": 0,
+    "percent_used": 0,
+    "last_checkpoint_tokens": 0,
+    "checkpoint_count": 0
+  },
+  "completed_modules": [],
+  "module_summaries": {},
+  "checkpoints": [],
+  "last_checkpoint": {
+    "checkpoint_id": null,
+    "timestamp": null,
+    "module_completed": null,
+    "context_percent": 0
+  },
+  "validation": {
+    "last_validation_timestamp": null,
+    "last_validation_result": "pending",
+    "validation_failures": 0
+  },
+  "git": {
+    "last_commit_hash": null,
+    "last_commit_timestamp": null,
+    "uncommitted_changes": false
+  },
+  "testing": {
+    "total_tests": 0,
+    "passing_tests": 0,
+    "failing_tests": 0,
+    "coverage_percent": 0,
+    "last_test_run": null
+  },
+  "metadata": {
+    "created_by": "cpf-install.sh",
+    "schema_version": "1.0.0",
+    "last_modified_by": "framework",
+    "notes": []
+  }
+}
