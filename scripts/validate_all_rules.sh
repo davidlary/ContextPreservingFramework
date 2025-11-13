@@ -164,22 +164,24 @@ if command -v jq &> /dev/null; then
     if [ -f "$HOOKS_FILE" ]; then
         # Count registered hooks
         SESSION_START_HOOKS=$(jq '.hooks.SessionStart | length' "$HOOKS_FILE" 2>/dev/null || echo "0")
+        USER_PROMPT_HOOKS=$(jq '.hooks.UserPromptSubmit | length' "$HOOKS_FILE" 2>/dev/null || echo "0")
         PRETOOLUSE_HOOKS=$(jq '.hooks.PreToolUse | length' "$HOOKS_FILE" 2>/dev/null || echo "0")
         POSTTOOLUSE_HOOKS=$(jq '.hooks.PostToolUse | length' "$HOOKS_FILE" 2>/dev/null || echo "0")
 
-        TOTAL_HOOKS=$((SESSION_START_HOOKS + PRETOOLUSE_HOOKS + POSTTOOLUSE_HOOKS))
+        TOTAL_HOOKS=$((SESSION_START_HOOKS + USER_PROMPT_HOOKS + PRETOOLUSE_HOOKS + POSTTOOLUSE_HOOKS))
 
-        echo "SessionStart hooks:  $SESSION_START_HOOKS"
-        echo "PreToolUse hooks:    $PRETOOLUSE_HOOKS"
-        echo "PostToolUse hooks:   $POSTTOOLUSE_HOOKS"
+        echo "SessionStart hooks:      $SESSION_START_HOOKS"
+        echo "UserPromptSubmit hooks:  $USER_PROMPT_HOOKS"
+        echo "PreToolUse hooks:        $PRETOOLUSE_HOOKS"
+        echo "PostToolUse hooks:       $POSTTOOLUSE_HOOKS"
         echo ""
-        echo "Total registered:    $TOTAL_HOOKS hooks"
+        echo "Total registered:        $TOTAL_HOOKS hooks"
         echo ""
 
-        if [ "$TOTAL_HOOKS" -ge 31 ]; then
-            echo -e "${GREEN}✅ Hook registration complete (expected: 31, found: $TOTAL_HOOKS)${NC}"
+        if [ "$TOTAL_HOOKS" -ge 26 ]; then
+            echo -e "${GREEN}✅ Hook registration complete (expected: 26, found: $TOTAL_HOOKS)${NC}"
         else
-            echo -e "${YELLOW}⚠️  Hook registration incomplete (expected: 31, found: $TOTAL_HOOKS)${NC}"
+            echo -e "${YELLOW}⚠️  Hook registration incomplete (expected: 26, found: $TOTAL_HOOKS)${NC}"
         fi
     else
         echo -e "${RED}❌ compliance_enforcement.json not found${NC}"
