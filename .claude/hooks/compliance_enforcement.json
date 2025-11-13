@@ -1,8 +1,21 @@
 {
   "name": "Framework Compliance Enforcement",
-  "version": "1.0.0",
-  "description": "Enforces mandatory compliance with Framework Rules 14-17 after tool operations",
+  "version": "2.0.0",
+  "description": "Enforces mandatory compliance with Framework Rules (PreToolUse + PostToolUse)",
   "hooks": {
+    "PreToolUse": [
+      {
+        "name": "Validate File Authorization Before Write",
+        "description": "RULE 2: Check file_manifest.json BEFORE Write operation (proactive)",
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/pre_write_check.sh"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "name": "Validate State Tracking After Edits",
@@ -30,14 +43,22 @@
   },
   "enforcement_level": "mandatory",
   "rules_enforced": [
-    "RULE 14: State Tracking (MUST update after EVERY operation)",
-    "RULE 15: Visible Tracking (MUST display checkpoint box)",
-    "RULE 17: Next Steps (MUST display at end of response)"
+    "RULE 2: Named Files Only (PreToolUse - blocks unauthorized files BEFORE creation)",
+    "RULE 14: State Tracking (PostToolUse - validates after EVERY operation)",
+    "RULE 15: Visible Tracking (PostToolUse - reminds to display checkpoint box)",
+    "RULE 17: Next Steps (PostToolUse - reminds to display at end of response)"
   ],
   "notes": [
-    "PostToolUse hooks run AFTER tool completion",
-    "Hooks cannot block execution but provide feedback Claude MUST address",
+    "NEW in v2.0.0: PreToolUse hooks validate BEFORE tool execution (proactive)",
+    "PostToolUse hooks run AFTER tool completion (reactive)",
+    "PreToolUse can block operations by exiting with error code",
+    "PostToolUse provides feedback Claude MUST address",
     "Hook output treated as user feedback per Claude Code system instructions",
-    "If validation fails, Claude sees error and MUST fix before continuing"
-  ]
+    "If PreToolUse validation fails, tool execution is blocked",
+    "If PostToolUse validation fails, Claude sees error and MUST fix before continuing"
+  ],
+  "version_history": {
+    "2.0.0": "Added PreToolUse hook for RULE 2 proactive enforcement",
+    "1.0.0": "Initial PostToolUse hooks for RULE 14, 15, 17"
+  }
 }

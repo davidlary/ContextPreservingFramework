@@ -48,3 +48,4 @@
 [2025-01-12T23:26:00Z] RECOVERY_PROMPT session_002_recovery.md created
 [2025-01-12T23:27:00Z] SESSION_END Session 001 ending at natural checkpoint
 [2025-01-12 23:45:30] MAJOR UPDATE: Fixed all 5 critical gaps - File manifest system created, RULE 2 enforcement added, plan schema created, chunking guide complete, rule priorities documented
+[2025-01-13 01:05:00] v4.1.0 RELEASE: Implemented 5 major enhancements (MCP, caching, PreToolUse, memory, commands) while preserving all v4.0.2 capabilities

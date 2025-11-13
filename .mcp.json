@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schema.anthropic.com/mcp/v1",
+  "version": "1.0.0",
+  "description": "Model Context Protocol servers for Context-Preserving Framework",
+  "mcpServers": {
+    "memory": {
+      "description": "Anthropic's official memory server for persistent context across sessions",
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-memory"],
+      "env": {
+        "MEMORY_STORAGE_PATH": ".claude/memory",
+        "MEMORY_AUTO_SAVE": "true"
+      },
+      "capabilities": {
+        "entities": true,
+        "relations": true,
+        "observations": true,
+        "semantic_search": true
+      },
+      "usage": {
+        "create_entities": "Store module summaries, decisions, completed work",
+        "search_nodes": "Retrieve context by semantic search",
+        "create_relations": "Link modules with dependencies",
+        "add_observations": "Track changes over time"
+      }
+    },
+    "filesystem": {
+      "description": "Enhanced file system access with validation",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+      "env": {},
+      "capabilities": {
+        "read_file": true,
+        "write_file": true,
+        "list_directory": true,
+        "search_files": true
+      },
+      "usage": {
+        "note": "Prefer standard Read/Write/Edit tools for state files",
+        "use_for": "Complex file operations, recursive searches"
+      }
+    }
+  },
+  "activation": {
+    "auto_connect": true,
+    "session_startup": true
+  },
+  "configuration": {
+    "max_mcp_output_tokens": 25000,
+    "enable_debug_logging": false,
+    "fallback_on_error": true
+  },
+  "notes": [
+    "MCP servers provide tools accessible via mcp__<server>__<tool> pattern",
+    "Memory server enables persistent context without manual recovery prompts",
+    "Filesystem server provides enhanced file operations (use sparingly)",
+    "All MCP tools are logged automatically by Claude Code",
+    "To enable: Claude Code loads this .mcp.json automatically",
+    "To debug: Launch Claude Code with --mcp-debug flag"
+  ],
+  "examples": {
+    "store_module": "mcp__memory__create_entities([{name: 'Module_1.2', observations: ['Complete', 'Tests passing']}])",
+    "retrieve_context": "mcp__memory__search_nodes('authentication')",
+    "link_modules": "mcp__memory__create_relations([{from: 'Module_1.2', to: 'Module_1.1', type: 'depends_on'}])"
+  }
+}

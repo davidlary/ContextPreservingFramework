@@ -1,13 +1,13 @@
 {
-  "estimated_tokens": 76000,
+  "estimated_tokens": 138000,
   "max_tokens": 200000,
-  "usage_pct": 38.0,
+  "usage_pct": 69.0,
   "threshold_warning": 50.0,
   "threshold_critical": 65.0,
   "threshold_emergency": 75.0,
-  "operations_this_session": 58,
-  "last_update": "2025-01-12T23:45:30Z",
-  "checkpoint_created": "checkpoint_002_in_progress",
-  "checkpoint_context": 38.0,
-  "note": "Using research-based thresholds (65%/75%) for documentation repository. Checkpoint at natural stopping point."
+  "operations_this_session": 95,
+  "last_update": "2025-01-13T01:05:00Z",
+  "checkpoint_created": "v4.1.0_release",
+  "checkpoint_context": 69.0,
+  "note": "v4.1.0 release complete. Major enhancements added while preserving all existing capabilities. Approaching 75% threshold - checkpoint recommended."
 }
