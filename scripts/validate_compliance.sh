@@ -1,7 +1,8 @@
 #!/bin/bash
-# validate_compliance.sh - Verify compliance with Framework Rules 14-17
+# validate_compliance.sh - Verify compliance with Framework Rules 2, 14-17
 # Usage: ./scripts/validate_compliance.sh [operation_type]
 # Returns: 0 if compliant, 1 if non-compliant (with error messages)
+# Version: 2.0.0 - Added RULE 2 (file authorization) enforcement
 
 set -euo pipefail
 
@@ -15,7 +16,7 @@ OPERATION_TYPE="${1:-general}"
 ERRORS=0
 
 echo "═══════════════════════════════════════════════════════════════════════"
-echo "🔍 COMPLIANCE VALIDATION (Framework Rules 14-17)"
+echo "🔍 COMPLIANCE VALIDATION (Framework Rules 2, 14-17)"
 echo "═══════════════════════════════════════════════════════════════════════"
 echo "Operation type: $OPERATION_TYPE"
 echo "Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
@@ -91,6 +92,76 @@ else
         echo "   RULE 14 REQUIRES: Log after EVERY operation"
     else
         echo -e "${GREEN}✅ operation_log.txt: Recently updated${NC}"
+    fi
+fi
+
+# RULE 2: Named Files Only - Verify file authorization (NEW - addresses user complaint)
+echo ""
+echo "Checking RULE 2: Named Files Only (File Authorization)..."
+
+if [ ! -f "data/state/file_manifest.json" ]; then
+    echo -e "${YELLOW}⚠️  INFO: file_manifest.json not found (skipping RULE 2 validation)${NC}"
+    echo "   To enable RULE 2 enforcement, create data/state/file_manifest.json"
+else
+    # Check if manifest is valid JSON
+    if ! jq empty data/state/file_manifest.json 2>/dev/null; then
+        echo -e "${RED}❌ VIOLATION: file_manifest.json is invalid JSON${NC}"
+        ((ERRORS++))
+    else
+        ENFORCEMENT_ACTIVE=$(jq -r '.enforcement_active' data/state/file_manifest.json)
+        if [ "$ENFORCEMENT_ACTIVE" = "true" ]; then
+            # Check recent git changes for unauthorized file creation
+            if command -v git &> /dev/null && [ -d ".git" ]; then
+                # Get list of newly created files (untracked + added)
+                UNTRACKED_FILES=$(git ls-files --others --exclude-standard 2>/dev/null || echo "")
+                RECENTLY_ADDED=$(git diff --name-only --diff-filter=A --cached 2>/dev/null || echo "")
+                NEW_FILES=$(echo -e "$UNTRACKED_FILES\n$RECENTLY_ADDED" | grep -v '^$' | sort -u)
+
+                if [ -n "$NEW_FILES" ]; then
+                    UNAUTHORIZED_COUNT=0
+                    while IFS= read -r file; do
+                        [ -z "$file" ] && continue
+
+                        # Check if file is in authorized_files
+                        IS_AUTHORIZED=$(jq -r --arg file "$file" '.authorized_files | index($file) != null' data/state/file_manifest.json)
+
+                        # Check if file matches always_allowed_patterns
+                        MATCHES_PATTERN="false"
+                        PATTERNS=$(jq -r '.always_allowed_patterns[]' data/state/file_manifest.json 2>/dev/null)
+                        for pattern in $PATTERNS; do
+                            if [[ "$file" == $pattern ]]; then
+                                MATCHES_PATTERN="true"
+                                break
+                            fi
+                        done
+
+                        # Check if extension is allowed
+                        EXTENSION="${file##*.}"
+                        IS_EXTENSION_ALLOWED=$(jq -r --arg ext ".$EXTENSION" '.always_allowed_extensions | index($ext) != null' data/state/file_manifest.json)
+
+                        if [ "$IS_AUTHORIZED" = "false" ] && [ "$MATCHES_PATTERN" = "false" ] && [ "$IS_EXTENSION_ALLOWED" = "false" ]; then
+                            echo -e "${RED}❌ VIOLATION: Unauthorized file created: $file${NC}"
+                            echo "   RULE 2 REQUIRES: Only create files specified in manifest or matching allowed patterns"
+                            echo "   REQUIRED ACTION: Either:"
+                            echo "   1. DELETE $file and UPDATE existing file instead, OR"
+                            echo "   2. ASK user for approval and add to manifest"
+                            ((UNAUTHORIZED_COUNT++))
+                            ((ERRORS++))
+                        fi
+                    done <<< "$NEW_FILES"
+
+                    if [ "$UNAUTHORIZED_COUNT" -eq 0 ]; then
+                        echo -e "${GREEN}✅ File authorization: All new files authorized${NC}"
+                    fi
+                else
+                    echo -e "${GREEN}✅ File authorization: No new files created${NC}"
+                fi
+            else
+                echo "   Git not available (skipping new file detection)"
+            fi
+        else
+            echo "   File authorization enforcement disabled in manifest"
+        fi
     fi
 fi
 

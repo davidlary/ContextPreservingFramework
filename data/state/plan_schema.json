@@ -1,0 +1,260 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Plan Schema",
+  "description": "Schema for data/state/plan.json - specifies modules, files, and execution order for large projects",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["project", "created", "modules"],
+  "properties": {
+    "project": {
+      "type": "string",
+      "description": "Project name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief project description"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Plan creation timestamp (ISO 8601)"
+    },
+    "last_update": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last plan update timestamp"
+    },
+    "total_estimated_lines": {
+      "type": "integer",
+      "description": "Total estimated lines of code across all modules"
+    },
+    "total_estimated_tokens": {
+      "type": "integer",
+      "description": "Total estimated context tokens"
+    },
+    "modules": {
+      "type": "array",
+      "description": "List of modules in topological execution order",
+      "items": {
+        "$ref": "#/definitions/module"
+      }
+    }
+  },
+  "definitions": {
+    "module": {
+      "type": "object",
+      "required": ["id", "name", "files", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+$",
+          "description": "Module ID (format: Level.Sequence, e.g., '1.1', '2.3')",
+          "examples": ["1.1", "1.2", "2.1"]
+        },
+        "name": {
+          "type": "string",
+          "description": "Module name (concise, descriptive)",
+          "examples": ["Authentication System", "Database Schema", "API Endpoints"]
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed module description"
+        },
+        "dependencies": {
+          "type": "array",
+          "description": "List of module IDs this module depends on (must complete before this)",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+$"
+          },
+          "examples": [["1.1", "1.2"]]
+        },
+        "files": {
+          "type": "array",
+          "description": "Files to be modified in this module",
+          "items": {
+            "$ref": "#/definitions/file"
+          }
+        },
+        "tests": {
+          "type": "array",
+          "description": "Test files for this module (RULE 18 requirement)",
+          "items": {
+            "$ref": "#/definitions/file"
+          }
+        },
+        "estimated_lines": {
+          "type": "integer",
+          "description": "Estimated total lines of code for this module (target: 200-300)",
+          "minimum": 1
+        },
+        "estimated_tokens": {
+          "type": "integer",
+          "description": "Estimated context tokens for this module",
+          "minimum": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "completed", "blocked", "deferred"],
+          "description": "Module status"
+        },
+        "started": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when module started"
+        },
+        "completed": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when module completed"
+        },
+        "commit": {
+          "type": "string",
+          "description": "Git commit hash for this module's completion"
+        },
+        "checkpoint": {
+          "type": "string",
+          "description": "Checkpoint ID where this module was completed"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes or issues encountered"
+        }
+      }
+    },
+    "file": {
+      "type": "object",
+      "required": ["path", "action"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Relative file path from project root",
+          "examples": ["src/auth.py", "tests/test_auth.py", "docs/api.md"]
+        },
+        "action": {
+          "type": "string",
+          "enum": ["update", "create", "delete"],
+          "description": "Action to perform on this file"
+        },
+        "estimated_lines": {
+          "type": "integer",
+          "description": "Estimated lines to add/modify",
+          "minimum": 0
+        },
+        "description": {
+          "type": "string",
+          "description": "What changes will be made to this file"
+        },
+        "functions": {
+          "type": "array",
+          "description": "Functions/classes to be added or modified",
+          "items": {
+            "type": "string"
+          },
+          "examples": [["authenticate()", "hash_password()", "verify_token()"]]
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Whether this file's changes are complete"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "project": "UserAuthenticationSystem",
+      "description": "Full user authentication with JWT tokens",
+      "created": "2025-01-12T00:00:00Z",
+      "total_estimated_lines": 800,
+      "total_estimated_tokens": 25000,
+      "modules": [
+        {
+          "id": "1.1",
+          "name": "Database Schema",
+          "description": "Create user table and migrations",
+          "dependencies": [],
+          "files": [
+            {
+              "path": "src/database/schema.py",
+              "action": "create",
+              "estimated_lines": 80,
+              "description": "Define User model with SQLAlchemy",
+              "functions": ["User", "create_tables()"]
+            }
+          ],
+          "tests": [
+            {
+              "path": "tests/test_database.py",
+              "action": "create",
+              "estimated_lines": 60,
+              "description": "Test User model and database operations"
+            }
+          ],
+          "estimated_lines": 140,
+          "estimated_tokens": 4500,
+          "status": "completed",
+          "completed": "2025-01-12T01:00:00Z",
+          "commit": "abc123"
+        },
+        {
+          "id": "1.2",
+          "name": "Authentication Logic",
+          "description": "Implement login, logout, token generation",
+          "dependencies": ["1.1"],
+          "files": [
+            {
+              "path": "src/auth/authentication.py",
+              "action": "create",
+              "estimated_lines": 200,
+              "description": "Core authentication functions",
+              "functions": ["login()", "logout()", "generate_token()", "verify_token()"]
+            },
+            {
+              "path": "src/auth/password.py",
+              "action": "create",
+              "estimated_lines": 80,
+              "description": "Password hashing and verification",
+              "functions": ["hash_password()", "verify_password()"]
+            }
+          ],
+          "tests": [
+            {
+              "path": "tests/test_auth.py",
+              "action": "create",
+              "estimated_lines": 150,
+              "description": "Test all authentication functions"
+            }
+          ],
+          "estimated_lines": 430,
+          "estimated_tokens": 13000,
+          "status": "in_progress"
+        },
+        {
+          "id": "1.3",
+          "name": "API Endpoints",
+          "description": "RESTful API for authentication",
+          "dependencies": ["1.2"],
+          "files": [
+            {
+              "path": "src/api/auth_routes.py",
+              "action": "create",
+              "estimated_lines": 150,
+              "description": "Define /login, /logout, /refresh endpoints"
+            }
+          ],
+          "tests": [
+            {
+              "path": "tests/test_api.py",
+              "action": "create",
+              "estimated_lines": 100,
+              "description": "Test API endpoints with test client"
+            }
+          ],
+          "estimated_lines": 250,
+          "estimated_tokens": 7500,
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}

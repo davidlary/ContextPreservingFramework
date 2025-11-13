@@ -1,0 +1,82 @@
+{
+  "manifest_version": "1.0.0",
+  "project": "ContextPreservingFramework",
+  "description": "Authorized file list for RULE 2 enforcement - prevents creating new code instead of updating existing",
+  "last_update": "2025-01-12T23:45:00Z",
+  "enforcement_active": true,
+  "authorized_files": [
+    "CLAUDE.md",
+    "PROTOCOL_CORE_RULES.md",
+    "README.md",
+    "CHANGELOG.md",
+    "ENFORCEMENT_MECHANISMS.md",
+    "CRITICAL_GAPS_ANALYSIS.md",
+    "RULE_PRIORITIES_AND_CONFLICTS.md",
+    "COMPREHENSIVE_FIX_SUMMARY.md",
+    "rules/CLAUDE.md",
+    "data/state/master_state.json",
+    "data/state/context_tracking.json",
+    "data/state/file_manifest.json",
+    "data/state/plan_schema.json",
+    "logs/operation_log.txt",
+    "scripts/validate_compliance.sh",
+    ".claude/hooks/compliance_enforcement.json",
+    "guides/01_PHILOSOPHY.md",
+    "guides/02_SETUP_GUIDE.md",
+    "guides/04_CORE_WORKFLOW.md",
+    "guides/06_SCRIPTS_GUIDE.md",
+    "guides/07_TESTING_GUIDE.md",
+    "guides/08_TROUBLESHOOTING.md",
+    "guides/11_TEAM_COLLABORATION.md",
+    "guides/12_AUTOMATION_GUIDE.md",
+    "guides/13_PERFORMANCE_GUIDE.md",
+    "guides/14_RECOVERY_GUIDE.md",
+    "guides/15_CHUNKING_LARGE_PROJECTS.md"
+  ],
+  "always_allowed_patterns": [
+    "README.md",
+    "CHANGELOG.md",
+    "API.md",
+    "ARCHITECTURE.md",
+    "docs/**/*.md",
+    "tests/**/*.py",
+    "tests/**/*.js",
+    "tests/**/*.go",
+    "tests/**/*.rs",
+    "*.test.js",
+    "*.spec.js",
+    "*_test.py",
+    "*_test.go",
+    "test_*.py"
+  ],
+  "always_allowed_extensions": [
+    ".md",
+    ".txt",
+    ".json",
+    ".log"
+  ],
+  "require_approval_for_new_files": true,
+  "approval_process": {
+    "description": "Before creating any file NOT in authorized_files or always_allowed_patterns",
+    "steps": [
+      "1. Check: Does file exist in authorized_files? If yes, UPDATE it",
+      "2. Check: Does file match always_allowed_patterns? If yes, CREATE it",
+      "3. Check: Does file have always_allowed_extension? If yes, CREATE it",
+      "4. Otherwise: ASK user before creating (use AskUserQuestion tool)",
+      "5. If approved: Add to authorized_files and update manifest"
+    ]
+  },
+  "usage_instructions": {
+    "for_claude": "BEFORE using Write tool to create a new file, CHECK this manifest. If file not authorized, you MUST ask user first.",
+    "for_validation_script": "After Write operations, check if new file is in manifest. If not authorized → VIOLATION.",
+    "for_users": "Add your project files to authorized_files array. Use patterns for test files."
+  },
+  "notes": [
+    "This addresses the user's critical complaint: 'persistent issue has been creating new code instead of updating the specified existing code'",
+    "RULE 2 enforcement: This manifest is the technical mechanism that prevents unauthorized file creation",
+    "For documentation-only projects: Most files will match always_allowed_patterns",
+    "For code projects: Explicitly list all source files in authorized_files",
+    "Test files: Use always_allowed_patterns (test_*.py, *.test.js, etc.)",
+    "When starting new module: Update manifest FIRST, then create files"
+  ]
+}

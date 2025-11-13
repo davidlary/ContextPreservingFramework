@@ -146,13 +146,160 @@ function resolve_rule_conflict(rules_in_conflict):
 
 ---
 
-## RULE 2: NAMED FILES ONLY
+## RULE 2: NAMED FILES ONLY (ENHANCED v2.0 - FILE MANIFEST SYSTEM)
 
-**Principle**: Only create files specified in architecture/module specifications
-**Action**: Before creating ANY file:
-  1. Check: Does file exist in documentation? If yes, update it
-  2. Check: Is file in module spec? If no, ASK before creating
-**Violation**: Unauthorized file creation (delete and use existing)
+**Principle**: Only create files authorized in manifest - UPDATE EXISTING files, don't create new ones
+**Enforcement**: MUST (Tier 2) - Technically enforced by validation script + file_manifest.json
+**Critical**: Addresses user complaint "persistent issue creating new code instead of updating existing"
+
+**Actions** (REQUIRED):
+
+### Before Using Write Tool (MANDATORY)
+
+**BEFORE creating ANY file, Claude MUST:**
+
+1. **Check if file exists** (use Read tool or Glob):
+   - If exists: **UPDATE it** (use Edit tool, NOT Write) ✅ PREFERRED
+   - If not exists: Continue to step 2
+
+2. **Check file_manifest.json** (if exists in project):
+   ```bash
+   # Check authorized files
+   jq '.authorized_files' data/state/file_manifest.json
+   jq '.always_allowed_patterns' data/state/file_manifest.json
+   ```
+
+3. **Determine if authorized**:
+   - ✅ **AUTHORIZED** if ANY of these true:
+     - File in `.authorized_files` array
+     - File matches `.always_allowed_patterns` (e.g., `test_*.py`, `*.md`)
+     - Extension in `.always_allowed_extensions` (e.g., `.md`, `.txt`, `.json`)
+   - ❌ **NOT AUTHORIZED** otherwise
+
+4. **If NOT authorized**:
+   - **MUST** use AskUserQuestion tool: "File X not in manifest. Options: (a) Update existing file Y instead, (b) Approve creating X, (c) Cancel"
+   - **MUST** wait for user approval
+   - **MUST** add to manifest if approved
+   - **MUST NOT** create file without approval
+
+5. **If authorized**:
+   - Create file with Write tool
+   - Update manifest's last_update timestamp
+
+### File Manifest Structure
+
+Location: `data/state/file_manifest.json`
+
+```json
+{
+  "authorized_files": ["src/auth.py", "src/user.py"],
+  "always_allowed_patterns": ["README.md", "test_*.py", "docs/**/*.md"],
+  "always_allowed_extensions": [".md", ".txt", ".json"],
+  "require_approval_for_new_files": true
+}
+```
+
+### Special Cases
+
+**Documentation Files** (ALWAYS ALLOWED - See RULE_PRIORITIES_AND_CONFLICTS.md):
+- README.md, CHANGELOG.md, API.md, ARCHITECTURE.md, docs/**/*.md
+- These DON'T need manifest approval (RULE 19 priority)
+
+**Test Files** (ALWAYS ALLOWED if matching pattern):
+- test_*.py, *_test.py, *.test.js, *.spec.js, *_test.go
+- These match `always_allowed_patterns`
+
+**Code Files** (.py, .js, .go, .rs, .java, .cpp):
+- **MUST** be in manifest OR approved by user
+- This prevents "creating new code instead of updating existing"
+
+### Validation
+
+**Automatic Enforcement**:
+- `scripts/validate_compliance.sh` checks RULE 2 after Write operations
+- Detects unauthorized files (untracked in git)
+- Flags violations: "❌ VIOLATION: Unauthorized file created: X"
+
+**Required Actions on Violation**:
+1. DELETE unauthorized file, OR
+2. UPDATE existing file instead, OR
+3. ASK user for approval and add to manifest
+
+### Examples
+
+**Example 1: Update Existing (CORRECT)**
+```
+User: "Add password reset to authentication"
+Claude: Checks if src/auth.py exists → YES
+Action: Use Edit tool to update src/auth.py ✅ CORRECT
+```
+
+**Example 2: Create New Without Approval (VIOLATION)**
+```
+User: "Add password reset to authentication"
+Claude: Creates src/password_reset.py ❌ WRONG
+Validation: "❌ VIOLATION: Unauthorized file created: src/password_reset.py"
+Required: DELETE and update src/auth.py instead
+```
+
+**Example 3: Ask Before Creating (CORRECT)**
+```
+User: "Add password reset to authentication"
+Claude: Checks if src/auth.py exists → NO
+        Checks file_manifest.json → src/auth.py NOT in list
+Action: Uses AskUserQuestion: "src/auth.py not in manifest. Create it or use existing file?"
+User: "Approve creation"
+Claude: Adds to manifest, then creates file ✅ CORRECT
+```
+
+**Example 4: Documentation File (ALWAYS ALLOWED)**
+```
+User: "Document the authentication system"
+Claude: Creates docs/authentication.md ✅ CORRECT (docs always allowed)
+Validation: Checks pattern → matches "docs/**/*.md" → AUTHORIZED
+```
+
+### Project Setup (For Users)
+
+**Option 1: List all files** (explicit, for code projects)
+```json
+{
+  "authorized_files": [
+    "src/main.py",
+    "src/auth.py",
+    "src/database.py",
+    "tests/test_auth.py"
+  ]
+}
+```
+
+**Option 2: Use patterns** (flexible, for documentation projects)
+```json
+{
+  "always_allowed_patterns": [
+    "docs/**/*.md",
+    "guides/**/*.md",
+    "test_*.py"
+  ]
+}
+```
+
+### If No Manifest Exists
+
+**If project doesn't have file_manifest.json**:
+- Claude SHOULD still prefer updating existing files
+- Claude SHOULD ask before creating major new files
+- Validation script will skip RULE 2 check (warns: "file_manifest.json not found")
+
+**Principle**: Even without technical enforcement, follow the spirit of RULE 2: Update existing, don't proliferate new files unnecessarily.
+
+---
+
+**Why This Matters**:
+- Prevents code fragmentation (20 small files vs 5 well-organized files)
+- Addresses user's persistent complaint: "creating new code instead of updating existing"
+- Technically enforced (not just instruction-based)
+- Validates automatically after every Write operation
 
 ---
 
