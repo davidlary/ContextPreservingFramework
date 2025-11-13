@@ -646,6 +646,41 @@ Starting with Module 1.1: User database schema..."
 
 ---
 
+## 🔬 MCP Server Integration (Optional Enhancement)
+
+**Status**: Configured for future use (v4.4.0)
+
+The framework includes **Model Context Protocol (MCP)** configuration for enhanced functionality:
+
+**Configured Servers** (`.mcp.json`):
+- 🧠 **Memory Server** - Persistent context storage across sessions
+- 📁 **Filesystem Server** - Enhanced file operations
+
+**Benefits** (when enabled):
+- Semantic search for module context
+- Relationship tracking (dependencies)
+- Persistent memory across crashes
+- No manual JSON file management
+
+**Current Status** (v4.3.0):
+- ✅ Configuration exists (`.mcp.json`)
+- ⏸️ Servers configured for auto-connect
+- ❌ Framework scripts don't use MCP yet
+- ✅ No dependency on MCP (optional)
+
+**Future** (v4.4.0):
+- MCP detection and graceful degradation
+- Memory server integration for state management
+- Enhanced recovery using persistent memory
+- Comprehensive MCP integration guide
+
+**For Now**:
+- Framework works without MCP (standard tools)
+- MCP servers will start if Claude Code supports them (harmless)
+- See [MCP Integration Status](docs/research/MCP_INTEGRATION_STATUS_AND_PLAN.md) for details
+
+---
+
 ## 📦 What's Included
 
 ### Core Features
