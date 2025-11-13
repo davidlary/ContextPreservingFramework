@@ -1,23 +1,23 @@
-# Context-Preserving Framework v4.5.2
+# Context-Preserving Framework v4.6.0
 
 **Comprehensive Context Management System for Claude Code**
 
-**Version**: 4.5.2 (MCP Integration + Quality Release)
+**Version**: 4.6.0 (Modular Architecture Release)
 **Purpose**: Enable Claude Code to manage large projects without context exhaustion
 **Approach**: Two paths - Quick start OR Comprehensive setup
-**Latest Update**: v4.5.2 (2025-11-13) - MCP Server Auto-Check + First Enhancement Audit
+**Latest Update**: v4.6.0 (2025-11-13) - Checkpoint Validation Refactoring
 
-> **🎯 NEW IN v4.5.2**: **MCP SERVER AUTO-CHECK** - Framework now automatically checks MCP servers (memory, filesystem) at session start. Ensures MCP integration is properly configured. 27 hooks total (2 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse).
+> **🎯 NEW IN v4.6.0**: **MODULAR CHECKPOINT VALIDATION** - Refactored validation system into 4 focused modules. Split pre_checkpoint_validation.sh (407 lines → 56-line wrapper + 4 modules <150 lines each). Fixed P1 Critical RULE 20 violation. All scripts now within module boundary limits. Improved maintainability and testability.
 >
-> **IN v4.5.1**: **FIRST ENHANCEMENT AUDIT COMPLETE** - Comprehensive 3.5-hour audit completed. Error detection improved (10 new patterns), error handling added to 3 scripts, test documentation updated. Framework health: 95/100 (EXCELLENT). See [Enhancement Audit](docs/analysis/ENHANCEMENT_AUDIT_20251113.md).
+> **IN v4.5.2**: **MCP SERVER AUTO-CHECK** - Framework automatically checks MCP servers (memory, filesystem) at session start. 27 hooks total (2 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse).
 >
-> **IN v4.5.0**: **COMPLETE ENFORCEMENT** - ALL 20 RULES ENFORCED (100%). Permission-requesting ELIMINATED, unauthorized file creation BLOCKED, user plans ENFORCED. See [v4.5.0 Release Notes](docs/releases/FRAMEWORK_V4.5.0_RELEASE_NOTES.md).
+> **IN v4.5.1**: **FIRST ENHANCEMENT AUDIT COMPLETE** - Comprehensive 3.5-hour audit completed. Framework health: 95/100 (EXCELLENT). See [Enhancement Audit](docs/analysis/ENHANCEMENT_AUDIT_20251113.md).
 
 ---
 
 ## 🎯 What Is This?
 
-**The Context-Preserving Framework v4.5.2** is a comprehensive system that enables Claude Code to:
+**The Context-Preserving Framework v4.6.0** is a comprehensive system that enables Claude Code to:
 - ✅ Manage projects of any size without running out of context (200K token window)
 - ✅ Work autonomously with **100% mandatory enforcement** (ALL 20 rules enforced)
 - ✅ **ELIMINATE permission-requesting** via UserPromptSubmit hook (physically blocks prompts)
