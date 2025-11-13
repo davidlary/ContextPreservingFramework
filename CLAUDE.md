@@ -10,12 +10,12 @@
 
 **Before doing ANY work in this repository, Claude Code MUST read:**
 
-1. **PROTOCOL_CORE_RULES.md** (~1500 tokens, 5 min)
+1. **docs/core/PROTOCOL_CORE_RULES.md** (~1500 tokens, 5 min)
    - Contains all 19 enforcement rules
    - RFC 2119 MUST/SHALL keywords
    - 33-point validation checklist
 
-2. **rules/CLAUDE.md** (enforcement rules)
+2. **rules/CLAUDE.md** (enforcement rules - if it exists)
    - Detailed enforcement mechanisms
    - Tier 1 Critical rules that cannot be skipped
 

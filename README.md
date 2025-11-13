@@ -1,11 +1,13 @@
-# Context-Preserving Framework v4.2.0
+# Context-Preserving Framework v4.3.0
 
 **Comprehensive Context Management System for Claude Code**
 
-**Version**: 4.2.0
+**Version**: 4.3.0 (Development - Repository Reorganization)
 **Purpose**: Enable Claude Code to manage large projects without context exhaustion
 **Approach**: Two paths - Quick start OR Comprehensive setup
-**Latest Update**: v4.2.0 (2025-11-13) - MAJOR enforcement upgrade (SessionStart hook + 70% coverage)
+**Latest Update**: v4.3.0 (2025-11-13) - Repository reorganization + installation system
+
+> **📚 DOCUMENTATION UPDATE (v4.3.0)**: All documentation has been reorganized into `docs/` subdirectories for better organization. See [docs/README.md](docs/README.md) for complete documentation index.
 
 ---
 
@@ -525,7 +527,7 @@ Starting with Module 1.1: User database schema..."
 
 ### Core Protocol
 
-**`CLAUDE_AUTONOMOUS_PROTOCOL.md`** (~900 lines)
+**`docs/core/CLAUDE_AUTONOMOUS_PROTOCOL.md`** (~900 lines)
 - Detection triggers
 - HTDAG planning algorithm
 - Context management rules
@@ -540,7 +542,7 @@ Starting with Module 1.1: User database schema..."
 
 ### Research Foundation
 
-**`RESEARCH_ANALYSIS_2025.md`**
+**`docs/research/RESEARCH_ANALYSIS_2025.md`**
 - 2025 AI agent research
 - Optimal context thresholds
 - Hierarchical decomposition patterns
@@ -833,11 +835,11 @@ Both use the same 19-rule enforcement system with 33-point validation
 
 ## 🔗 Quick Links
 
-**Quick Start**: `PROTOCOL_CORE_RULES.md` (~1500 tokens, 5 min)
-**Full Setup**: `guides/02_SETUP_GUIDE.md` (comprehensive, 30-45 min)
-**Core Workflow**: `guides/04_CORE_WORKFLOW.md` (daily patterns)
-**Research Foundation**: `RESEARCH_ANALYSIS_2025.md` (2025 AI agent studies)
-**Integration Analysis**: `V3_V4_INTEGRATION_ANALYSIS.md` (design notes)
+**Documentation Index**: `docs/README.md` (complete documentation map)
+**Quick Start**: `docs/core/PROTOCOL_CORE_RULES.md` (~1500 tokens, 5 min)
+**Full Setup**: `docs/guides/02_SETUP_GUIDE.md` (comprehensive, 30-45 min)
+**Core Workflow**: `docs/guides/04_CORE_WORKFLOW.md` (daily patterns)
+**Research Foundation**: `docs/research/RESEARCH_ANALYSIS_2025.md` (2025 AI agent studies)
 **GitHub**: https://github.com/davidlary/ContextPreservingFramework
 
 ---
