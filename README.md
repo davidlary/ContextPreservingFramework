@@ -352,10 +352,15 @@ ContextPreservingFramework/
 ├── RESEARCH_ANALYSIS_2025.md              ← Research foundation (2025 AI agent studies)
 ├── PARADIGM_SHIFT_v4.0.md                 ← Design evolution notes
 ├── CLAUDE_AUTONOMOUS_PROTOCOL.md          ← Detailed protocol spec (for reference)
-├── scripts/                               ← NEW: Enforcement automation
-│   └── validate_compliance.sh             ← Validates Rules 14-17 after every operation
-├── .claude/hooks/                         ← NEW: PostToolUse hook configuration
-│   └── compliance_enforcement.json        ← Automatic validation trigger
+├── ENFORCEMENT_FIX_SUMMARY.md             ← Critical fix for persistent non-compliance ⭐ NEW
+├── V4_1_0_RELEASE_SUMMARY.md              ← v4.1.0 release documentation
+├── scripts/                               ← Enforcement automation
+│   ├── validate_compliance.sh             ← PostToolUse: Validates Rules 14-17 after operations
+│   ├── pre_write_check.sh                 ← PreToolUse: Blocks unauthorized file creation (RULE 2)
+│   ├── pre_operation_state_check.sh       ← PreToolUse: Blocks if state files stale (RULE 14) ⭐ NEW
+│   └── pre_context_check.sh               ← PreToolUse: Blocks if context >75% (RULE 10) ⭐ NEW
+├── .claude/hooks/                         ← Hook configuration
+│   └── compliance_enforcement.json        ← v3.0.0: 3 PreToolUse + 2 PostToolUse hooks ⭐ UPDATED
 └── guides/                                ← Comprehensive setup guides
     ├── 01_PHILOSOPHY.md                   ← Framework philosophy
     ├── 02_SETUP_GUIDE.md                  ← Full setup (30-45 min, with decision trees)
@@ -570,12 +575,14 @@ Starting with Module 1.1: User database schema..."
   - Display requirements (4 points)
   - Context management (3 points)
 
-✅ **Multi-Layered Enforcement System** (NEW - Addresses "persistent no compliance")
+✅ **Multi-Layered Enforcement System** (ENHANCED - Proactive + Reactive)
   - **Layer 1**: Auto-loading (CLAUDE.md read at session start - GUARANTEED)
   - **Layer 2**: Explicit Instructions (RFC 2119 MUST/SHALL keywords - STRONG)
-  - **Layer 3**: Automated Validation (PostToolUse hooks + validation script - TECHNICAL)
+  - **Layer 3a**: PreToolUse Hooks (BLOCKS violations BEFORE they occur - PROACTIVE) ⭐ NEW
+  - **Layer 3b**: PostToolUse Hooks (DETECTS violations AFTER they occur - REACTIVE)
   - **Layer 4**: Feedback Loops (Violations surfaced, must be corrected - PERSISTENT)
-  - See `ENFORCEMENT_MECHANISMS.md` (650+ lines)
+  - **Hooks v3.0.0**: 3 proactive (RULE 2, 10, 14) + 2 reactive (RULE 14, 15, 17)
+  - See `ENFORCEMENT_MECHANISMS.md` and `ENFORCEMENT_FIX_SUMMARY.md`
 
 ✅ **Git Automation** (NEW - State files committed automatically)
   - Validation checks git status before checkpoint display
@@ -758,7 +765,15 @@ Both use the same 19-rule enforcement system with 33-point validation
 
 ## 📜 Version History
 
-**v4.0.1** (January 2025) - **Current**
+**v4.1.0+** (November 2025) - **Current** (v4.0.1 + Enforcement Fix)
+- 🔒 **CRITICAL FIX**: Proactive enforcement for RULE 10 and RULE 14 (prevents persistent violations)
+- 🛡️ **Hooks v3.0.0**: 3 PreToolUse hooks (RULE 2, 10, 14 - BLOCKS violations) + 2 PostToolUse hooks (RULE 14, 15, 17 - DETECTS violations)
+- 📜 **New scripts**: pre_operation_state_check.sh (RULE 14), pre_context_check.sh (RULE 10)
+- 📊 **Root cause resolved**: PostToolUse-only enforcement insufficient, needed PreToolUse blocking
+- 🎯 **Outcome**: RULE 14 violations should now be impossible (blocked proactively)
+- See `ENFORCEMENT_FIX_SUMMARY.md` for complete analysis
+
+**v4.0.1** (January 2025)
 - ✨ **Comprehensive system**: 19 enforcement rules with RFC 2119 keywords (MUST/SHALL/SHOULD/MAY)
 - 🧪 **Mandatory testing**: RULE 18 requires >80% coverage, 100% passing before checkpoint
 - 📝 **Mandatory documentation**: RULE 19 requires 5 documentation types (docstrings, README, API, ARCHITECTURE, CHANGELOG)

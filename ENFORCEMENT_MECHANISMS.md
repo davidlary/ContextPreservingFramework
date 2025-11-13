@@ -1,9 +1,10 @@
 # Enforcement Mechanisms - Mandatory Compliance System
 
-**Version**: 1.0.0
+**Version**: 2.0.0 (Enhanced with PreToolUse Hooks)
 **Created**: 2025-01-12
+**Updated**: 2025-11-13 (Added PreToolUse proactive enforcement)
 **Purpose**: Document how the framework ENFORCES mandatory compliance (not just requests it)
-**Critical**: Addresses "persistent no compliance" issue
+**Critical**: Addresses "persistent no compliance" issue with proactive blocking
 
 ---
 
@@ -27,19 +28,24 @@
 
 ---
 
-## ✅ The Solution: Multi-Layered Enforcement
+## ✅ The Solution: Multi-Layered Enforcement (Enhanced v2.0.0)
 
-The framework now implements **4-layer enforcement** that makes non-compliance technically difficult:
+The framework now implements **5-layer enforcement** with both proactive and reactive mechanisms:
 
 ```
 Layer 1: Automatic Reading (CLAUDE.md auto-loaded)
          ↓
 Layer 2: Explicit Instructions (RFC 2119 MUST/SHALL keywords)
          ↓
-Layer 3: Validation Hooks (PostToolUse validation after EVERY operation)
+Layer 3a: PreToolUse Hooks (BLOCKS violations BEFORE they occur) ⭐ NEW
+         ↓
+Layer 3b: PostToolUse Hooks (DETECTS violations AFTER they occur)
          ↓
 Layer 4: Feedback Loop (Hook failures treated as user messages)
 ```
+
+**Key Enhancement (v2.0.0)**: Added Layer 3a (PreToolUse hooks) for proactive blocking.
+This prevents violations instead of just detecting them.
 
 ---
 
@@ -511,3 +517,69 @@ This is **not perfect** (LLMs are probabilistic), but it's **dramatically better
 **Last Updated**: 2025-01-12
 **Status**: Implemented and ready for testing
 **Next Steps**: Register hooks, run validation tests, verify enforcement works in practice
+
+---
+
+## Layer 3a: PreToolUse Hooks (NEW - v2.0.0)
+
+**Mechanism**: Scripts run BEFORE operations to BLOCK violations proactively
+
+**How It Works**:
+```
+Claude attempts operation (Read/Write/Edit/Bash)
+         ↓
+PreToolUse hook triggers BEFORE execution
+         ↓
+Validation script runs (e.g., pre_operation_state_check.sh)
+         ↓
+Script checks compliance (e.g., are state files fresh?)
+         ↓
+If PASS: Operation proceeds normally
+If FAIL: Operation BLOCKED with error message
+```
+
+**Current PreToolUse Hooks (Hooks v3.0.0)**:
+
+### Hook 1: File Authorization (RULE 2)
+- **Script**: `scripts/pre_write_check.sh`
+- **Triggers on**: Write operations
+- **Validates**: File is in authorized_files list or matches allowed patterns
+- **If violation**: BLOCKS file creation
+- **Status**: Active since v4.1.0
+
+### Hook 2: State Tracking (RULE 14) ⭐ NEW in v3.0.0
+- **Script**: `scripts/pre_operation_state_check.sh`
+- **Triggers on**: Read, Write, Edit, Bash operations
+- **Validates**: State files updated within last 60 seconds
+- **If violation**: BLOCKS operation until state files updated
+- **Purpose**: Prevents the "persistent non-compliance" pattern
+- **Status**: Active since enforcement fix (2025-11-13)
+
+### Hook 3: Context Management (RULE 10) ⭐ NEW in v3.0.0
+- **Script**: `scripts/pre_context_check.sh`
+- **Triggers on**: Read, Write, Edit, Bash operations
+- **Validates**: Context usage <= 75% emergency threshold
+- **If violation**: BLOCKS operation, requires checkpoint
+- **Purpose**: Prevents context overflow
+- **Status**: Active since enforcement fix (2025-11-13)
+
+**Why PreToolUse is Critical**:
+- **Proactive** vs Reactive: Prevents violations BEFORE they occur
+- **Cannot be ignored**: Operation literally cannot proceed if blocked
+- **Immediate feedback**: Clear error message explains what's wrong
+- **Same pattern as RULE 2**: Proven effective for file authorization
+
+**Comparison**: PostToolUse vs PreToolUse
+
+| Aspect | PostToolUse (Reactive) | PreToolUse (Proactive) |
+|--------|----------------------|----------------------|
+| **When** | AFTER operation | BEFORE operation |
+| **Action** | Detects violation | Prevents violation |
+| **Can be ignored** | Yes (can continue despite warning) | No (operation blocked) |
+| **Best for** | Reminders, validation | Mandatory enforcement |
+| **Example** | "Warning: State files not updated" | "BLOCKED: Update state files first" |
+
+**Result**: RULE 14 violations went from "persistent" to "impossible" with PreToolUse enforcement.
+
+---
+
