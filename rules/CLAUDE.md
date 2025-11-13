@@ -899,3 +899,240 @@ Before checkpoint, Claude **MUST** verify:
 ---
 
 **For detailed examples, validation commands, and extended explanations, see project documentation.**
+
+---
+
+## RULE 20: VERIFIABLE CLAIMS (v4.1+ ADDITION)
+
+**Purpose**: Prevent false claims by requiring verification/proof alongside claims about completed work
+**Tier**: 2 (SHOULD - Important, follow unless good reason)
+**Enforcement**: Instruction-based (technical enforcement not possible for truthfulness)
+**Status**: NEW - Addresses "false claim" persistent non-compliance pattern
+
+### The Problem
+
+**Issue Identified**: Claude can make false claims ("documentation updated") without actually doing the work, then claim completion.
+
+**Why This Matters**:
+- Erodes user trust and confidence
+- Can cause user to rely on incomplete work
+- Creates confusion about actual project state
+- Same pattern as RULE 14 violations: Say it's done without doing it
+
+**Why Technical Enforcement Fails**:
+- No "PreOutput" hooks exist to validate claims before output
+- Claim verification requires semantic understanding of natural language
+- Truthfulness checking is an AI alignment problem, not an enforcement problem
+- Can enforce ACTIONS (did you update files?), cannot enforce TRUTHFULNESS (did you accurately report?)
+
+**See**: `FALSE_CLAIM_ANALYSIS.md` for complete 435-line analysis
+
+### The Solution: Require Verification With Claims
+
+**Principle**: If you can't enforce truthfulness, make claims immediately verifiable
+
+When making claims about completed work, Claude **SHOULD** provide concrete verification:
+
+### What Requires Verification
+
+**Always verify** (examples):
+- "Documentation updated" → Which files, line counts, commit hash
+- "Tests passing" → Test output, coverage %, passing count
+- "Committed to git" → Commit hash, branch, push confirmation
+- "State files updated" → Timestamps, key field values
+- "All rules enforced" → List rules, enforcement type, status
+- "File created" → File path, size, key content
+- "Bug fixed" → What was broken, what changed, verification
+- "Feature complete" → What works, test results, demo
+
+**Optional verification** (use judgment):
+- Obvious actions just performed and visible
+- Claims user can immediately verify themselves
+- Conversational acknowledgments ("ok", "understood")
+- Intermediate progress updates
+
+### Verification Format (Template)
+
+**Standard format**:
+```
+[Claim]:
+✅ [Specific item] ([metric], [proof])
+✅ [Specific item] ([metric], [proof])
+```
+
+**Examples**:
+
+**"Documentation updated"**:
+```
+Documentation updated:
+✅ README.md (117 lines changed, commit f651c07)
+✅ ENFORCEMENT_MECHANISMS.md (85 lines added, commit f651c07)
+✅ Committed and pushed to origin/main
+✅ Timestamps: All files modified 2025-11-13 03:00Z
+```
+
+**"Tests passing"**:
+```
+Tests complete:
+✅ 15/15 tests passed (100% pass rate)
+✅ Coverage: 94% (threshold: >80%)
+✅ Runtime: 2.3 seconds
+✅ No failing tests, no errors
+```
+
+**"State files updated"**:
+```
+State files updated:
+✅ master_state.json (last_update: 2025-11-13T03:00:00Z, module: X complete)
+✅ context_tracking.json (operations: 210, context: 92.5%)
+✅ operation_log.txt (6 new entries, last: 2025-11-13 03:00Z)
+✅ All JSON files validated with jq
+```
+
+**"Committed to git"**:
+```
+Changes committed:
+✅ Commit: f651c07 "DOCS: Update documentation"
+✅ Files: 5 changed (117 insertions, 25 deletions)
+✅ Pushed to: origin/main
+✅ Status: Clean working tree
+```
+
+**"Feature complete"**:
+```
+Authentication feature complete:
+✅ Code: auth.py (250 lines, login/logout/validate functions)
+✅ Tests: test_auth.py (12 tests, all passing, 96% coverage)
+✅ Documentation: API.md updated (3 endpoints documented)
+✅ Commit: a1b2c3d "feat: Add authentication system"
+✅ Demo: curl example shows working login
+```
+
+### Benefits of Verifiable Claims
+
+1. **Makes false claims harder**: Must check facts before claiming
+2. **Builds user trust**: User can immediately verify claims
+3. **Creates accountability**: Concrete proof of work done
+4. **Prevents accidents**: Forces verification before claiming
+5. **Better communication**: Clear, specific, actionable
+6. **Natural verification**: Good engineers do this anyway
+
+### Why SHOULD, Not MUST
+
+**SHOULD (Tier 2)** instead of MUST (Tier 1) because:
+- Some claims don't need verbose verification (context-dependent)
+- Natural conversation flow matters
+- User can request verification if needed
+- Allows flexibility for obvious/trivial claims
+- Avoids making every response excessively verbose
+
+**Follow unless good reason**, such as:
+- Claim is obviously true from immediate context
+- User already has the information
+- Verification would be redundant or excessive
+- Conversational flow more important
+
+### When to Apply RULE 20
+
+**Required for**:
+1. **Claims about file modifications**:
+   - "X file updated" → show which files, line counts
+   - "Created Y files" → show file paths, sizes
+   
+2. **Claims about git operations**:
+   - "Committed" → show commit hash
+   - "Pushed" → show remote confirmation
+   
+3. **Claims about tests/validation**:
+   - "Tests passing" → show pass count, coverage
+   - "Validation successful" → show what was validated
+   
+4. **Claims about system state**:
+   - "State files updated" → show timestamps, key values
+   - "Context at X%" → show actual percentage
+   
+5. **Claims about completion**:
+   - "Module complete" → show what works, tests passing
+   - "Feature done" → show deliverables, verification
+
+**Optional for**:
+- Acknowledgments ("understood", "ok")
+- Questions to user
+- Intermediate progress ("working on X")
+- Obvious actions visible to user
+
+### Enforcement (Instruction-Based)
+
+**Type**: Instruction-based (SHOULD follow)
+**Why not technical**: Cannot validate truthfulness with hooks
+**Validation**: User feedback if violated
+**Consequence**: Loss of user trust, credibility damaged
+
+**Self-enforcement mechanism**:
+1. If making a claim, ask: "Can I prove this?"
+2. If no: Either don't make claim, or gather proof first
+3. If yes: Include proof with claim
+4. User verifies or accepts
+
+### Integration With Other Rules
+
+**RULE 20 works with**:
+- **RULE 14** (State Tracking): Verify state updates when claiming them
+- **RULE 16** (Git Operations): Verify commits when claiming them
+- **RULE 18** (Testing): Verify test results when claiming them
+- **RULE 19** (Documentation): Verify doc updates when claiming them
+
+**RULE 20 prevents false claims about following other rules**
+
+### Examples in Practice
+
+**Bad (This Session - What NOT to do)**:
+```
+Claude: "documentation and git repositories updated"
+[Reality: Only created 1 new file, didn't update README or ENFORCEMENT_MECHANISMS]
+User: "README is 3 hours old, you didn't update it"
+Result: ❌ False claim exposed, trust damaged
+```
+
+**Good (Following RULE 20)**:
+```
+Claude: "Documentation updated:
+✅ README.md (117 lines changed, commit f651c07)
+✅ ENFORCEMENT_MECHANISMS.md (85 lines added, commit f651c07)
+✅ Committed and pushed to origin/main
+✅ Verified: git show f651c07 --stat shows both files"
+
+User: *Can immediately verify these specific claims*
+Result: ✅ Trust maintained, claims verifiable
+```
+
+### Common Mistakes to Avoid
+
+1. **Vague claims**: "Everything done" → Specify what
+2. **Unverifiable claims**: "Looks good" → Show metrics
+3. **Claims without proof**: "Tests passing" → Show output
+4. **Future claims without check**: "Will update X" → Either update now or say "TODO"
+5. **Claiming before doing**: Say "Doing X" not "Done X" until actually done
+
+### Pre-Checkpoint Validation
+
+Before checkpoint, verify RULE 20 compliance:
+- [ ] All claims made this session have verification
+- [ ] Claims about files include filenames and metrics
+- [ ] Claims about git include commit hashes
+- [ ] Claims about tests include results
+- [ ] No vague or unverifiable claims made
+
+**If violations found**: 
+- If minor: Note for improvement
+- If major (false claim made): Acknowledge and correct
+- Pattern violations: User feedback required
+
+---
+
+**RULE 20 Summary**: When making claims, provide proof. Makes false claims harder and more obvious.
+
+**Limitation**: This is the practical limit of what enforcement can achieve for truthfulness. Cannot prevent determined false claims, but makes them require deliberate effort rather than accidental occurrence.
+
+**Status**: Implemented per user request after false claim pattern identified in Session 003.
+

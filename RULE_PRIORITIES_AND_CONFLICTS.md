@@ -48,6 +48,7 @@ When multiple rules conflict, this document provides **deterministic resolution*
 - **RULE 9**: Code reuse mandatory
 - **RULE 18**: Mandatory testing (>80% coverage, 100% passing)
 - **RULE 19**: Auto-documentation (README, API, ARCHITECTURE, CHANGELOG)
+- **RULE 20**: Verifiable claims (provide proof/verification with claims) ⭐ NEW
 
 **Why Tier 2?**: Essential for quality but can be deferred if context exhausted
 

@@ -1,7 +1,7 @@
 # Protocol Core Rules (Compressed Quick Reference)
 
-**Version**: 4.0.1
-**Purpose**: Compressed quick reference of all 19 enforcement rules
+**Version**: 4.1.1
+**Purpose**: Compressed quick reference of all 20 enforcement rules
 **Token Cost**: ~1500 tokens (0.75% of context)
 **Application**: Quick start path - for experienced users or rapid refresh
 **Full Details**: See `guides/` directory for comprehensive setup and workflow guides
@@ -30,7 +30,7 @@
 2. **MUST** check for `rules/CLAUDE.md`
 3. If either exists: **MUST** read them before doing any work
 4. **MUST** check for `data/state/master_state.json` and load state
-5. **MUST** follow all 19 rules below with RFC 2119 enforcement (MUST/SHALL/SHOULD/MAY)
+5. **MUST** follow all 20 rules below with RFC 2119 enforcement (MUST/SHALL/SHOULD/MAY)
 
 **This applies to:**
 - User projects that set up the framework
