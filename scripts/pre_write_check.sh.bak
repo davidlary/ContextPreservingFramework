@@ -234,4 +234,4 @@ echo -e "${RED}OPERATION BLOCKED - Cannot create unauthorized file${NC}"
 echo -e "${RED}═══════════════════════════════════════════════════════════════════════${NC}"
 
 # Exit with error to block Write operation
-exit 2  # EXIT CODE 2: BLOCKS operation (Claude Code enforcement signal)
+exit 1
