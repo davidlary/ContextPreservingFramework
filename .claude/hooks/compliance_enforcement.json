@@ -1,6 +1,6 @@
 {
   "name": "Framework Compliance Enforcement",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Enforces mandatory compliance with Framework Rules (PreToolUse + PostToolUse)",
   "hooks": {
     "PreToolUse": [
@@ -71,6 +71,17 @@
             "command": "bash scripts/post_test_validation.sh \"$COMMAND\" \"$OUTPUT\""
           }
         ]
+      },
+      {
+        "name": "Detect Documentation Changes After Code Edits",
+        "description": "RULE 19: Warns if code files modified without corresponding doc updates",
+        "matcher": "Write.*\\.(py|js|ts|go|rs|java|cpp)|Edit.*\\.(py|js|ts|go|rs|java|cpp)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/post_doc_validation.sh \"$FILE_PATH\""
+          }
+        ]
       }
     ]
   },
@@ -81,7 +92,8 @@
     "RULE 14: State Tracking (PreToolUse - blocks if state files stale + PostToolUse validates after)",
     "RULE 15: Visible Tracking (PostToolUse - reminds to display checkpoint box)",
     "RULE 17: Next Steps (PostToolUse - reminds to display at end of response)",
-    "RULE 18: Mandatory Testing (PostToolUse - validates coverage ≥80% and 100% passing)"
+    "RULE 18: Mandatory Testing (PostToolUse - validates coverage ≥80% and 100% passing)",
+    "RULE 19: Auto-Documentation (PostToolUse - warns if code changes without doc updates)"
   ],
   "notes": [
     "NEW in v2.0.0: PreToolUse hooks validate BEFORE tool execution (proactive)",
@@ -93,6 +105,7 @@
     "If PostToolUse validation fails, Claude sees error and MUST fix before continuing"
   ],
   "version_history": {
+    "3.2.0": "Added PostToolUse hook for RULE 19 documentation sync detection (warns on code changes without doc updates)",
     "3.1.0": "Added PostToolUse hook for RULE 18 test validation (coverage ≥80%, 100% passing)",
     "3.0.0": "Added PreToolUse hooks for RULE 10 and RULE 14 proactive enforcement (prevents persistent violations)",
     "2.0.0": "Added PreToolUse hook for RULE 2 proactive enforcement",
