@@ -553,6 +553,7 @@ EOF
 ## RULE 17: CLEAR NEXT STEPS - MANDATORY AT END OF EVERY RESPONSE
 
 **Principle**: User ALWAYS knows what to do next
+**Enforcement**: MUST (Tier 1 - Critical for user experience)
 **Action**: At END of EVERY response (AFTER checkpoint), display:
 
 ```
@@ -566,7 +567,7 @@ EOF
 
 2. **Paste this EXACT prompt**:
    ```
-   [Exact recovery prompt with all context]
+   [Exact recovery prompt with all context - SEE VERIFICATION CHECKLIST BELOW]
    ```
 
 3. **Verify in first response**:
@@ -588,8 +589,55 @@ EOF
 ███████████████████████████████████████████████████████████████████████
 ```
 
-**Template reference**: This file, RULE 17
+**Template reference**: `.claude/templates/recovery_prompt_template.md`
 **THIS MUST BE THE LAST THING - NOTHING AFTER IT**
+
+---
+
+### RULE 17 SELF-VERIFICATION CHECKLIST (MANDATORY)
+
+**BEFORE completing ANY response, Claude MUST verify:**
+
+#### Structure Verification
+- [ ] "NEXT STEPS" section exists at END of response
+- [ ] Section includes subsection "Paste this EXACT prompt:"
+- [ ] Section is LAST thing (nothing after it)
+
+#### Content Verification (CRITICAL - Where violations occur)
+- [ ] Subsection contains **ACTUAL PROMPT TEXT** (not suggestions, not options, not placeholders)
+- [ ] Prompt includes:
+  - [ ] What was completed this session (with details)
+  - [ ] Current state (version, location, last commit hash)
+  - [ ] What's pending (if mid-task)
+  - [ ] Exact instructions for continuation
+  - [ ] Original request context (if applicable)
+  - [ ] Permissions statement (if autonomous work continues)
+- [ ] ALL [VARIABLES] filled in with actual values (no [TBD], [TODO], [INSERT])
+- [ ] File paths are ABSOLUTE (not relative)
+- [ ] Commit hashes are REAL (not placeholders like [HASH])
+- [ ] Version numbers are CURRENT
+
+#### Copy/Paste Test (FINAL VERIFICATION)
+- [ ] Ask yourself: "If I copy/pasted this prompt in a new session, would Claude know EXACTLY what to do WITHOUT asking clarifying questions?"
+- [ ] If answer is NO → prompt is incomplete, fix it before completing response
+- [ ] If answer is YES → verification passed
+
+**Common Mistakes to Avoid**:
+- ❌ Providing options/suggestions instead of actual prompt
+- ❌ Showing structure without content ("paste this prompt:" with no prompt)
+- ❌ Using placeholders like [CONTINUE_HERE], [PROJECT_NAME], [VERSION]
+- ❌ Leaving context vague ("continue where we left off")
+- ❌ Assuming Claude will remember (new session = fresh context)
+
+**Why This Matters**:
+- User should NEVER have to ask "where is the prompt?"
+- Recovery should be SEAMLESS, not require clarification
+- This is a P2 High rule affecting user experience and trust
+- Pattern of violation damages framework credibility
+
+**See Also**:
+- `.claude/templates/recovery_prompt_template.md` for examples
+- `docs/analysis/RULE_17_VIOLATION_PATTERN_ANALYSIS.md` for why this checklist exists
 
 ---
 
