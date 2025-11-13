@@ -2,7 +2,7 @@
   "manifest_version": "1.0.0",
   "project": "ContextPreservingFramework",
   "description": "Authorized file list for RULE 2 enforcement - prevents creating new code instead of updating existing",
-  "last_update": "2025-01-13T01:00:00Z",
+  "last_update": "2025-11-13T02:50:00Z",
   "enforcement_active": true,
   "authorized_files": [
     "CLAUDE.md",
@@ -24,6 +24,8 @@
     "logs/operation_log.txt",
     "scripts/validate_compliance.sh",
     "scripts/pre_write_check.sh",
+    "scripts/pre_operation_state_check.sh",
+    "scripts/pre_context_check.sh",
     ".claude/hooks/compliance_enforcement.json",
     ".claude/prompts/framework_rules_cached.md",
     ".claude/commands/checkpoint.md",
