@@ -1,28 +1,31 @@
-# Context-Preserving Framework v4.5.1
+# Context-Preserving Framework v4.5.2
 
 **Comprehensive Context Management System for Claude Code**
 
-**Version**: 4.5.1 (Quality & Reliability Release)
+**Version**: 4.5.2 (MCP Integration + Quality Release)
 **Purpose**: Enable Claude Code to manage large projects without context exhaustion
 **Approach**: Two paths - Quick start OR Comprehensive setup
-**Latest Update**: v4.5.1 (2025-11-13) - First Enhancement Audit + Quality Improvements
+**Latest Update**: v4.5.2 (2025-11-13) - MCP Server Auto-Check + First Enhancement Audit
 
-> **🎯 NEW IN v4.5.1**: **FIRST ENHANCEMENT AUDIT COMPLETE** - Comprehensive 3.5-hour audit completed. Error detection improved (10 new patterns), error handling added to 3 scripts, test documentation updated. Framework health: 95/100 (EXCELLENT). See [Enhancement Audit](docs/analysis/ENHANCEMENT_AUDIT_20251113.md).
+> **🎯 NEW IN v4.5.2**: **MCP SERVER AUTO-CHECK** - Framework now automatically checks MCP servers (memory, filesystem) at session start. Ensures MCP integration is properly configured. 27 hooks total (2 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse).
 >
-> **IN v4.5.0**: **COMPLETE ENFORCEMENT** - ALL 20 RULES ENFORCED (100%). Permission-requesting ELIMINATED, unauthorized file creation BLOCKED, user plans ENFORCED. 26 hooks (1 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse). See [v4.5.0 Release Notes](docs/releases/FRAMEWORK_V4.5.0_RELEASE_NOTES.md).
+> **IN v4.5.1**: **FIRST ENHANCEMENT AUDIT COMPLETE** - Comprehensive 3.5-hour audit completed. Error detection improved (10 new patterns), error handling added to 3 scripts, test documentation updated. Framework health: 95/100 (EXCELLENT). See [Enhancement Audit](docs/analysis/ENHANCEMENT_AUDIT_20251113.md).
+>
+> **IN v4.5.0**: **COMPLETE ENFORCEMENT** - ALL 20 RULES ENFORCED (100%). Permission-requesting ELIMINATED, unauthorized file creation BLOCKED, user plans ENFORCED. See [v4.5.0 Release Notes](docs/releases/FRAMEWORK_V4.5.0_RELEASE_NOTES.md).
 
 ---
 
 ## 🎯 What Is This?
 
-**The Context-Preserving Framework v4.5.0** is a comprehensive system that enables Claude Code to:
+**The Context-Preserving Framework v4.5.2** is a comprehensive system that enables Claude Code to:
 - ✅ Manage projects of any size without running out of context (200K token window)
 - ✅ Work autonomously with **100% mandatory enforcement** (ALL 20 rules enforced)
 - ✅ **ELIMINATE permission-requesting** via UserPromptSubmit hook (physically blocks prompts)
 - ✅ **BLOCK unauthorized file creation** via plan adherence enforcement
 - ✅ **ENFORCE user specifications** via .cpf/plan.json tracking system
 - ✅ **PROPER BLOCKING** via exit code 2 for all technical rules (10 blocking, 10 monitoring)
-- ✅ **26 total enforcement hooks** (1 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse)
+- ✅ **27 total enforcement hooks** (2 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse)
+- ✅ **AUTO-CHECK MCP SERVERS** at session start (memory & filesystem integration)
 - ✅ Maintain 100% test coverage and comprehensive documentation
 - ✅ Recover seamlessly from crashes or interruptions
 - ✅ Support teams with shared state and handoff procedures
@@ -71,7 +74,7 @@ cd cpf && ./cpf-install.sh && cd ..
 
 **What you get**:
 - ✅ Automatic context management (no more "out of context" errors)
-- ✅ 100% enforcement (20 rules, 26 hooks)
+- ✅ 100% enforcement (20 rules, 27 hooks)
 - ✅ Crash recovery (seamless session continuity)
 - ✅ Plan adherence (Claude follows your specs)
 - ✅ Autonomous execution (no permission prompts)
@@ -1120,8 +1123,9 @@ Expected outcome: Framework enhanced with data-driven improvements
 
 ---
 
-**Framework Status**: Production Ready (v4.5.1)
+**Framework Status**: Production Ready (v4.5.2)
 **Last Updated**: November 2025
 **Major Release**: v4.5.0 (2025-11-13) - 100% Mandatory Enforcement + Enhancement System
-**Latest Release**: v4.5.1 (2025-11-13) - First Enhancement Audit + Quality Improvements
+**Latest Release**: v4.5.2 (2025-11-13) - MCP Server Auto-Check + Enhancement Audit Complete
+**Previous Release**: v4.5.1 (2025-11-13) - First Enhancement Audit + Quality Improvements
 **Next Audit**: Quarterly (Feb 2026) - Use periodic enhancement prompt above

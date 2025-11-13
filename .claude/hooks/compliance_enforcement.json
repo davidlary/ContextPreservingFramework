@@ -1,7 +1,7 @@
 {
   "name": "Framework Compliance Enforcement",
-  "version": "4.5.1",
-  "description": "Mandatory enforcement with 26 hooks (1 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse) - ALL 20 RULES ENFORCED + First Enhancement Audit Complete",
+  "version": "4.5.2",
+  "description": "Mandatory enforcement with 27 hooks (2 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse) - ALL 20 RULES ENFORCED + MCP Server Check + First Enhancement Audit Complete",
   "hooks": {
     "SessionStart": [
       {
@@ -11,6 +11,16 @@
           {
             "type": "command",
             "command": "bash scripts/session_start_autonomous_check.sh"
+          }
+        ]
+      },
+      {
+        "name": "Check MCP Servers",
+        "description": "MCP Integration: Verify MCP servers (memory, filesystem) are configured and running",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/session_start_mcp_check.sh"
           }
         ]
       }
