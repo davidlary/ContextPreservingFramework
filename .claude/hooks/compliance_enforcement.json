@@ -1,17 +1,51 @@
 {
   "name": "Framework Compliance Enforcement",
-  "version": "3.3.0",
-  "description": "Enforces mandatory compliance with Framework Rules (PreToolUse + PostToolUse)",
+  "version": "4.0.0",
+  "description": "Comprehensive enforcement with 17 hooks (1 SessionStart + 6 PreToolUse + 10 PostToolUse)",
   "hooks": {
+    "SessionStart": [
+      {
+        "name": "Check Autonomous Mode",
+        "description": "RULE 11: Check AUTONOMOUS_MODE.md and set environment variable",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/session_start_autonomous_check.sh"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "name": "Validate File Authorization Before Write",
-        "description": "RULE 2: Check file_manifest.json BEFORE Write operation (proactive)",
+        "description": "RULE 2: Check file_manifest.json + suggest existing files BEFORE Write (enhanced v2.0)",
         "matcher": "Write",
         "hooks": [
           {
             "type": "command",
             "command": "bash scripts/pre_write_check.sh"
+          }
+        ]
+      },
+      {
+        "name": "Block Placeholders Before Write/Edit",
+        "description": "RULE 13: Detect TODO/FIXME/PLACEHOLDER BEFORE Write/Edit (blocks commits)",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/pre_placeholder_check.sh"
+          }
+        ]
+      },
+      {
+        "name": "Validate Checkpoint Readiness",
+        "description": "RULE 7: Run 33-point validation checklist BEFORE checkpoint-imminent operations",
+        "matcher": "Read|Write|Edit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/pre_checkpoint_validation.sh"
           }
         ]
       },
@@ -28,7 +62,7 @@
       },
       {
         "name": "Enforce Context Management Before Operations",
-        "description": "RULE 10: Block if context exceeds 75% emergency threshold (proactive)",
+        "description": "RULE 10: Block if context exceeds emergency threshold (enhanced v2.0 with backwards compatibility)",
         "matcher": "Read|Write|Edit|Bash",
         "hooks": [
           {
@@ -93,35 +127,85 @@
             "command": "bash scripts/post_bash_error_detection.sh \"$EXIT_CODE\" \"$STDERR\" \"$COMMAND\""
           }
         ]
+      },
+      {
+        "name": "Detect Hardcoded Values After Code Edits",
+        "description": "RULE 1: Warns about hardcoded values (URLs, passwords, paths, magic numbers) after Write/Edit",
+        "matcher": "Write.*\\.(py|js|ts|go|rs|java|cpp)|Edit.*\\.(py|js|ts|go|rs|java|cpp)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/post_hardcoding_check.sh \"$FILE_PATH\""
+          }
+        ]
+      },
+      {
+        "name": "Validate Git Commit Format",
+        "description": "RULE 16: Validates commit message format after git commit (checks Co-Authored-By, proper structure)",
+        "matcher": "Bash.*git.*commit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/post_git_validation.sh"
+          }
+        ]
+      },
+      {
+        "name": "Check Code Reuse After Write",
+        "description": "RULE 9: Searches for similar functions to encourage code reuse after Write",
+        "matcher": "Write.*\\.(py|js|ts|go|rs|java|cpp)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/post_code_reuse_check.sh \"$FILE_PATH\""
+          }
+        ]
       }
     ]
   },
   "enforcement_level": "mandatory",
   "rules_enforced": [
-    "RULE 2: Named Files Only (PreToolUse - blocks unauthorized files BEFORE creation)",
-    "RULE 3: Zero Silent Failures (PostToolUse - warns on Bash command failures)",
-    "RULE 10: Context Management (PreToolUse - blocks if context >75%)",
-    "RULE 14: State Tracking (PreToolUse - blocks if state files stale + PostToolUse validates after)",
+    "RULE 1: Zero Hard-Coding (PostToolUse - warns about hardcoded values)",
+    "RULE 2: Named Files Only (PreToolUse - blocks unauthorized files + suggests existing)",
+    "RULE 3: Zero Silent Failures (PostToolUse - warns on Bash failures)",
+    "RULE 7: Validation Gates (PreToolUse - validates 33-point checklist before checkpoint)",
+    "RULE 9: Code Reuse Mandatory (PostToolUse - warns about potential duplicates)",
+    "RULE 10: Context Management (PreToolUse - blocks if exceeds threshold, backwards compatible)",
+    "RULE 11: Autonomous Execution (SessionStart - checks AUTONOMOUS_MODE.md)",
+    "RULE 13: Real Data Only (PreToolUse - blocks placeholders in commits)",
+    "RULE 14: State Tracking (PreToolUse + PostToolUse - dual enforcement)",
     "RULE 15: Visible Tracking (PostToolUse - reminds to display checkpoint box)",
+    "RULE 16: Git Operations (PostToolUse - validates commit message format)",
     "RULE 17: Next Steps (PostToolUse - reminds to display at end of response)",
     "RULE 18: Mandatory Testing (PostToolUse - validates coverage ≥80% and 100% passing)",
     "RULE 19: Auto-Documentation (PostToolUse - warns if code changes without doc updates)"
   ],
   "notes": [
-    "NEW in v2.0.0: PreToolUse hooks validate BEFORE tool execution (proactive)",
-    "PostToolUse hooks run AFTER tool completion (reactive)",
-    "PreToolUse can block operations by exiting with error code",
-    "PostToolUse provides feedback Claude MUST address",
+    "MAJOR UPDATE v4.0.0: Comprehensive enforcement (14/20 rules technically enforced, 70%)",
+    "NEW in v4.0.0: SessionStart hook for RULE 11 (fixes permission-requesting issue)",
+    "ENHANCED v4.0.0: RULE 2 suggests existing files (fixes new code creation issue)",
+    "NEW in v4.0.0: 6 additional enforcement hooks (RULE 1, 7, 9, 11, 13, 16)",
+    "ENHANCED v4.0.0: RULE 10 backwards compatibility (auto-detects old projects)",
+    "Total enforcement points: 17 (1 SessionStart + 6 PreToolUse + 10 PostToolUse)",
+    "PreToolUse hooks validate BEFORE tool execution (can block operations)",
+    "PostToolUse hooks validate AFTER tool completion (provide feedback)",
+    "SessionStart hooks run once at session initialization",
     "Hook output treated as user feedback per Claude Code system instructions",
-    "If PreToolUse validation fails, tool execution is blocked",
-    "If PostToolUse validation fails, Claude sees error and MUST fix before continuing"
+    "Addresses user complaints: non-compliance, new file creation, permission-requesting"
   ],
   "version_history": {
+    "4.0.0": "MAJOR UPDATE: Added SessionStart hook (RULE 11), enhanced RULE 2 and RULE 10, added 6 new enforcement hooks (RULE 1, 7, 9, 13, 16), backwards compatibility. Fixes all user complaints. 14/20 rules enforced (70%, up from 40%)",
     "3.3.0": "Added PostToolUse hook for RULE 3 error detection (warns on Bash failures, severity-based alerts)",
     "3.2.0": "Added PostToolUse hook for RULE 19 documentation sync detection (warns on code changes without doc updates)",
     "3.1.0": "Added PostToolUse hook for RULE 18 test validation (coverage ≥80%, 100% passing)",
     "3.0.0": "Added PreToolUse hooks for RULE 10 and RULE 14 proactive enforcement (prevents persistent violations)",
     "2.0.0": "Added PreToolUse hook for RULE 2 proactive enforcement",
     "1.0.0": "Initial PostToolUse hooks for RULE 14, 15, 17"
-  }
+  },
+  "deployment_date": "2025-11-13",
+  "addresses_issues": [
+    "Persistent non-compliance with rules (added more enforcement)",
+    "Creating new code instead of updating existing (enhanced RULE 2)",
+    "Repeatedly asking for permission (added RULE 11 SessionStart hook)"
+  ]
 }

@@ -1,8 +1,15 @@
 #!/bin/bash
 # pre_write_check.sh - PreToolUse hook for RULE 2 enforcement
 # Purpose: Validate file authorization BEFORE Write operation (proactive)
-# Version: 1.0.0 (New in v4.1.0)
+# Version: 2.0.0 (Enhanced for v4.0.0 - suggests existing files)
 # Usage: Called automatically by PreToolUse hook before Write tool executes
+#
+# ENHANCEMENTS (v2.0.0):
+# - Checks if file already exists (suggest Edit instead of Write)
+# - Searches for similar files to update instead
+# - Blocks unauthorized CODE files (not just warns)
+# - Allows docs/tests (RULE 19 priority)
+# - Addresses user complaint: "creating new code instead of updating existing"
 
 set -euo pipefail
 
@@ -40,6 +47,30 @@ echo "🔍 PRE-WRITE VALIDATION (RULE 2 - Proactive Enforcement)"
 echo "═══════════════════════════════════════════════════════════════════════"
 echo "File to create: $FILE_PATH"
 echo "Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+echo ""
+
+# ENHANCEMENT 1: Check if file already exists
+if [ -f "$FILE_PATH" ]; then
+    echo -e "${RED}═══════════════════════════════════════════════════════════════════════"
+    echo -e "❌ BLOCKED: File already exists"
+    echo -e "═══════════════════════════════════════════════════════════════════════${NC}"
+    echo ""
+    echo -e "${RED}RULE 2 VIOLATION: Cannot use Write on existing file${NC}"
+    echo "File: $FILE_PATH"
+    echo ""
+    echo "REQUIRED ACTION:"
+    echo "  Use Edit tool instead of Write tool to update existing file"
+    echo ""
+    echo "Why blocked:"
+    echo "  - Write tool overwrites entire file (destructive)"
+    echo "  - Edit tool makes targeted changes (safer)"
+    echo "  - Framework enforces updating existing code, not recreating"
+    echo ""
+    echo -e "${RED}═══════════════════════════════════════════════════════════════════════${NC}"
+    exit 1
+fi
+
+echo "✓ File does not exist (new file creation)"
 echo ""
 
 # Check if file_manifest.json exists
@@ -97,21 +128,109 @@ echo -e "═══════════════════════�
 echo ""
 echo -e "${RED}RULE 2 VIOLATION: $FILE_PATH not authorized in manifest${NC}"
 echo ""
-echo "REQUIRED ACTIONS (Choose one):"
-echo "1. UPDATE existing file instead (if similar file exists)"
-echo "2. ASK user for approval and add to manifest"
-echo "3. CANCEL operation"
-echo ""
 echo "Why blocked:"
 echo "  - Not in authorized_files list"
 echo "  - Doesn't match any always_allowed_patterns"
 echo "  - Extension '.$EXTENSION' not in always_allowed_extensions"
 echo ""
-echo "To authorize this file:"
-echo "  1. Add to data/state/file_manifest.json authorized_files array"
-echo "  2. OR use AskUserQuestion tool to get user approval"
-echo "  3. Then retry Write operation"
+
+# ENHANCEMENT 2: Search for similar existing files to suggest
+echo "═══════════════════════════════════════════════════════════════════════"
+echo "🔍 Searching for existing files to update instead..."
+echo "═══════════════════════════════════════════════════════════════════════"
 echo ""
+
+# Get base name without extension
+BASENAME=$(basename "$FILE_PATH" ".$EXTENSION")
+DIRNAME=$(dirname "$FILE_PATH")
+
+# Search for similar files in same directory
+SIMILAR_FILES=()
+if [ -d "$DIRNAME" ]; then
+    while IFS= read -r -d '' file; do
+        SIMILAR_FILES+=("$file")
+    done < <(find "$DIRNAME" -maxdepth 1 -type f -name "*.$EXTENSION" -print0 2>/dev/null)
+fi
+
+# Search for files with similar names in entire project
+SIMILAR_NAME_FILES=()
+if command -v find &> /dev/null; then
+    while IFS= read -r -d '' file; do
+        # Exclude hidden directories and common ignore patterns
+        if [[ ! "$file" =~ /\. ]] && [[ ! "$file" =~ node_modules ]] && [[ ! "$file" =~ __pycache__ ]]; then
+            SIMILAR_NAME_FILES+=("$file")
+        fi
+    done < <(find . -type f -name "*${BASENAME}*.$EXTENSION" -print0 2>/dev/null | head -20)
+fi
+
+if [ ${#SIMILAR_FILES[@]} -gt 0 ]; then
+    echo "📁 Existing files in same directory ($DIRNAME):"
+    for file in "${SIMILAR_FILES[@]}"; do
+        echo "  - $file"
+    done
+    echo ""
+fi
+
+if [ ${#SIMILAR_NAME_FILES[@]} -gt 0 ]; then
+    echo "📝 Files with similar names:"
+    for file in "${SIMILAR_NAME_FILES[@]}"; do
+        # Skip if already listed in similar files
+        if [[ ! " ${SIMILAR_FILES[@]} " =~ " ${file} " ]]; then
+            echo "  - $file"
+        fi
+    done
+    echo ""
+fi
+
+# Determine severity based on file type
+IS_CODE_FILE=false
+case "$EXTENSION" in
+    py|js|ts|tsx|jsx|go|rs|java|cpp|hpp|c|h)
+        IS_CODE_FILE=true
+        ;;
+esac
+
+echo "═══════════════════════════════════════════════════════════════════════"
+echo "REQUIRED ACTIONS:"
+echo "═══════════════════════════════════════════════════════════════════════"
+echo ""
+
+if [ "$IS_CODE_FILE" = true ]; then
+    echo "PRIORITY 1 (STRONGLY RECOMMENDED):"
+    echo "  ✅ UPDATE one of the existing files above instead"
+    echo "     - Use Edit tool to add functionality to existing file"
+    echo "     - Prevents code fragmentation"
+    echo "     - Maintains codebase organization"
+    echo ""
+    echo "PRIORITY 2 (IF TRULY NECESSARY):"
+    echo "  ⚠️  ASK user for approval using AskUserQuestion tool:"
+    echo "     Question: \"File $FILE_PATH not in manifest. Options:\""
+    echo "     Options:"
+    echo "       (a) Update existing file [suggest specific file]"
+    echo "       (b) Approve creating $FILE_PATH"
+    echo "       (c) Cancel operation"
+    echo ""
+    echo "PRIORITY 3 (LAST RESORT):"
+    echo "  ❌ CANCEL and redesign approach"
+    echo ""
+    echo "NOTE: Code files (.${EXTENSION}) are BLOCKED by default"
+    echo "      Framework prioritizes updating existing code over creating new files"
+else
+    echo "OPTIONS:"
+    echo "  1. UPDATE existing file above (if appropriate)"
+    echo "  2. ASK user for approval and add to manifest"
+    echo "  3. CANCEL operation"
+    echo ""
+fi
+
+echo "═══════════════════════════════════════════════════════════════════════"
+echo "To authorize this file (if user approves):"
+echo "  1. Add to data/state/file_manifest.json authorized_files array:"
+echo "     jq '.authorized_files += [\"$FILE_PATH\"]' data/state/file_manifest.json"
+echo "  2. Then retry Write operation"
+echo "═══════════════════════════════════════════════════════════════════════"
+echo ""
+echo -e "${RED}OPERATION BLOCKED - Cannot create unauthorized file${NC}"
 echo -e "${RED}═══════════════════════════════════════════════════════════════════════${NC}"
 
 # Exit with error to block Write operation
