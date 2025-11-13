@@ -1,6 +1,6 @@
 {
   "name": "Framework Compliance Enforcement",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Enforces mandatory compliance with Framework Rules (PreToolUse + PostToolUse)",
   "hooks": {
     "PreToolUse": [
@@ -82,12 +82,24 @@
             "command": "bash scripts/post_doc_validation.sh \"$FILE_PATH\""
           }
         ]
+      },
+      {
+        "name": "Detect Bash Command Errors",
+        "description": "RULE 3: Warns if Bash commands fail (exit code != 0 or stderr output)",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/post_bash_error_detection.sh \"$EXIT_CODE\" \"$STDERR\" \"$COMMAND\""
+          }
+        ]
       }
     ]
   },
   "enforcement_level": "mandatory",
   "rules_enforced": [
     "RULE 2: Named Files Only (PreToolUse - blocks unauthorized files BEFORE creation)",
+    "RULE 3: Zero Silent Failures (PostToolUse - warns on Bash command failures)",
     "RULE 10: Context Management (PreToolUse - blocks if context >75%)",
     "RULE 14: State Tracking (PreToolUse - blocks if state files stale + PostToolUse validates after)",
     "RULE 15: Visible Tracking (PostToolUse - reminds to display checkpoint box)",
@@ -105,6 +117,7 @@
     "If PostToolUse validation fails, Claude sees error and MUST fix before continuing"
   ],
   "version_history": {
+    "3.3.0": "Added PostToolUse hook for RULE 3 error detection (warns on Bash failures, severity-based alerts)",
     "3.2.0": "Added PostToolUse hook for RULE 19 documentation sync detection (warns on code changes without doc updates)",
     "3.1.0": "Added PostToolUse hook for RULE 18 test validation (coverage ≥80%, 100% passing)",
     "3.0.0": "Added PreToolUse hooks for RULE 10 and RULE 14 proactive enforcement (prevents persistent violations)",
