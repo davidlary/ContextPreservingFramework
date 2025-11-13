@@ -1,13 +1,13 @@
-# Context-Preserving Framework v4.3.0
+# Context-Preserving Framework v4.4.0
 
 **Comprehensive Context Management System for Claude Code**
 
-**Version**: 4.3.0 (Development - Repository Reorganization)
+**Version**: 4.4.0 (MCP Integration Release)
 **Purpose**: Enable Claude Code to manage large projects without context exhaustion
 **Approach**: Two paths - Quick start OR Comprehensive setup
-**Latest Update**: v4.3.0 (2025-11-13) - Repository reorganization + installation system
+**Latest Update**: v4.4.0 (2025-11-13) - MCP integration with graceful degradation
 
-> **📚 DOCUMENTATION UPDATE (v4.3.0)**: All documentation has been reorganized into `docs/` subdirectories for better organization. See [docs/README.md](docs/README.md) for complete documentation index.
+> **🔬 NEW IN v4.4.0**: Model Context Protocol (MCP) integration provides persistent memory, semantic search, and enhanced recovery. Framework automatically uses MCP when available, falls back gracefully when not. See [MCP Integration Guide](docs/guides/16_MCP_INTEGRATION_GUIDE.md).
 
 ---
 
@@ -646,38 +646,55 @@ Starting with Module 1.1: User database schema..."
 
 ---
 
-## 🔬 MCP Server Integration (Optional Enhancement)
+## 🔬 MCP Server Integration (Enhanced Functionality)
 
-**Status**: Configured for future use (v4.4.0)
+**Status**: ✅ Fully Integrated (v4.4.0)
 
-The framework includes **Model Context Protocol (MCP)** configuration for enhanced functionality:
+The framework includes **Model Context Protocol (MCP)** for enhanced functionality with automatic graceful degradation:
 
-**Configured Servers** (`.mcp.json`):
+**Integrated Servers** (`.mcp.json`):
 - 🧠 **Memory Server** - Persistent context storage across sessions
 - 📁 **Filesystem Server** - Enhanced file operations
 
-**Benefits** (when enabled):
-- Semantic search for module context
-- Relationship tracking (dependencies)
-- Persistent memory across crashes
-- No manual JSON file management
+**New in v4.4.0**:
+- ✅ **Automatic MCP detection** during installation
+- ✅ **Graceful degradation** (works with or without MCP)
+- ✅ **Dual storage** (file-based + MCP memory)
+- ✅ **State manager** with MCP integration
+- ✅ **Enhanced recovery** using persistent memory
+- ✅ **Comprehensive guide** (16_MCP_INTEGRATION_GUIDE.md)
 
-**Current Status** (v4.3.0):
-- ✅ Configuration exists (`.mcp.json`)
-- ⏸️ Servers configured for auto-connect
-- ❌ Framework scripts don't use MCP yet
-- ✅ No dependency on MCP (optional)
+**How It Works**:
+```bash
+# Framework automatically detects MCP availability
+# If available: Uses MCP for enhanced features
+# If not available: Falls back to file-based storage
 
-**Future** (v4.4.0):
-- MCP detection and graceful degradation
-- Memory server integration for state management
-- Enhanced recovery using persistent memory
-- Comprehensive MCP integration guide
+# You don't need to do anything!
+```
 
-**For Now**:
-- Framework works without MCP (standard tools)
-- MCP servers will start if Claude Code supports them (harmless)
-- See [MCP Integration Status](docs/research/MCP_INTEGRATION_STATUS_AND_PLAN.md) for details
+**Benefits When MCP Available**:
+- 🔍 Semantic search for past modules
+- 🔗 Dynamic relationship tracking
+- 💾 Persistent memory across crashes
+- 📊 Rich observational history
+- ⚡ Faster context recovery
+
+**Framework Modes**:
+- **Enhanced Mode**: MCP + File-based (best experience)
+- **Standard Mode**: File-based only (fully functional)
+
+**Verification**:
+```bash
+# Check MCP status
+bash cpf/scripts/state_manager.sh mcp-status
+
+# Should show:
+# Mode: Enhanced (MCP + File-based)  ← MCP working
+# Mode: Standard (File-based only)   ← MCP not available
+```
+
+**See**: [MCP Integration Guide](docs/guides/16_MCP_INTEGRATION_GUIDE.md) for complete documentation
 
 ---
 
@@ -893,7 +910,20 @@ Both use the same 19-rule enforcement system with 33-point validation
 
 ## 📜 Version History
 
-**v4.3.0** (November 2025) - **Current** - Repository Reorganization + Installation System
+**v4.4.0** (November 2025) - **Current** - MCP Integration Release
+- 🔬 **MAJOR: MCP Integration** - Model Context Protocol fully integrated with graceful degradation
+- ✅ **MCP Detection** - Automatic detection during installation (mcp_detection.sh)
+- 📚 **MCP Library** - 310-line wrapper library with dual storage (mcp_lib.sh)
+- 🗄️ **State Manager** - Unified state management with MCP support (state_manager.sh, 350 lines)
+- 🔄 **Graceful Degradation** - Framework works perfectly with or without MCP
+- 💾 **Dual Storage** - File-based (primary) + MCP memory (enhanced)
+- 🔍 **Enhanced Recovery** - Semantic search for context restoration
+- 📖 **MCP Guide** - Comprehensive 500+ line guide (docs/guides/16_MCP_INTEGRATION_GUIDE.md)
+- ⚡ **Installation Updated** - cpf-install.sh now runs MCP detection automatically
+- ✨ **3 New Scripts**: mcp_detection.sh, mcp_lib.sh, state_manager.sh (867 lines total)
+- See Session 006 (v4.4.0) for complete implementation details
+
+**v4.3.0** (November 2025) - Repository Reorganization + Installation System
 - 🗂️ **MAJOR REORGANIZATION**: All documentation moved to `docs/` subdirectories (9 categories)
 - 📦 **NEW: Installation Scripts**: One-command setup with cpf-install.sh (automated installation)
 - 🛠️ **NEW: Maintenance Scripts**: cpf-update.sh (updates framework), cpf-uninstall.sh (clean removal)

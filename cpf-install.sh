@@ -139,8 +139,22 @@ EOF
 echo "✓ Created .cpf/logs/operations.log"
 echo ""
 
+# Detect MCP availability
+echo "[7/8] Detecting MCP server availability..."
+if [ -f "$FRAMEWORK_DIR/scripts/mcp_detection.sh" ]; then
+    bash "$FRAMEWORK_DIR/scripts/mcp_detection.sh" .cpf/logs/mcp_detection.log
+    if [ -f ".cpf/mcp_status.sh" ]; then
+        echo "✓ MCP detection complete (see .cpf/logs/mcp_detection.log)"
+    else
+        echo "⚠️  MCP detection completed with warnings"
+    fi
+else
+    echo "⚠️  MCP detection script not found"
+fi
+echo ""
+
 # Verify installation
-echo "[7/7] Verifying installation..."
+echo "[8/8] Verifying installation..."
 CHECKS_PASSED=0
 CHECKS_TOTAL=6
 
