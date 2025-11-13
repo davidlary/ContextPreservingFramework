@@ -1,7 +1,7 @@
 #!/bin/bash
 # analyze_violations.sh - Comprehensive violation log analysis
 # Purpose: Analyze violation logs to identify patterns, trends, and improvement opportunities
-# Version: 1.0.0 (Created for v4.5.0 enhancement)
+# Version: 1.1.0 (Updated v4.5.1 - now uses common_functions.sh)
 # Usage: bash scripts/analyze_violations.sh [days]
 #
 # OUTPUT:
@@ -12,13 +12,9 @@
 
 set -euo pipefail
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-NC='\033[0m'
+# Load common functions library
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common_functions.sh"
 
 # Configuration
 PROJECT_ROOT="${PWD}"
@@ -35,11 +31,9 @@ else
     VIOLATIONS_JSON="${PROJECT_ROOT}/logs/violations.json"
 fi
 
-echo "═══════════════════════════════════════════════════════════════════════"
-echo "📊 VIOLATION LOG ANALYSIS"
-echo "═══════════════════════════════════════════════════════════════════════"
+print_header "📊 VIOLATION LOG ANALYSIS"
 echo "Analysis period: Last $ANALYSIS_DAYS days"
-echo "Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+echo "Timestamp: $(get_timestamp)"
 echo ""
 
 # Check if violations exist

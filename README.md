@@ -1,13 +1,15 @@
-# Context-Preserving Framework v4.5.0
+# Context-Preserving Framework v4.5.1
 
 **Comprehensive Context Management System for Claude Code**
 
-**Version**: 4.5.0 (Complete Mandatory Enforcement Release)
+**Version**: 4.5.1 (Quality & Reliability Release)
 **Purpose**: Enable Claude Code to manage large projects without context exhaustion
 **Approach**: Two paths - Quick start OR Comprehensive setup
-**Latest Update**: v4.5.0 (2025-11-13) - 100% mandatory enforcement (ALL 20 RULES ENFORCED)
+**Latest Update**: v4.5.1 (2025-11-13) - First Enhancement Audit + Quality Improvements
 
-> **🎯 NEW IN v4.5.0**: **COMPLETE ENFORCEMENT** - ALL 20 RULES ENFORCED (100%). Permission-requesting ELIMINATED, unauthorized file creation BLOCKED, user plans ENFORCED. Exit code 2 properly implemented. 31 total hooks (1 SessionStart + 1 UserPromptSubmit + 19 PreToolUse + 10 PostToolUse). See [v4.5.0 Release Notes](docs/releases/FRAMEWORK_V4.5.0_RELEASE_NOTES.md).
+> **🎯 NEW IN v4.5.1**: **FIRST ENHANCEMENT AUDIT COMPLETE** - Comprehensive 3.5-hour audit completed. Error detection improved (10 new patterns), error handling added to 3 scripts, test documentation updated. Framework health: 95/100 (EXCELLENT). See [Enhancement Audit](docs/analysis/ENHANCEMENT_AUDIT_20251113.md).
+>
+> **IN v4.5.0**: **COMPLETE ENFORCEMENT** - ALL 20 RULES ENFORCED (100%). Permission-requesting ELIMINATED, unauthorized file creation BLOCKED, user plans ENFORCED. 26 hooks (1 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse). See [v4.5.0 Release Notes](docs/releases/FRAMEWORK_V4.5.0_RELEASE_NOTES.md).
 
 ---
 
@@ -20,7 +22,7 @@
 - ✅ **BLOCK unauthorized file creation** via plan adherence enforcement
 - ✅ **ENFORCE user specifications** via .cpf/plan.json tracking system
 - ✅ **PROPER BLOCKING** via exit code 2 for all technical rules (10 blocking, 10 monitoring)
-- ✅ **31 total enforcement hooks** (1 SessionStart + 1 UserPromptSubmit + 19 PreToolUse + 10 PostToolUse)
+- ✅ **26 total enforcement hooks** (1 SessionStart + 1 UserPromptSubmit + 16 PreToolUse + 8 PostToolUse)
 - ✅ Maintain 100% test coverage and comprehensive documentation
 - ✅ Recover seamlessly from crashes or interruptions
 - ✅ Support teams with shared state and handoff procedures
@@ -50,6 +52,31 @@ Claude: [INTERNAL: Checkpoint loaded, summaries restored]
 ```
 
 **You never see framework mechanics. It just works.**
+
+---
+
+## ⚡ Quick Install (2 Commands)
+
+**Want to use this framework in your project?** Here's the fastest way:
+
+```bash
+# Step 1: Add framework to your project
+cd /path/to/YourProject && git submodule add https://github.com/davidlary/ContextPreservingFramework.git cpf
+
+# Step 2: Install (automated, takes 30 seconds)
+cd cpf && ./cpf-install.sh && cd ..
+
+# ✅ Done! Framework is now active in your project.
+```
+
+**What you get**:
+- ✅ Automatic context management (no more "out of context" errors)
+- ✅ 100% enforcement (20 rules, 26 hooks)
+- ✅ Crash recovery (seamless session continuity)
+- ✅ Plan adherence (Claude follows your specs)
+- ✅ Autonomous execution (no permission prompts)
+
+**Need help?** See detailed instructions below or read [Setup Guide](docs/guides/02_SETUP_GUIDE.md).
 
 ---
 
