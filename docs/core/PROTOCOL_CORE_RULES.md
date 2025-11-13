@@ -1,11 +1,11 @@
 # Protocol Core Rules (Compressed Quick Reference)
 
-**Version**: 4.5.0
+**Version**: 4.5.1
 **Purpose**: Compressed quick reference of all 20 enforcement rules
 **Token Cost**: ~1500 tokens (0.75% of context)
 **Application**: Quick start path - for experienced users or rapid refresh
 **Full Details**: See `guides/` directory for comprehensive setup and workflow guides
-**Enforcement**: ALL 20 rules enforced (100%) via 31 hooks - see [v4.5.0 Release Notes](../releases/FRAMEWORK_V4.5.0_RELEASE_NOTES.md)
+**Enforcement**: ALL 20 rules enforced (100%) via 26 hooks - see [v4.5.0 Release Notes](../releases/FRAMEWORK_V4.5.0_RELEASE_NOTES.md) and [Enhancement Audit](../analysis/ENHANCEMENT_AUDIT_20251113.md)
 
 ---
 

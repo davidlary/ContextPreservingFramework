@@ -3,6 +3,8 @@
 # Version: 1.0.0
 # Purpose: Wrapper functions for MCP operations with graceful degradation
 
+set -euo pipefail
+
 # This library provides high-level functions that use MCP when available
 # and fall back to file-based storage when MCP is not available
 

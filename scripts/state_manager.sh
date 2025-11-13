@@ -3,6 +3,8 @@
 # Version: 1.0.0
 # Purpose: Centralized state operations with MCP integration
 
+set -euo pipefail
+
 # Source MCP library
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/mcp_lib.sh"

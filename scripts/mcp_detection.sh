@@ -3,6 +3,8 @@
 # Version: 1.0.0
 # Purpose: Check if MCP tools are available and set environment flags
 
+set -euo pipefail
+
 # This script detects MCP tool availability and exports environment variables
 # that other scripts can use to determine whether to use MCP or fall back
 

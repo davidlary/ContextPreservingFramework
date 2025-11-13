@@ -55,7 +55,8 @@ get_failure_severity() {
     local stderr="$2"
 
     # Critical errors (should never be ignored)
-    if [[ "$stderr" =~ (Permission denied|No such file or directory|Cannot allocate memory|Disk.*full) ]]; then
+    # Updated 2025-11-13: Expanded patterns based on latest research
+    if [[ "$stderr" =~ (Permission denied|No such file or directory|Cannot allocate memory|Disk.*full|Connection refused|connection refused|ECONNRESET|Timeout|timeout|timed out|Rate limit|rate limit|429 Too Many Requests|503 Service Unavailable|503 service unavailable|Certificate verify failed|certificate verification failed|Disk quota exceeded|disk quota exceeded|Out of memory|out of memory|OOM|Network is unreachable|network unreachable|ENETUNREACH) ]]; then
         echo "CRITICAL"
         return
     fi
