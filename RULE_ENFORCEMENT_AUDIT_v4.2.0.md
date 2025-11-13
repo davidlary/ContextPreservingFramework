@@ -3,7 +3,7 @@
 **Date**: 2025-11-13
 **Purpose**: Comprehensive audit of all 20 rules for enforcement gaps
 **Current Version**: v3.3.0 (8/20 rules enforced)
-**Target Version**: v4.0.0 (20/20 rules enforced)
+**Target Version**: v4.2.0 (20/20 rules enforced)
 **User Complaint**: "Persistent non-compliance with rules despite framework"
 
 ---
@@ -527,14 +527,14 @@
 
 ## Enforcement Architecture
 
-### New Hook Configuration (v4.0.0)
+### New Hook Configuration (v4.2.0)
 
 **Hooks to Add**:
 - 1 SessionStart hook (RULE 11)
 - 3 PreToolUse hooks (RULE 7, 13, enhancement to existing)
 - 4 PostToolUse hooks (RULE 1, 9, 16, enhancement to existing)
 
-**Total Hooks (v4.0.0)**:
+**Total Hooks (v4.2.0)**:
 - 1 SessionStart
 - 6 PreToolUse (3 existing + 3 new)
 - 10 PostToolUse (6 existing + 4 new)
@@ -556,7 +556,7 @@
 
 ## Expected Outcomes
 
-**After v4.0.0 Implementation**:
+**After v4.2.0 Implementation**:
 - ✅ 14/20 rules with technical enforcement (70%, up from 40%)
 - ✅ 6/20 rules instruction-based (behavioral rules)
 - ✅ **RULE 11 enforced** → Fixes permission-requesting issue

@@ -1,17 +1,17 @@
-# Context-Preserving Framework v4.0.0
+# Context-Preserving Framework v4.2.0
 
 **Comprehensive Context Management System for Claude Code**
 
-**Version**: 4.0.0
+**Version**: 4.2.0
 **Purpose**: Enable Claude Code to manage large projects without context exhaustion
 **Approach**: Two paths - Quick start OR Comprehensive setup
-**Latest Update**: v4.0.0 (2025-11-13) - MAJOR enforcement upgrade
+**Latest Update**: v4.2.0 (2025-11-13) - MAJOR enforcement upgrade (SessionStart hook + 70% coverage)
 
 ---
 
 ## 🎯 What Is This?
 
-**The Context-Preserving Framework v4.0.0** is a comprehensive system that enables Claude Code to:
+**The Context-Preserving Framework v4.2.0** is a comprehensive system that enables Claude Code to:
 - ✅ Manage projects of any size without running out of context (200K token window)
 - ✅ Work autonomously with 20 enforcement rules (14 technically enforced, 70%) and 33-point validation
 - ✅ Execute without permission-requesting via autonomous mode detection (SessionStart hook)
@@ -290,9 +290,9 @@ cd ~/Dropbox/Projects/MyApp
 
 ## 📊 Performance & Capabilities
 
-### Two Setup Paths in v4.0.0
+### Two Setup Paths in v4.2.0
 
-v4.0.0 offers **both** quick start and comprehensive setup - you choose based on your needs:
+v4.2.0 offers **both** quick start and comprehensive setup - you choose based on your needs:
 
 | Feature | Quick Start Path | Comprehensive Setup Path | Your Choice |
 |---------|------------------|--------------------------|-------------|
@@ -343,15 +343,15 @@ v4.0 incorporates latest AI agent research:
 
 ---
 
-## 📁 Framework Structure (v4.0.0)
+## 📁 Framework Structure (v4.2.0)
 
 ```
 ContextPreservingFramework/
 ├── README.md                              ← YOU ARE HERE (start here)
 ├── PROTOCOL_CORE_RULES.md                 ← Quick reference (~1500 tokens, 5 min)
-├── AUTONOMOUS_MODE.md                     ← Autonomous execution configuration ⭐ NEW v4.0.0
-├── FRAMEWORK_V4.0_SUMMARY.md              ← v4.0.0 comprehensive release notes ⭐ NEW
-├── RULE_ENFORCEMENT_AUDIT_v4.0.md         ← Complete enforcement audit ⭐ NEW
+├── AUTONOMOUS_MODE.md                     ← Autonomous execution configuration ⭐ NEW v4.2.0
+├── FRAMEWORK_V4.2.0_SUMMARY.md            ← v4.2.0 comprehensive release notes ⭐ NEW
+├── RULE_ENFORCEMENT_AUDIT_v4.2.0.md       ← Complete enforcement audit ⭐ NEW
 ├── ENFORCEMENT_MECHANISMS.md              ← Multi-layered enforcement (650+ lines)
 ├── GIT_AUTOMATION_REQUIREMENTS.md         ← Git automation clarification (500+ lines)
 ├── V3_V4_INTEGRATION_ANALYSIS.md          ← Integration design doc
@@ -361,21 +361,21 @@ ContextPreservingFramework/
 ├── ENFORCEMENT_FIX_SUMMARY.md             ← Critical fix for persistent non-compliance
 ├── V4_1_0_RELEASE_SUMMARY.md              ← v4.1.0 release documentation
 ├── scripts/                               ← Enforcement automation (8 scripts)
-│   ├── session_start_autonomous_check.sh  ← SessionStart: RULE 11 autonomous mode ⭐ NEW v4.0.0
-│   ├── pre_write_check.sh                 ← PreToolUse: RULE 2 (enhanced v2.0, blocks + suggests) ⭐ ENHANCED v4.0.0
-│   ├── pre_checkpoint_validation.sh       ← PreToolUse: RULE 7 (33-point validation) ⭐ NEW v4.0.0
-│   ├── pre_placeholder_check.sh           ← PreToolUse: RULE 13 (blocks TODO/FIXME) ⭐ NEW v4.0.0
+│   ├── session_start_autonomous_check.sh  ← SessionStart: RULE 11 autonomous mode ⭐ NEW v4.2.0
+│   ├── pre_write_check.sh                 ← PreToolUse: RULE 2 (enhanced v2.0, blocks + suggests) ⭐ ENHANCED v4.2.0
+│   ├── pre_checkpoint_validation.sh       ← PreToolUse: RULE 7 (33-point validation) ⭐ NEW v4.2.0
+│   ├── pre_placeholder_check.sh           ← PreToolUse: RULE 13 (blocks TODO/FIXME) ⭐ NEW v4.2.0
 │   ├── pre_operation_state_check.sh       ← PreToolUse: RULE 14 (blocks if state stale)
-│   ├── pre_context_check.sh               ← PreToolUse: RULE 10 (enhanced v2.0, backwards compat) ⭐ ENHANCED v4.0.0
-│   ├── post_hardcoding_check.sh           ← PostToolUse: RULE 1 (warns hardcoded values) ⭐ NEW v4.0.0
-│   ├── post_git_validation.sh             ← PostToolUse: RULE 16 (validates commits) ⭐ NEW v4.0.0
-│   ├── post_code_reuse_check.sh           ← PostToolUse: RULE 9 (detects duplicates) ⭐ NEW v4.0.0
+│   ├── pre_context_check.sh               ← PreToolUse: RULE 10 (enhanced v2.0, backwards compat) ⭐ ENHANCED v4.2.0
+│   ├── post_hardcoding_check.sh           ← PostToolUse: RULE 1 (warns hardcoded values) ⭐ NEW v4.2.0
+│   ├── post_git_validation.sh             ← PostToolUse: RULE 16 (validates commits) ⭐ NEW v4.2.0
+│   ├── post_code_reuse_check.sh           ← PostToolUse: RULE 9 (detects duplicates) ⭐ NEW v4.2.0
 │   ├── post_test_validation.sh            ← PostToolUse: RULE 18 (validates tests)
 │   ├── post_doc_validation.sh             ← PostToolUse: RULE 19 (validates docs)
 │   ├── post_bash_error_detection.sh       ← PostToolUse: RULE 3 (detects Bash errors)
 │   └── validate_compliance.sh             ← PostToolUse: Validates Rules 14-17 after operations
 ├── .claude/hooks/                         ← Hook configuration
-│   └── compliance_enforcement.json        ← v4.0.0: 1 SessionStart + 6 PreToolUse + 10 PostToolUse (17 total) ⭐ MAJOR UPDATE
+│   └── compliance_enforcement.json        ← v4.2.0: 1 SessionStart + 6 PreToolUse + 10 PostToolUse (17 total) ⭐ MAJOR UPDATE
 └── guides/                                ← Comprehensive setup guides
     ├── 01_PHILOSOPHY.md                   ← Framework philosophy
     ├── 02_SETUP_GUIDE.md                  ← Full setup (30-45 min, with decision trees)
@@ -576,10 +576,10 @@ Starting with Module 1.1: User database schema..."
 
 ### Core Features
 
-✅ **20 Enforcement Rules** (RFC 2119 MUST/SHALL/SHOULD/MAY) - **v4.0.0 ENHANCED**
+✅ **20 Enforcement Rules** (RFC 2119 MUST/SHALL/SHOULD/MAY) - **v4.2.0 ENHANCED**
   - 14/20 rules technically enforced (70%, up from 40% in v3.3.0)
   - 6/20 rules instruction-based (behavioral/quality rules)
-  - RULE 11: Autonomous Mode (NEW v4.0.0 - SessionStart hook)
+  - RULE 11: Autonomous Mode (NEW v4.2.0 - SessionStart hook)
   - RULE 18: Mandatory Testing (>80% coverage, 100% passing)
   - RULE 19: Mandatory Auto-Documentation (5 types)
 
@@ -592,16 +592,16 @@ Starting with Module 1.1: User database schema..."
   - Display requirements (4 points)
   - Context management (3 points)
 
-✅ **Multi-Layered Enforcement System** (v4.0.0 MAJOR UPGRADE - Proactive + Reactive)
+✅ **Multi-Layered Enforcement System** (v4.2.0 MAJOR UPGRADE - Proactive + Reactive)
   - **Layer 1**: Auto-loading (CLAUDE.md read at session start - GUARANTEED)
   - **Layer 2**: Explicit Instructions (RFC 2119 MUST/SHALL keywords - STRONG)
-  - **Layer 3a**: SessionStart Hooks (CHECKS autonomous mode at session init - PROACTIVE) ⭐ NEW v4.0.0
+  - **Layer 3a**: SessionStart Hooks (CHECKS autonomous mode at session init - PROACTIVE) ⭐ NEW v4.2.0
   - **Layer 3b**: PreToolUse Hooks (BLOCKS violations BEFORE they occur - PROACTIVE)
   - **Layer 3c**: PostToolUse Hooks (DETECTS violations AFTER they occur - REACTIVE)
   - **Layer 4**: Feedback Loops (Violations surfaced, must be corrected - PERSISTENT)
-  - **Hooks v4.0.0**: 1 SessionStart + 6 PreToolUse + 10 PostToolUse = **17 total** (up from 9 in v3.3.0) ⭐ +89%
+  - **Hooks v4.2.0**: 1 SessionStart + 6 PreToolUse + 10 PostToolUse = **17 total** (up from 9 in v3.3.0) ⭐ +89%
   - **Enforcement Coverage**: 70% technical (14/20 rules), up from 40% (8/20 rules) ⭐ +75%
-  - See `ENFORCEMENT_MECHANISMS.md`, `ENFORCEMENT_FIX_SUMMARY.md`, and `FRAMEWORK_V4.0_SUMMARY.md`
+  - See `ENFORCEMENT_MECHANISMS.md`, `ENFORCEMENT_FIX_SUMMARY.md`, and `FRAMEWORK_V4.2.0_SUMMARY.md`
 
 ✅ **Git Automation** (NEW - State files committed automatically)
   - Validation checks git status before checkpoint display
@@ -784,17 +784,22 @@ Both use the same 19-rule enforcement system with 33-point validation
 
 ## 📜 Version History
 
-**v4.0.0** (November 2025) - **Current** - MAJOR Enforcement Upgrade
+**v4.2.0** (November 2025) - **Current** - MAJOR Enforcement Upgrade
 - 🚀 **MAJOR UPDATE**: Comprehensive enforcement upgrade (40% → 70% technical enforcement)
 - 🤖 **NEW: SessionStart Hook (RULE 11)**: Checks `AUTONOMOUS_MODE.md` at session start, fixes permission-requesting issue
-- 🛡️ **Hooks v4.0.0**: 1 SessionStart + 6 PreToolUse + 10 PostToolUse = **17 total enforcement points** (up from 9)
+- 🛡️ **Hooks v4.2.0**: 1 SessionStart + 6 PreToolUse + 10 PostToolUse = **17 total enforcement points** (up from 9)
 - 📜 **6 New Scripts**: session_start_autonomous_check.sh (RULE 11), pre_checkpoint_validation.sh (RULE 7), pre_placeholder_check.sh (RULE 13), post_hardcoding_check.sh (RULE 1), post_git_validation.sh (RULE 16), post_code_reuse_check.sh (RULE 9)
 - ✨ **2 Enhanced Scripts**: pre_write_check.sh v2.0 (blocks + suggests existing files - fixes new file creation issue), pre_context_check.sh v2.0 (backwards compatibility for old projects)
 - 🎯 **User Issues Fixed**: 3/3 (100% resolution) - non-compliance, new file creation, permission-requesting
 - 📊 **Enforcement Coverage**: 14/20 rules (70%), up from 8/20 (40%) - **+75% improvement**
-- 📝 **New Documentation**: AUTONOMOUS_MODE.md, FRAMEWORK_V4.0_SUMMARY.md (500 lines), RULE_ENFORCEMENT_AUDIT_v4.0.md (650 lines)
+- 📝 **New Documentation**: AUTONOMOUS_MODE.md, FRAMEWORK_V4.2.0_SUMMARY.md (500 lines), RULE_ENFORCEMENT_AUDIT_v4.2.0.md (650 lines)
 - 🔄 **Backwards Compatible**: Auto-detects old projects (35% threshold) vs new projects (65% threshold)
-- See `FRAMEWORK_V4.0_SUMMARY.md` for complete release notes
+- See `FRAMEWORK_V4.2.0_SUMMARY.md` for complete release notes
+
+**v4.1.1** (November 2025) - Testing & Enhancement
+- Testing phase complete with comprehensive test report
+- All 4 enhancements implemented (RULE 3, 18, 19 enforcement + context optimization)
+- See `TEST_REPORT_v4.1.1.md`
 
 **v4.1.0** (November 2025) - Enforcement Fix (Pre v4.0.0)
 - 🔒 **CRITICAL FIX**: Proactive enforcement for RULE 10 and RULE 14 (prevents persistent violations)
@@ -861,7 +866,7 @@ Both use the same 19-rule enforcement system with 33-point validation
 
 ---
 
-**Framework Status**: Production Ready (v4.0.0)
+**Framework Status**: Production Ready (v4.2.0)
 **Last Updated**: November 2025
-**Major Release**: v4.0.0 (2025-11-13) - Comprehensive enforcement upgrade
+**Major Release**: v4.2.0 (2025-11-13) - Comprehensive enforcement upgrade
 **Next Release**: TBD (monitoring adoption and feedback)

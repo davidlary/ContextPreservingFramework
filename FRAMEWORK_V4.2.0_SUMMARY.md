@@ -1,9 +1,9 @@
-# Framework v4.0.0 - Comprehensive Enforcement Upgrade
+# Framework v4.2.0 - Comprehensive Enforcement Upgrade
 
 **Release Date**: 2025-11-13
 **Session**: 005 (Autonomous Strengthening)
-**Previous Version**: v3.3.0
-**New Version**: v4.0.0
+**Previous Version**: v4.1.1
+**New Version**: v4.2.0
 **Status**: ✅ COMPLETE - All user complaints addressed
 
 ---
@@ -18,19 +18,19 @@
 
 ## 📊 Enforcement Coverage Improvement
 
-### Before v4.0.0 (v3.3.0)
+### Before v4.2.0 (v4.1.1)
 - **Rules Enforced**: 8/20 (40%)
 - **Hooks**: 9 enforcement points (3 PreToolUse + 6 PostToolUse)
 - **Issues**: Permission-requesting, new file creation, weak enforcement
 
-### After v4.0.0
+### After v4.2.0
 - **Rules Enforced**: 14/20 (70%) ✅ **+75% improvement**
 - **Hooks**: 17 enforcement points (1 SessionStart + 6 PreToolUse + 10 PostToolUse) ✅ **+89% more hooks**
 - **Issues**: ✅ ALL FIXED
 
 ---
 
-## 🆕 What's New in v4.0.0
+## 🆕 What's New in v4.2.0
 
 ### 1. SessionStart Hook (NEW)
 **RULE 11: Autonomous Execution Mode**
@@ -226,7 +226,7 @@ PRIORITY 1 (STRONGLY RECOMMENDED):
 ### Modified Files (2)
 1. ✅ `scripts/pre_write_check.sh` - v1.0 → v2.0 (enhanced)
 2. ✅ `scripts/pre_context_check.sh` - v1.0 → v2.0 (enhanced)
-3. ✅ `.claude/hooks/compliance_enforcement.json` - v3.3.0 → v4.0.0
+3. ✅ `.claude/hooks/compliance_enforcement.json` - v3.3.0 → v4.2.0
 
 ---
 
@@ -368,7 +368,7 @@ jq . .claude/hooks/compliance_enforcement.json
 ✅ Already deployed! Hooks in `.claude/hooks/compliance_enforcement.json` are active.
 
 ### For User Projects
-Users wanting to use v4.0.0 enforcement should:
+Users wanting to use v4.2.0 enforcement should:
 
 1. **Copy enforcement scripts**:
    ```bash
@@ -425,7 +425,7 @@ Users wanting to use v4.0.0 enforcement should:
 
 ---
 
-## 🔮 Future Enhancements (Not in v4.0.0)
+## 🔮 Future Enhancements (Not in v4.2.0)
 
 These were identified in the audit but not implemented (lower priority):
 
@@ -455,7 +455,7 @@ All items completed:
 - [x] Implement RULE 16 git validation ✅
 - [x] Implement RULE 9 code reuse check ✅
 - [x] Enhance RULE 10 with backwards compatibility ✅
-- [x] Update hooks configuration to v4.0.0 ✅
+- [x] Update hooks configuration to v4.2.0 ✅
 - [x] Validate all JSON configurations ✅
 - [x] Test all scripts for executability ✅
 - [x] Create comprehensive documentation ✅
@@ -466,7 +466,7 @@ All items completed:
 
 ## 📦 Commit Information
 
-**Version**: Framework v4.0.0
+**Version**: Framework v4.2.0
 **Date**: 2025-11-13
 **Session**: 005 (Autonomous Strengthening)
 **Commits**: 1 comprehensive commit with all changes
@@ -482,7 +482,7 @@ All items completed:
 
 ## 🎉 Conclusion
 
-**v4.0.0 is a MAJOR release that fundamentally transforms the framework from 40% enforcement to 70% enforcement**, addressing all user complaints systematically.
+**v4.2.0 is a MAJOR release that fundamentally transforms the framework from 40% enforcement to 70% enforcement**, addressing all user complaints systematically.
 
 **Key Achievements**:
 1. ✅ **Permission-requesting FIXED** (SessionStart hook)
@@ -498,5 +498,5 @@ All items completed:
 
 **Generated with**: Claude Code (Autonomous Mode)
 **Co-Authored-By**: Claude <noreply@anthropic.com>
-**Framework Version**: v4.0.0
+**Framework Version**: v4.2.0
 **Last Updated**: 2025-11-13

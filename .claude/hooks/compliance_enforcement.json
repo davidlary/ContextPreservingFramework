@@ -1,6 +1,6 @@
 {
   "name": "Framework Compliance Enforcement",
-  "version": "4.0.0",
+  "version": "4.2.0",
   "description": "Comprehensive enforcement with 17 hooks (1 SessionStart + 6 PreToolUse + 10 PostToolUse)",
   "hooks": {
     "SessionStart": [
