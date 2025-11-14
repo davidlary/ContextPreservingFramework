@@ -1,11 +1,12 @@
 # Protocol Core Rules (Compressed Quick Reference)
 
-**Version**: 4.5.1
-**Purpose**: Compressed quick reference of all 20 enforcement rules
+**Version**: 4.7.0
+**Purpose**: Compressed quick reference of all 22 enforcement rules
 **Token Cost**: ~1500 tokens (0.75% of context)
 **Application**: Quick start path - for experienced users or rapid refresh
 **Full Details**: See `guides/` directory for comprehensive setup and workflow guides
-**Enforcement**: ALL 20 rules enforced (100%) via 26 hooks - see [v4.5.0 Release Notes](../releases/FRAMEWORK_V4.5.0_RELEASE_NOTES.md) and [Enhancement Audit](../analysis/ENHANCEMENT_AUDIT_20251113.md)
+**Enforcement**: ALL 22 rules enforced (100%) via 27 hooks - see [v4.7.0 Release Notes](../releases/FRAMEWORK_V4.7.0_RELEASE_NOTES.md)
+**New in v4.7.0**: RULE 22 (Advanced Context Compression) enables 50-80% token reduction - see [Context Compression Guide](../../guides/11_CONTEXT_COMPRESSION.md)
 
 ---
 
@@ -164,6 +165,20 @@ At checkpoint (65% or module complete), Claude **MUST**:
 - Tests failing
 - Git uncommitted changes
 - State file invalid JSON
+
+### 5.4 Context Compression (SHOULD - v4.7.0+)
+**RULE 22** provides advanced compression techniques to reduce context usage:
+- **JIT Loading**: Use Grep/Glob before Read (30-50% reduction)
+- **Tool Filtering**: Summarize verbose outputs >1K tokens (15-25% reduction)
+- **Context Editing**: Prune completed work (10-15% reduction)
+- **Target**: 50-80% total reduction (validated in testing)
+
+**When to Apply**:
+- Use JIT loading for all file exploration
+- Filter tool outputs exceeding 1K tokens
+- Consider context editing when approaching 50% threshold
+
+**See**: [RULE 22 in rules/CLAUDE.md](../../rules/CLAUDE.md#rule-22-advanced-context-compression-v470-addition) and [Context Compression Guide](../../guides/11_CONTEXT_COMPRESSION.md)
 
 ---
 

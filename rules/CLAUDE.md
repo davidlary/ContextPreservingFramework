@@ -514,6 +514,11 @@ After Read, Write, Edit, Bash, Claude **MUST**:
 ✅ Threshold check: [SAFE/WARNING/CRITICAL]
 ✅ Git status: [Last commit hash or "No commits"]
 
+📦 Compression Stats (RULE 22 - v4.7.0+):
+✅ Tokens saved: [N]K ([X]% reduction)
+✅ Effective context: [N]K tokens ([X.X]% vs [theoretical_max]%)
+✅ Strategies: [JIT: N uses, Filtering: N uses, Editing: N uses]
+
 Next threshold: [35%/40%] at [N]K tokens
 Operations this session: [count]
 
@@ -521,6 +526,8 @@ Operations this session: [count]
 ```
 
 **This makes tracking visible and verifiable.**
+
+**Note**: Compression stats section (v4.7.0+) shows RULE 22 effectiveness. Display only if compression_metrics.enabled=true in context_tracking.json.
 
 ---
 
