@@ -1197,6 +1197,24 @@ Before checkpoint, verify RULE 20 compliance:
 
 ---
 
+## RULE 21: RESERVED - SUPERSEDED BY RULE 22
+
+**Status**: RESERVED (Not Implemented - Superseded)
+**Originally Planned**: Token-Efficient Tool Usage (see docs/analysis/ENHANCEMENT_AUDIT_REPORT_20251113.md)
+**Superseded By**: RULE 22 (Advanced Context Compression) - v4.7.0
+**Reason**: RULE 22 provides more comprehensive token efficiency guidance
+
+**Why Reserved**:
+- RULE 21 was identified in enhancement audit (2025-11-13) as "Token-Efficient Tool Usage"
+- Before implementation, v4.7.0 added RULE 22 (Advanced Context Compression)
+- RULE 22 covers token efficiency more comprehensively (50-80% reduction achieved)
+- RULE 22 includes 4 strategies: JIT loading, tool filtering, context editing, monitoring
+- Original RULE 21 scope fully covered by RULE 22
+
+**Note**: Maintaining RULE 21 as reserved preserves rule numbering consistency. RULE 22 remains as-is in v4.7.0 release to avoid breaking changes.
+
+---
+
 ## RULE 22: ADVANCED CONTEXT COMPRESSION (v4.7.0 ADDITION)
 
 **Purpose**: Minimize context usage through intelligent compression and pruning techniques

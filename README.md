@@ -79,7 +79,7 @@ cd cpf && ./cpf-install.sh && cd ..
 
 **What you get**:
 - ✅ Automatic context management (no more "out of context" errors)
-- ✅ 100% enforcement (20 rules, 27 hooks)
+- ✅ 100% enforcement ([22 rules](rules/CLAUDE.md), 27 hooks)
 - ✅ Crash recovery (seamless session continuity)
 - ✅ Plan adherence (Claude follows your specs)
 - ✅ Autonomous execution (no permission prompts)
@@ -209,7 +209,7 @@ cd /path/to/YourProject/
 # Copy the instruction file (tells Claude to use the framework)
 cp /Users/davidlary/Dropbox/Environments/Code/ContextPreservingFramework/guides/03_TEMPLATES/CLAUDE.md ./
 
-# Copy enforcement rules (19 rules with RFC 2119 keywords)
+# Copy enforcement rules (22 rules with RFC 2119 keywords - see rules/CLAUDE.md)
 cp -r /Users/davidlary/Dropbox/Environments/Code/ContextPreservingFramework/guides/03_TEMPLATES/rules/ ./
 ```
 
@@ -236,9 +236,9 @@ Edit `CLAUDE.md` in your project to customize:
 cd /path/to/YourProject/
 # Start Claude Code - it will automatically:
 # 1. Read CLAUDE.md
-# 2. Read rules/CLAUDE.md
+# 2. Read rules/CLAUDE.md (22 rules, RULE 21 reserved)
 # 3. Initialize state tracking (data/state/, logs/)
-# 4. Follow all 19 rules
+# 4. Follow all 22 rules
 ```
 
 **Claude will automatically**:
@@ -256,7 +256,7 @@ You should see:
 ✅ Framework active
 ✅ State tracking initialized
 ✅ Context monitoring: 5.2K tokens (2.6%)
-✅ All 19 rules enforced
+✅ All [22 rules](rules/CLAUDE.md) enforced
 ```
 
 **Best for**:
@@ -275,7 +275,7 @@ You should see:
 # In YOUR project, tell Claude:
 "Reference the Context-Preserving Framework at
 /Users/davidlary/Dropbox/Environments/Code/ContextPreservingFramework/PROTOCOL_CORE_RULES.md
-and follow all 19 rules for this project"
+and follow all 22 rules for this project"
 ```
 
 Claude will read the compressed protocol (~1500 tokens) and apply it to your current work.
@@ -413,7 +413,7 @@ v4.2.0 offers **both** quick start and comprehensive setup - you choose based on
 | **Context threshold** | 65%/75% (research-based, configurable) | 35% or 65%/75% (user choice) | Both support custom thresholds via config |
 | **Checkpoint trigger** | Automatic at threshold | Automatic at threshold | Same in both paths |
 | **Recovery** | Automatic (<30 sec) | Automatic (<30 sec) | Same in both paths |
-| **Enforcement** | 20 rules (14 technically enforced, 70%), 33-point validation | 20 rules (14 technically enforced, 70%), 33-point validation | Identical enforcement |
+| **Enforcement** | [22 rules](rules/CLAUDE.md) (12 technically enforced via hooks, 10 instruction-based), 33-point validation | [22 rules](rules/CLAUDE.md) (12 technically enforced via hooks, 10 instruction-based), 33-point validation | Identical enforcement |
 | **Guides available** | All 14 guides available | All 14 guides used in setup | Same guides, different entry point |
 
 **Key insight**: Both paths use the **identical underlying system** - the only difference is the entry point (quick reference vs comprehensive guide).
@@ -858,7 +858,7 @@ bash cpf/scripts/state_manager.sh mcp-status
 
 ✅ **Compressed Protocol** (`PROTOCOL_CORE_RULES.md`)
   - ~1500 tokens (0.75% of context)
-  - All 19 rules in compressed format
+  - All [22 rules](rules/CLAUDE.md) in compressed format
   - For experienced users or quick refresher
 
 ### Two Setup Paths
@@ -1011,7 +1011,7 @@ Both use the same 19-rule enforcement system with 33-point validation
 - See `ENFORCEMENT_FIX_SUMMARY.md`
 
 **v4.0.1** (January 2025) - Initial v4 Release
-- ✨ **Comprehensive system**: 19 enforcement rules with RFC 2119 keywords (MUST/SHALL/SHOULD/MAY)
+- ✨ **Comprehensive system**: [22 enforcement rules](rules/CLAUDE.md) with RFC 2119 keywords (MUST/SHALL/SHOULD/MAY) - RULE 21 reserved, superseded by RULE 22
 - 🧪 **Mandatory testing**: RULE 18 requires >80% coverage, 100% passing before checkpoint
 - 📝 **Mandatory documentation**: RULE 19 requires 5 documentation types (docstrings, README, API, ARCHITECTURE, CHANGELOG)
 - 📊 **Research-based thresholds**: 65% primary, 75% emergency (based on 2025 AI agent research)

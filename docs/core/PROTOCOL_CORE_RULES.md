@@ -4,9 +4,10 @@
 **Purpose**: Compressed quick reference of all 22 enforcement rules
 **Token Cost**: ~1500 tokens (0.75% of context)
 **Application**: Quick start path - for experienced users or rapid refresh
-**Full Details**: See `guides/` directory for comprehensive setup and workflow guides
+**Full Details**: See [rules/CLAUDE.md](../../rules/CLAUDE.md) for complete 22-rule specification and `guides/` directory for comprehensive setup
 **Enforcement**: ALL 22 rules enforced (100%) via 27 hooks - see [v4.7.0 Release Notes](../releases/FRAMEWORK_V4.7.0_RELEASE_NOTES.md)
 **New in v4.7.0**: RULE 22 (Advanced Context Compression) enables 50-80% token reduction - see [Context Compression Guide](../../guides/11_CONTEXT_COMPRESSION.md)
+**Note**: RULE 21 reserved (superseded by RULE 22) - see [rules/CLAUDE.md § RULE 21](../../rules/CLAUDE.md#rule-21-reserved---superseded-by-rule-22)
 
 ---
 
@@ -32,7 +33,7 @@
 2. **MUST** check for `rules/CLAUDE.md`
 3. If either exists: **MUST** read them before doing any work
 4. **MUST** check for `data/state/master_state.json` and load state
-5. **MUST** follow all 20 rules below with RFC 2119 enforcement (MUST/SHALL/SHOULD/MAY)
+5. **MUST** follow all 22 rules (see [rules/CLAUDE.md](../../rules/CLAUDE.md)) with RFC 2119 enforcement (MUST/SHALL/SHOULD/MAY)
 
 **This applies to:**
 - User projects that set up the framework

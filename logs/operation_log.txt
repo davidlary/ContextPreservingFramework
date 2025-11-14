@@ -128,3 +128,8 @@
 [2025-11-14T03:18:24Z] EDIT: Updated README.md to v4.7.0 (RULE 19 compliance - removed alpha)
 [2025-11-14T03:18:47Z] EDIT: Updated README.md to v4.7.0 (all version references updated, RULE 19 compliant)
 [2025-11-14T03:19:30Z] EDIT: Updated master_state.json to v4.7.0 (all phases complete, released)
+[2025-11-14T03:21:08Z] RELEASE: v4.7.0 complete - All phases finished, committed (c01606a), tagged, pushed to GitHub
+[2025-11-14T03:31:49Z] EDIT: Updated rules/CLAUDE.md (added RULE 21 placeholder)
+[2025-11-14T03:31:49Z] EDIT: Fixed PROTOCOL_CORE_RULES.md documentation inconsistencies
+[2025-11-14T03:31:49Z] EDIT: Fixed README.md rule counts and added hyperlinks
+[2025-11-14T03:31:49Z] EDIT: Fixed validation_core.sh schema handling

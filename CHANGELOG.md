@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased] - v4.7.1 (In Progress)
+
+### Added
+- **Automated Recovery System** - Self-healing context corruption detection and recovery
+- **Performance Metrics Suite** - Benchmark suite for compression effectiveness tracking
+
+### Fixed
+- **RULE 21 placeholder** - Added reserved RULE 21 (superseded by RULE 22) to maintain numbering consistency
+- **Documentation consistency** - Fixed all rule count references (19/20 → 22) across README.md, PROTOCOL_CORE_RULES.md
+- **Hyperlinks to rules** - Added markdown hyperlinks to rules/CLAUDE.md throughout documentation
+- **Validation script schema** - Fixed validation_core.sh to handle both string and object formats for current_module field (line 53-72)
+- **Hook coverage documentation** - Clarified 12 rules have technical hooks, 10 are instruction-based
+
+### Changed
+- **PROTOCOL_CORE_RULES.md line 35** - Changed "all 20 rules below" to "all 22 rules (see rules/CLAUDE.md)"
+- **README.md enforcement table** - Updated from "20 rules (14 technically enforced)" to "22 rules (12 technically enforced via hooks, 10 instruction-based)"
+
+---
+
 ## [4.7.0] - 2025-11-14
 
 ### Added

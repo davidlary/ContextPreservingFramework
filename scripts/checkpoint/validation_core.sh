@@ -52,9 +52,19 @@ check_module_complete() {
 
     # Check if current module status is "complete" or "ready_for_checkpoint"
     if command -v jq &> /dev/null; then
-        STATUS=$(jq -r '.current_module.status // "unknown"' data/state/master_state.json)
-        if [ "$STATUS" = "complete" ] || [ "$STATUS" = "ready_for_checkpoint" ]; then
-            return 0 # Module complete, checkpoint imminent
+        # Handle both string and object formats for current_module
+        MODULE_TYPE=$(jq -r '.current_module | type' data/state/master_state.json 2>/dev/null)
+        if [ "$MODULE_TYPE" = "object" ]; then
+            STATUS=$(jq -r '.current_module.status // "unknown"' data/state/master_state.json)
+            if [ "$STATUS" = "complete" ] || [ "$STATUS" = "ready_for_checkpoint" ]; then
+                return 0 # Module complete, checkpoint imminent
+            fi
+        elif [ "$MODULE_TYPE" = "string" ]; then
+            # For string format, check if ends with "_complete"
+            MODULE=$(jq -r '.current_module // ""' data/state/master_state.json)
+            if [[ "$MODULE" == *"_complete" ]]; then
+                return 0 # Module complete, checkpoint imminent
+            fi
         fi
     fi
 
