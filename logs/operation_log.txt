@@ -133,3 +133,5 @@
 [2025-11-14T03:31:49Z] EDIT: Fixed PROTOCOL_CORE_RULES.md documentation inconsistencies
 [2025-11-14T03:31:49Z] EDIT: Fixed README.md rule counts and added hyperlinks
 [2025-11-14T03:31:49Z] EDIT: Fixed validation_core.sh schema handling
+[2025-11-14T03:34:11Z] GIT: Committed v4.7.1-alpha documentation fixes (8c235c0)
+[2025-11-14T03:34:11Z] GIT: Pushed to origin/main
