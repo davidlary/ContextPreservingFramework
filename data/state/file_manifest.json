@@ -2,7 +2,7 @@
   "manifest_version": "1.0.0",
   "project": "ContextPreservingFramework",
   "description": "Authorized file list for RULE 2 enforcement - prevents creating new code instead of updating existing",
-  "last_update": "2025-11-13T16:30:00Z",
+  "last_update": "2025-11-14T00:30:00Z",
   "enforcement_active": true,
   "authorized_files": [
     "CLAUDE.md",
@@ -60,7 +60,17 @@
     "guides/12_AUTOMATION_GUIDE.md",
     "guides/13_PERFORMANCE_GUIDE.md",
     "guides/14_RECOVERY_GUIDE.md",
-    "guides/15_CHUNKING_LARGE_PROJECTS.md"
+    "guides/15_CHUNKING_LARGE_PROJECTS.md",
+    "guides/11_CONTEXT_COMPRESSION.md",
+    ".claude/templates/recovery_prompt_template.md",
+    "docs/analysis/RULE_17_VIOLATION_PATTERN_ANALYSIS.md",
+    "docs/analysis/FRAMEWORK_GAP_ANALYSIS_20251113.md",
+    "docs/planning/V4.7.0_IMPLEMENTATION_PROPOSAL.md",
+    "docs/analysis/ENHANCEMENT_AUDIT_20251113.md",
+    "docs/releases/FRAMEWORK_V4.5.2_RELEASE_NOTES.md",
+    "docs/releases/FRAMEWORK_V4.6.0_RELEASE_NOTES.md",
+    "docs/releases/FRAMEWORK_V4.6.1_RELEASE_NOTES.md",
+    "docs/releases/FRAMEWORK_V4.7.0_RELEASE_NOTES.md"
   ],
   "always_allowed_patterns": [
     "README.md",

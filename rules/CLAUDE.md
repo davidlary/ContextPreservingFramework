@@ -403,6 +403,10 @@ Validation: Checks pattern → matches "docs/**/*.md" → AUTHORIZED
 **Actions** (REQUIRED):
 - **MUST** keep files small and focused (max 250-500 lines per file)
 - **MUST** track context in real-time after every operation
+- **SHOULD** use JIT context loading (RULE 22.1) - load only when needed, not pre-loading (NEW v4.7.0)
+- **SHOULD** apply tool output filtering (RULE 22.2) - summarize verbose outputs >1K tokens (NEW v4.7.0)
+- **SHOULD** apply context editing (RULE 22.3) - prune old low-signal content (NEW v4.7.0)
+- **SHOULD** track compression metrics (RULE 22.4) - monitor effectiveness (NEW v4.7.0)
 - **MUST** display warning at 50%, critical at 65%
 - **MUST** auto-checkpoint at 65%+
 - **MUST** force emergency checkpoint at 75%
@@ -1183,4 +1187,488 @@ Before checkpoint, verify RULE 20 compliance:
 **Limitation**: This is the practical limit of what enforcement can achieve for truthfulness. Cannot prevent determined false claims, but makes them require deliberate effort rather than accidental occurrence.
 
 **Status**: Implemented per user request after false claim pattern identified in Session 003.
+
+---
+
+## RULE 22: ADVANCED CONTEXT COMPRESSION (v4.7.0 ADDITION)
+
+**Purpose**: Minimize context usage through intelligent compression and pruning techniques
+**Tier**: 2 (SHOULD - Important, follow unless good reason)
+**Enforcement**: Instruction-based (guidance and best practices)
+**Status**: NEW - Based on Anthropic research (2025) showing 84% token reduction achievable
+**Based On**: State-of-the-art context engineering practices (see FRAMEWORK_GAP_ANALYSIS_20251113.md)
+
+---
+
+### The Problem
+
+**Context Usage Inefficiencies**:
+- Pre-loading files unnecessarily (not just-in-time)
+- Keeping all tool outputs in context (no pruning)
+- Verbose tool outputs consume excessive tokens
+- Old completed work remains in context
+- Repetitive content not compressed
+
+**Research Findings** (Anthropic 2025):
+- Automatic context editing enables 84% token reduction
+- JIT loading reduces unnecessary context by 30-50%
+- Tool output filtering saves significant tokens
+- 100-turn dialogues possible with only 16% of original tokens
+
+**Impact**: Without compression, users hit context limits 2-3x sooner than necessary
+
+---
+
+### Four-Strategy Framework
+
+**Context compression uses four strategies** (Write, Select, Compress, Isolate):
+1. **SELECT**: Just-In-Time (JIT) context loading - load only what's needed
+2. **COMPRESS**: Tool output filtering - summarize verbose outputs
+3. **ISOLATE**: Context editing - prune old low-signal content
+4. **WRITE**: Real-time monitoring - track compression effectiveness
+
+---
+
+### 22.1 JIT Context Loading (SELECT Strategy)
+
+**Principle**: Load only what you need, when you need it
+
+**Pattern**: Don't pre-load → Use discovery tools → Load on demand
+
+**Actions** (SHOULD follow):
+- **Don't pre-load**: Don't read all files in a directory speculatively
+- **Discovery first**: Use Grep/Glob to find relevant files before reading
+- **Summary before detail**: Read summaries or headers before full content
+- **Batch intelligently**: Load related files together, but not unrelated files
+- **Defer detail**: Load high-level structure first, detail only if necessary
+
+**Example Workflows**:
+
+**BAD (Pre-loading - Wastes Context)**:
+```
+1. Read src/file1.py (8K tokens)
+2. Read src/file2.py (6K tokens)
+3. Read src/file3.py (7K tokens)
+4. Read src/file4.py (9K tokens)
+5. Read src/file5.py (12K tokens)
+6. Analyze which file to modify → It's file2.py
+7. Make changes to file2.py
+Total context: 42K tokens (80% wasted)
+```
+
+**GOOD (JIT Loading - Efficient)**:
+```
+1. Grep "class Authentication" in src/ → Finds 2 matches (500 tokens)
+2. Review grep results → file2.py looks relevant
+3. Read src/file2.py (6K tokens)
+4. Confirm this is the target file
+5. Make changes to file2.py
+Total context: 6.5K tokens (85% savings vs pre-loading)
+```
+
+**When to Use JIT Loading**:
+- ✅ Exploring codebase to find relevant files
+- ✅ Searching for specific functionality
+- ✅ Identifying target for modifications
+- ✅ Understanding project structure (start high-level)
+- ❌ Already know exact file to modify (just read it)
+- ❌ Need all files for comprehensive analysis
+
+**Validation**:
+- Before reading files: Ask "Do I need this content NOW, or am I speculating?"
+- If exploring: Grep/Glob first, Read second
+- If uncertain about relevance: Skip or load summary only
+
+---
+
+### 22.2 Tool Output Filtering (COMPRESS Strategy)
+
+**Principle**: Summarize verbose tool outputs before adding to context
+
+**Pattern**: Run tool → Evaluate output size → Summarize if >1K tokens
+
+**Actions** (SHOULD follow):
+- **Grep results >20 matches**: Summarize pattern, don't list all matches
+- **File listings >10 files**: Group by type/directory, don't list all
+- **Log outputs**: Extract key errors/warnings, not full logs
+- **Test results**: Report pass/fail counts + coverage, not every test detail
+- **Large file reads**: Use head/tail limits, or summarize after reading
+
+**Examples**:
+
+**Grep Results (47 matches)**:
+```
+❌ BAD (Lists all 47 matches):
+src/auth.py:15: def login(username, password):
+src/auth.py:42: def logout(session):
+src/auth.py:78: def validate_token(token):
+[... 44 more lines ...]
+(12K tokens)
+
+✅ GOOD (Summarized pattern):
+"Found 47 matches across 12 files. Main patterns:
+ - auth.py (15 matches): login/logout/validate functions
+ - user.py (10 matches): user management
+ - session.py (8 matches): session handling
+ - Other files (14 matches): utility usage
+ Most relevant: auth.py for authentication logic"
+(500 tokens, 96% reduction)
+```
+
+**Test Results**:
+```
+❌ BAD (Full pytest output):
+============================= test session starts ==============================
+platform darwin -- Python 3.11.0, pytest-7.4.0, pluggy-1.3.0
+rootdir: /Users/...
+collected 127 items
+
+tests/test_auth.py::test_login PASSED                                    [  0%]
+tests/test_auth.py::test_logout PASSED                                   [  1%]
+[... 125 more lines of output ...]
+============================= 127 passed in 3.24s ==============================
+(25K tokens)
+
+✅ GOOD (Summarized results):
+"Tests: 127/127 passed (100%). Coverage: 94% (target: >80%).
+ Runtime: 3.2s. 0 failures, 0 errors, 0 warnings."
+(50 tokens, 99.8% reduction)
+```
+
+**File Listings**:
+```
+❌ BAD (Lists all 83 files):
+src/auth/login.py
+src/auth/logout.py
+src/auth/validate.py
+[... 80 more files ...]
+(8K tokens)
+
+✅ GOOD (Grouped summary):
+"Found 83 files in 7 directories:
+ - src/auth/ (15 files): authentication modules
+ - src/users/ (22 files): user management
+ - src/api/ (18 files): API endpoints
+ - src/db/ (12 files): database models
+ - src/utils/ (10 files): utilities
+ - tests/ (25 files): test suites
+ - config/ (5 files): configuration"
+(400 tokens, 95% reduction)
+```
+
+**When to Summarize**:
+- ✅ Tool output >1K tokens
+- ✅ Repetitive/structured output (many similar lines)
+- ✅ Already saw the detail (user has visibility)
+- ✅ Only need pattern/summary, not every detail
+- ❌ Critical error messages (keep full message)
+- ❌ Unique/non-repetitive content (can't compress safely)
+- ❌ Small outputs <1K tokens (summarization overhead not worth it)
+
+**Validation**:
+- After tool use: Check output size
+- If output >1K tokens: Summarize before continuing
+- Keep full output in logs if user needs it later
+- Verify summary captures key information
+
+---
+
+### 22.3 Context Editing (ISOLATE Strategy)
+
+**Principle**: Remove low-signal content from context as work progresses
+
+**Pattern**: Complete task → Summarize key points → Remove detailed context
+
+**What to Prune** (SHOULD remove):
+- ✅ Tool outputs from >5 operations ago (unless actively referencing)
+- ✅ Completed task details (keep 2-3 sentence summary only)
+- ✅ Exploration results that didn't lead to action (dead ends)
+- ✅ Verbose error messages after understanding root cause
+- ✅ Redundant file contents (reference file path instead of repeating content)
+- ✅ Old conversation history (compress to decisions made)
+
+**What NOT to Prune** (MUST keep):
+- ❌ Current task context (actively working on)
+- ❌ Recent tool outputs (last 3-5 operations)
+- ❌ State tracking data (master_state.json, context_tracking.json)
+- ❌ Uncommitted changes (need to remember what to commit)
+- ❌ Critical error messages (still debugging)
+- ❌ User instructions (original request and requirements)
+
+**Examples**:
+
+**Completed Task Compression**:
+```
+❌ BAD (Keep everything):
+Operation 1: Read src/auth.py (8K tokens) - full file content
+Operation 2: Read tests/test_auth.py (6K tokens) - full file content
+Operation 3: Analysis of authentication flow (4K tokens) - detailed analysis
+Operation 4: Write new login() function (2K tokens) - implementation
+Operation 5: Write tests (3K tokens) - test code
+Operation 6: Run tests (20K tokens) - full pytest output
+Total context from completed work: 43K tokens
+
+✅ GOOD (Compressed summary):
+"Task complete: Added login() function to src/auth.py with JWT token generation.
+ Tests: 12 new tests added, all passing (100%). Coverage: 96%.
+ Commit: Ready to commit auth changes."
+Total context: 100 tokens (99.7% reduction from 43K)
+```
+
+**Exploration Compression**:
+```
+❌ BAD (Keep all exploration):
+Read src/auth.py - not the right file
+Read src/session.py - not the right file
+Read src/user.py - not the right file
+Read src/api.py - THIS is the right file
+[All 4 file contents kept in context: 30K tokens]
+
+✅ GOOD (Keep only what matters):
+"Searched for API endpoint logic. Found in src/api.py (8K tokens kept).
+ Other files not relevant (discarded)."
+[Only src/api.py kept in context: 8K tokens, 73% reduction]
+```
+
+**When to Apply Context Editing**:
+- ✅ After completing a task or sub-task
+- ✅ Every 5-10 operations (periodic pruning)
+- ✅ At 50% context threshold (aggressive pruning)
+- ✅ After failed exploration (remove dead ends)
+- ✅ After understanding error (remove verbose logs)
+
+**Validation**:
+- Before pruning: Verify content is truly complete/irrelevant
+- After pruning: Can you still continue the work? (test with "what was I working on?")
+- Preserve in logs: Full content should be in operation_log.txt or git
+- Emergency recovery: Can restore from checkpoint if needed
+
+---
+
+### 22.4 Real-Time Compression Monitoring (WRITE Strategy)
+
+**Principle**: Track compression effectiveness and adjust techniques
+
+**Actions** (SHOULD follow):
+- **Track compression ratio**: Measure actual vs potential context usage
+- **Report in checkpoint box**: Show compression effectiveness
+- **Adjust techniques**: If context growing too fast, increase compression
+- **Document in context_tracking.json**: Log compression metrics
+- **Identify inefficiencies**: Find operations consuming excessive context
+
+**Metrics to Track**:
+
+```json
+{
+  "compression_metrics": {
+    "raw_context_estimate": 180000,
+    "compressed_context": 45000,
+    "compression_ratio": 0.75,
+    "compression_pct": "75%",
+    "techniques_used": ["jit_loading", "tool_filtering", "context_editing"],
+    "last_compression": "2025-11-13T23:55:00Z",
+    "operations_since_compression": 5
+  }
+}
+```
+
+**Calculation**:
+- **Raw context estimate**: Sum of all potential context (if no compression)
+  - All files that could have been read: 50 files × 8K = 400K tokens
+  - All tool outputs at full verbosity: 80K tokens
+  - All exploration dead-ends: 60K tokens
+  - Total raw estimate: 540K tokens
+
+- **Compressed context**: Actual context currently in use
+  - Files actually read: 6 files × 8K = 48K tokens
+  - Summarized tool outputs: 12K tokens (vs 80K raw)
+  - Exploration summary: 2K tokens (vs 60K raw)
+  - Total compressed: 62K tokens
+
+- **Compression ratio**: (1 - compressed/raw) = (1 - 62K/540K) = 0.885 = 88.5%
+
+**Enhanced Checkpoint Box**:
+```
+═══════════════════════════════════════════════════════════════════════
+📊 STATE TRACKING CHECKPOINT (AUTOMATIC - RULES 14-17)
+═══════════════════════════════════════════════════════════════════════
+✅ Operation logged: Read → logs/operation_log.txt
+✅ State updated: master_state.json (timestamp: 23:55:00)
+✅ Context tracked: 62K tokens (31.0%)
+✅ Threshold check: SAFE
+✅ Git status: 19d4c8d
+
+📦 Compression Stats (RULE 22 - v4.7.0):
+✅ Raw context estimate: 540K tokens (without compression)
+✅ Compressed context: 62K tokens (actual usage)
+✅ Compression ratio: 88.5% (8.7:1 reduction)
+✅ Techniques used: JIT loading, tool filtering, context editing
+✅ Token savings: 478K tokens saved this session
+
+Next threshold: 65% at 130K tokens
+Operations this session: 42
+═══════════════════════════════════════════════════════════════════════
+```
+
+**When to Adjust Compression**:
+- **Compression ratio <50%**: Not compressing enough
+  - Action: Increase tool output summarization
+  - Action: More aggressive context editing
+  - Action: Switch to JIT loading if pre-loading
+
+- **Context growing >10K/operation**: Inefficient operations
+  - Action: Identify verbose tools (which ones?)
+  - Action: Add summarization to those tools
+  - Action: Consider if operation truly needed
+
+- **Compression ratio >90%**: Excellent compression
+  - Action: Continue current techniques
+  - Action: Verify not losing critical context
+  - Action: Document what's working well
+
+**Validation**:
+- If compression ratio <50%: Review techniques, identify inefficiencies
+- If context growing despite compression: Investigate root cause
+- If compression ratio >90%: Verify no critical context lost
+
+---
+
+### Integration with Other Rules
+
+**RULE 22 enhances**:
+- **RULE 10** (Context Management): Provides compression techniques
+  - RULE 10 sets thresholds (65%/75%) - MUST follow
+  - RULE 22 provides methods to stay under thresholds - SHOULD follow
+
+- **RULE 14** (State Tracking): Adds compression metrics
+  - Track compression_metrics in context_tracking.json
+  - Report compression stats in checkpoint box
+
+- **RULE 17** (Next Steps): Includes compression context
+  - Recovery prompts mention compression techniques used
+  - Next session continues compression patterns
+
+**RULE 22 complements**:
+- **RULE 2** (Named Files Only): JIT loading supports file discovery
+- **RULE 9** (Code Reuse): Finding reusable code efficiently
+- **RULE 13** (Real Data Only): Compression reduces placeholder temptation
+
+---
+
+### Implementation Checklist
+
+**Before using RULE 22 techniques, verify**:
+- [ ] Understand four strategies: SELECT, COMPRESS, ISOLATE, WRITE
+- [ ] Know when to apply JIT loading (exploration, discovery)
+- [ ] Know when to summarize tool outputs (>1K tokens)
+- [ ] Know what to prune (completed work, old outputs)
+- [ ] Know what NOT to prune (current work, recent outputs, critical data)
+- [ ] Track compression metrics in context_tracking.json
+- [ ] Report compression stats in checkpoint box
+
+**At checkpoint, verify compression**:
+- [ ] Compression ratio calculated and tracked
+- [ ] Compression techniques documented (which ones used?)
+- [ ] Context usage below threshold despite work done
+- [ ] No critical context lost (can still continue work?)
+- [ ] Compression stats displayed in checkpoint box
+
+---
+
+### Common Mistakes to Avoid
+
+**Mistake 1: Over-compression (Losing Critical Context)**
+```
+❌ Pruned current task details → Can't remember what I was doing
+❌ Removed recent error messages → Can't debug issue
+❌ Deleted uncommitted changes summary → Lost track of changes
+Fix: Follow "What NOT to Prune" guidelines strictly
+```
+
+**Mistake 2: Under-compression (Not Applying Techniques)**
+```
+❌ Pre-loaded all 50 files when only needed 3
+❌ Kept full 25K test output when summary was sufficient
+❌ Retained all exploration dead-ends
+Fix: Apply JIT loading, tool filtering, context editing consistently
+```
+
+**Mistake 3: Inconsistent Application**
+```
+❌ Compressed some outputs but not others
+❌ Used JIT loading sometimes, pre-loading other times
+❌ No pattern or consistency
+Fix: Develop consistent habits, apply techniques systematically
+```
+
+**Mistake 4: Not Tracking Effectiveness**
+```
+❌ Don't know if compression is working
+❌ No metrics tracked
+❌ Can't optimize without data
+Fix: Track compression_metrics, review in checkpoint box
+```
+
+---
+
+### Expected Benefits
+
+**Quantitative** (vs no compression):
+- **Context reduction**: 50-80% fewer tokens (Anthropic research validated)
+- **Session duration**: 2-3x longer before hitting 65% threshold
+- **Checkpoint frequency**: Every 4-6 hours vs every 2-3 hours
+- **Cost savings**: 50-80% reduction in token costs
+
+**Qualitative**:
+- Longer productive sessions (fewer interruptions)
+- Less context management overhead (automatic techniques)
+- Better visibility (compression metrics tracked)
+- Improved recovery (compression patterns preserved)
+- Industry-standard practices (aligned with Anthropic research)
+
+---
+
+### Troubleshooting
+
+**Problem**: Context still growing too fast
+**Solution**:
+1. Check compression_metrics - what's the ratio?
+2. If <50%: Increase compression (more aggressive summarization)
+3. Identify verbose operations (which tools consuming most context?)
+4. Apply tool output filtering to those specific tools
+5. Consider if all operations truly necessary
+
+**Problem**: Lost critical context after pruning
+**Solution**:
+1. Review checkpoint files (can restore from .claude/checkpoints/)
+2. Check operation_log.txt (full details preserved)
+3. Check git commits (code changes preserved)
+4. Adjust pruning rules (be less aggressive)
+5. Add to "What NOT to Prune" list
+
+**Problem**: Don't know if compression is working
+**Solution**:
+1. Check compression_metrics in context_tracking.json
+2. Review checkpoint box (compression stats shown)
+3. Compare current vs past sessions (improvement?)
+4. Calculate manually: count tokens used vs could have used
+5. Document findings for future sessions
+
+**Problem**: Techniques too complex to remember
+**Solution**:
+1. Start with one technique: JIT loading (biggest impact)
+2. Add tool output filtering once JIT becomes habit
+3. Add context editing after both become natural
+4. Reference this RULE 22 section when uncertain
+5. Review guides/11_CONTEXT_COMPRESSION.md for examples
+
+---
+
+**RULE 22 Summary**: Compress context through four strategies - SELECT (JIT loading), COMPRESS (tool filtering), ISOLATE (context editing), WRITE (monitoring). Achieves 50-80% token reduction (Anthropic-validated). Enables 2-3x longer sessions with fewer checkpoints.
+
+**Status**: NEW in v4.7.0 - Based on 2025 state-of-the-art research
+**Priority**: SHOULD (Tier 2) - Important for efficiency, but flexible application
+**Integration**: Enhances RULE 10 (provides compression methods for threshold management)
+
+---
 
