@@ -1,15 +1,15 @@
 #!/bin/bash
 # mcp_lib.sh - MCP Integration Library
-# Version: 1.0.0
+# Version: 1.0.1
 # Purpose: Wrapper functions for MCP operations with graceful degradation
 
-set -euo pipefail
+set -eo pipefail
 
 # This library provides high-level functions that use MCP when available
 # and fall back to file-based storage when MCP is not available
 
 # Source MCP detection if not already loaded
-if [ -z "$MCP_AVAILABLE" ]; then
+if [ -z "${MCP_AVAILABLE:-}" ]; then
     if [ -f ".cpf/mcp_status.sh" ]; then
         source .cpf/mcp_status.sh
     else
@@ -19,6 +19,9 @@ if [ -z "$MCP_AVAILABLE" ]; then
         export MCP_FILESYSTEM_AVAILABLE="false"
     fi
 fi
+
+# Now enable strict mode after variables are set
+set -u
 
 # ═══════════════════════════════════════════════════════════════════════
 # STATE MANAGEMENT

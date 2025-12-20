@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [4.7.2] - 2025-12-20
+
+### Fixed - MCP Library Unbound Variable Error
+- **scripts/mcp_lib.sh** - Fixed unbound variable error when `MCP_AVAILABLE` is not set
+  - Changed from `[ -z "$MCP_AVAILABLE" ]` to `[ -z "${MCP_AVAILABLE:-}" ]` for safe parameter expansion
+  - Moved `set -u` (strict mode) to after variable initialization to prevent errors
+  - Prevents script failure when `.cpf/mcp_status.sh` doesn't exist or hasn't been sourced
+  - Version bumped from 1.0.0 to 1.0.1
+- **Impact**: Fixes `state_manager.sh mcp-status` command failures during fresh installations
+- **Root cause**: Bash `set -euo pipefail` with unbound variable check was triggered before defaults were set
+
+### Testing
+- Verified `./scripts/state_manager.sh mcp-status` now works correctly
+- Verified `./scripts/mcp_detection.sh` completes successfully
+- Verified framework integrity validation passes all 61 checks
+
+---
+
 ## [4.7.1] - 2025-11-14
 
 ### Added - Automated Recovery System (Production Ready)
