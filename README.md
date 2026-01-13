@@ -75,7 +75,7 @@ Claude: [INTERNAL: Checkpoint loaded, summaries restored]
 cd /path/to/YourProject && git submodule add https://github.com/davidlary/ContextPreservingFramework.git cpf
 
 # Step 2: Install (automated, takes 30 seconds)
-cd cpf && ./cpf-install.sh && cd ..
+./cpf/cpf-install.sh
 
 # ✅ Done! Framework is now active in your project.
 ```
@@ -103,7 +103,7 @@ cd /path/to/YourProject
 git submodule add https://github.com/davidlary/ContextPreservingFramework.git cpf
 
 # 2. Run installer (one command!)
-cd cpf && ./cpf-install.sh && cd ..
+./cpf/cpf-install.sh
 
 # Done! Framework is active.
 ```
@@ -149,8 +149,8 @@ Use the **cpf-install.sh** script for automated setup:
 # Add framework as submodule
 git submodule add https://github.com/davidlary/ContextPreservingFramework.git cpf
 
-# Run installer
-cd cpf && ./cpf-install.sh && cd ..
+# Run installer (from project root)
+./cpf/cpf-install.sh
 ```
 
 **Installation creates:**
